@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using WA.Pizza.Core.Entities.BasketDomain;
 
 namespace WA.Pizza.Core.Entities
 {
-    public class Merch
+    public class BasketItem
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Price { get; set; }
-        ICollection<Order> Orders { get; set; }
-        ICollection<Catalog> Catalogs { get; set; }
+        public Guid BasketId { get; set; }
+        public Basket Basket { get; set; }
     }
 }

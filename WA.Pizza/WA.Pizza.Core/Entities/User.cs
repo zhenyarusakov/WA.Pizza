@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WA.Pizza.Core.Entities.OrderDomain;
 
 namespace WA.Pizza.Core.Entities
 {
