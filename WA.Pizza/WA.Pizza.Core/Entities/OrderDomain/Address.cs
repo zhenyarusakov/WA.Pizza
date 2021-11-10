@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace WA.Pizza.Core.Entities.OrderDomain
+﻿namespace WA.Pizza.Core.Entities.OrderDomain
 {
     public class Address
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Country { get; set; }
         public string Сiti { get; set; }
         public string Street { get; set; }
