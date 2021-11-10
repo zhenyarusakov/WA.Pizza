@@ -13,6 +13,6 @@ namespace WA.Pizza.Core.Entities
         public string HouseNumber { get; set; }
         public string EntranceNumber { get; set; }
         public string ApartmentNumber { get; set; }
-        ICollection<Order> Orders { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

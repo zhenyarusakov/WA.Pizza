@@ -3,6 +3,7 @@ using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
+using WA.Pizza.Infrastructure.EFConfigurations;
 
 namespace WA.Pizza.Infrastructure.DbContexts
 {
@@ -11,6 +12,11 @@ namespace WA.Pizza.Infrastructure.DbContexts
         public WAPizzaContext(DbContextOptions<WAPizzaContext> options)
             : base(options)
         { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WAPizzaContext).Assembly);
+        }
 
         public DbSet<Basket> Baskets { get; set; } 
         public DbSet<BasketItem> BasketItems { get; set; } 
