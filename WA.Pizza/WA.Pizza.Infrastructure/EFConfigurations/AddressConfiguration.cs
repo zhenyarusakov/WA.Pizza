@@ -34,10 +34,6 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
             builder
                 .Property(x => x.ApartmentNumber)
                 .IsRequired();
-
-            builder
-                .Property(x => x.isPrimary)
-                .IsRequired();
         }
     }
 }
