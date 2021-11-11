@@ -8,8 +8,6 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasKey(x => x.Id);
-
             builder
                 .Property(x => x.Name)
                 .HasMaxLength(50)

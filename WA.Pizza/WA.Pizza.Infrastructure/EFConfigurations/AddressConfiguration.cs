@@ -9,9 +9,6 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
         public void Configure(EntityTypeBuilder<Address> builder)
         {
             builder
-                .HasKey(x => x.Id);
-
-            builder
                 .Property(x => x.Country)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -36,6 +33,10 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
 
             builder
                 .Property(x => x.ApartmentNumber)
+                .IsRequired();
+
+            builder
+                .Property(x => x.isPrimary)
                 .IsRequired();
         }
     }

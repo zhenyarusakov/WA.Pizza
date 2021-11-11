@@ -8,5 +8,8 @@
         public int House { get; set; }
         public int Entrance { get; set; }
         public int ApartmentNumber { get; set; }
+        public bool isPrimary { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

@@ -9,9 +9,6 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
         public void Configure(EntityTypeBuilder<CatalogItem> builder)
         {
             builder
-                .HasKey(x => x.Id);
-
-            builder
                 .Property(x => x.Name)
                 .HasMaxLength(50)
                 .IsRequired();

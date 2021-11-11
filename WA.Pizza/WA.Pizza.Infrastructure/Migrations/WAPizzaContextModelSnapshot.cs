@@ -159,7 +159,15 @@ namespace WA.Pizza.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isPrimary")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
@@ -232,27 +240,10 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<string>("ApartmentNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("EntranceNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("HouseNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -297,6 +288,17 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Navigation("CatalogBrand");
                 });
 
+            modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.Address", b =>
+                {
+                    b.HasOne("WA.Pizza.Core.Entities.User", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.Order", b =>
                 {
                     b.HasOne("WA.Pizza.Core.Entities.User", "User")
@@ -336,6 +338,8 @@ namespace WA.Pizza.Infrastructure.Migrations
 
             modelBuilder.Entity("WA.Pizza.Core.Entities.User", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

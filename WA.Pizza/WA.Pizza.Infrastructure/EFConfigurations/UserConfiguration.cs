@@ -9,9 +9,6 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder
-                .HasKey(x => x.Id);
-
-            builder
                 .Property(x => x.FirstName)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -31,25 +28,14 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
                 .IsRequired();
 
             builder
-                .Property(x => x.City)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            builder
-                .Property(x => x.HouseNumber)
-                .IsRequired();
-
-            builder
-                .Property(x => x.EntranceNumber)
-                .IsRequired();
-
-            builder
-                .Property(x => x.ApartmentNumber)
-                .IsRequired();
+                .HasMany(x => x.Addresses)
+                .WithOne(x => x.User)
+                .HasForeignKey(x=>x.UserId);
 
             builder
                 .HasMany(x => x.Orders)
-                .WithOne(x => x.User);
+                .WithOne(x => x.User)
+                .HasForeignKey(x=>x.UserId);
         }
     }
 }
