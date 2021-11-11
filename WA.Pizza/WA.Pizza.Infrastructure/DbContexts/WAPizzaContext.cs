@@ -3,7 +3,6 @@ using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
-using WA.Pizza.Infrastructure.EFConfigurations;
 
 namespace WA.Pizza.Infrastructure.DbContexts
 {

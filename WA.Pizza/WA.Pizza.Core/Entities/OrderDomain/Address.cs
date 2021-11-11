@@ -1,8 +1,7 @@
 ﻿namespace WA.Pizza.Core.Entities.OrderDomain
 {
-    public class Address
+    public class Address : BaseEntity
     {
-        public int Id { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
         public string Street { get; set; }

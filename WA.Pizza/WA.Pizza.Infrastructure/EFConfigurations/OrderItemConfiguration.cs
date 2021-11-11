@@ -23,7 +23,7 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
 
             builder
                 .Property(x => x.Price)
-                .IsRequired();
+                .HasColumnType("decimal(20,8)");
         }
     }
 }

@@ -20,8 +20,7 @@ namespace WA.Pizza.Api.Extensions
         {
             services.AddDbContext<WAPizzaContext>(options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(WAPizzaContext).Assembly.FullName)));
+                    configuration.GetConnectionString("DefaultConnection")));
         }
     }
 }

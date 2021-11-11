@@ -23,7 +23,8 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
 
             builder
                 .HasMany(x => x.CatalogItems)
-                .WithOne(x => x.CatalogBrand);
+                .WithOne(x => x.CatalogBrand)
+                .HasForeignKey(x => x.CatalogBrandId);
         }
     }
 }

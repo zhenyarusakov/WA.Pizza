@@ -21,7 +21,8 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
 
             builder
                 .HasMany(x => x.OrderItems)
-                .WithOne(x => x.Order);
+                .WithOne(x => x.Order)
+                .HasForeignKey(x => x.OrderId);
 
         }
     }
