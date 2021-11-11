@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using WA.Pizza.Api.Extensions;
 
 namespace WA.Pizza.Api
 {
@@ -20,10 +20,8 @@ namespace WA.Pizza.Api
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WA.Pizza", Version = "v1" });
-            });
+            services.ConfigureServicesExtension();
+            services.AddDbContextExtensions(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

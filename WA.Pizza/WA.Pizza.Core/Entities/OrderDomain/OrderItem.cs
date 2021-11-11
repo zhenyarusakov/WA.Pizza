@@ -1,16 +1,11 @@
-﻿using System;
-
-namespace WA.Pizza.Core.Entities.OrderDomain
+﻿namespace WA.Pizza.Core.Entities.OrderDomain
 {
-    // Заказанный товар
-    public class OrderItem
+    public class OrderItem : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Price { get; set; }
-        public Guid OrderId { get; set; }
-        // Заказ, в котором содержится данный заказанный товар
+        public decimal Price { get; set; }
+        public int OrderId { get; set; }
         public Order Order { get; set; }
     }
 }
