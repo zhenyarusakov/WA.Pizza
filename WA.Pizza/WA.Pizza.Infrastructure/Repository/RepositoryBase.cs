@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.DbContexts;
@@ -16,31 +14,14 @@ namespace WA.Pizza.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<T> GetByIdAsync(
-            Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>> include = default)
+        public async Task<T> GetById(int id)
         {
-            return await FindByCondition(expression, include).FirstOrDefaultAsync();
-        }
-
-
-        public IQueryable<T> FindByCondition(
-            Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>> include = default)
-        {
-            var query = _context.Set<T>().Where(expression);
-
-            if (include != null)
-            {
-                query = query.Include(include);
-            }
-
-            return query;
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public IQueryable<T> GetAllAsync()
         {
-            return _context.Set<T>();
+            return _context.Set<T>().AsNoTracking();
         }
 
         public async Task<T> CreateAsync(T entitie)

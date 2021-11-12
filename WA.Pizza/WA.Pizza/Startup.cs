@@ -18,7 +18,6 @@ namespace WA.Pizza.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.ConfigureServicesExtension();
             services.AddDbContextExtensions(Configuration);
