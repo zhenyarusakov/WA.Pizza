@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.DbContexts;
 
 namespace WA.Pizza.Infrastructure.Repository
 {
-    public class RepositoryBase<T> : IRepository<T> where T: class
+    public class RepositoryBase<T> : IRepository<T> where T: BaseEntity
     {
         private readonly WAPizzaContext _context;
         public RepositoryBase(WAPizzaContext context)
@@ -16,12 +17,12 @@ namespace WA.Pizza.Infrastructure.Repository
 
         public async Task<T> GetById(int id) 
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public IQueryable<T> GetAllAsync()
         {
-            return _context.Set<T>().AsNoTracking();
+            return _context.Set<T>();
         }
 
         public async Task<T> CreateAsync(T entitie)
