@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.DbContexts;
 
 namespace WA.Pizza.Infrastructure.Repository
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T: class
+    public class RepositoryBase<T> : IRepository<T> where T: class
     {
         private readonly WAPizzaContext _context;
         public RepositoryBase(WAPizzaContext context)

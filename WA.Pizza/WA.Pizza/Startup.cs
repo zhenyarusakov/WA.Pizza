@@ -24,7 +24,7 @@ namespace WA.Pizza.Api
             services.AddControllers();
             services.ConfigureServicesExtension();
             services.AddDbContextExtensions(Configuration);
-            services.AddScoped<IRepositoryBase<Order>, RepositoryBase<Order>>();
+            services.AddScoped<IRepository<Order>, RepositoryBase<Order>>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
