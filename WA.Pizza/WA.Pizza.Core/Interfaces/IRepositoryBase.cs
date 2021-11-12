@@ -4,17 +4,12 @@ using WA.Pizza.Core.Entities;
 
 namespace WA.Pizza.Core.Interfaces
 {
-    public interface IRepositoryBase
+    public interface IRepositoryBase<T> where T: class
     {
-        Task<T> GetById<T>(int id)
-            where T : BaseEntity;
-        IQueryable<T> GetAllAsync<T>()
-            where T : BaseEntity;
-        Task<T> CreateAsync<T>(T entitie)
-            where T : BaseEntity;
-        Task<T> UpdateAsync<T>(T entitie)
-            where T : BaseEntity;
-        Task<T> DeleteAsync<T>(T entitie)
-            where T : BaseEntity;
+        Task<T> GetById(int id);
+        IQueryable<T> GetAllAsync();
+        Task<T> CreateAsync(T entitie);
+        Task<T> UpdateAsync(T entitie);
+        Task<T> DeleteAsync(T entitie);
     }
 }

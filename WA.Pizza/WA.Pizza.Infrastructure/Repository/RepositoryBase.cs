@@ -7,7 +7,7 @@ using WA.Pizza.Infrastructure.DbContexts;
 
 namespace WA.Pizza.Infrastructure.Repository
 {
-    public class RepositoryBase : IRepositoryBase
+    public class RepositoryBase<T> : IRepositoryBase<T> where T: class
     {
         private readonly WAPizzaContext _context;
         public RepositoryBase(WAPizzaContext context)
@@ -15,20 +15,17 @@ namespace WA.Pizza.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<T> GetById<T>(int id) 
-            where T : BaseEntity
+        public async Task<T> GetById(int id) 
         {
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public IQueryable<T> GetAllAsync<T>()
-             where T : BaseEntity
+        public IQueryable<T> GetAllAsync()
         {
             return _context.Set<T>().AsNoTracking();
         }
 
-        public async Task<T> CreateAsync<T>(T entitie)
-             where T : BaseEntity
+        public async Task<T> CreateAsync(T entitie)
         {
             _context.Set<T>().Add(entitie);
 
@@ -36,8 +33,7 @@ namespace WA.Pizza.Infrastructure.Repository
 
             return entitie;
         }
-        public async Task<T> UpdateAsync<T>(T entitie)
-             where T : BaseEntity
+        public async Task<T> UpdateAsync(T entitie)
         {
             _context.Set<T>().Update(entitie);
 
@@ -46,8 +42,7 @@ namespace WA.Pizza.Infrastructure.Repository
             return entitie;
         }
 
-        public async Task<T> DeleteAsync<T>(T entitie)
-             where T : BaseEntity
+        public async Task<T> DeleteAsync(T entitie)
         {
             _context.Set<T>().Remove(entitie);
 
