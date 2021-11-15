@@ -37,7 +37,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return orderItem;
         }
 
-        public async Task<OrderItem> UpdateOrderItemAsync(int id, OrderItem orderItem)
+        public async Task<OrderItem> UpdateOrderItemAsync(int id)
         {
             var orderItemUpdate = await _context.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
 

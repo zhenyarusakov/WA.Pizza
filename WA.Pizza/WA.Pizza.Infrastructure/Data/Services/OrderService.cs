@@ -42,13 +42,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return order;
         }
 
-        public async Task<Order> UpdateOrderAsync(int id, Order order)
+        public async Task<Order> UpdateOrderAsync(int id)
         {
             var updateOrder = await _repository.GetById(id);
 
             if (updateOrder == null)
             {
-                throw new ArgumentNullException($"There is no order with this {id}");
+                throw new ArgumentNullException($"There is no Order with this {id}");
             }
             
             await _repository.UpdateAsync(updateOrder);
@@ -62,7 +62,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (deleteOrder == null)
             {
-                throw new ArgumentNullException($"There is no order with this {id}");
+                throw new ArgumentNullException($"There is no Order with this {id}");
             }
 
             await _repository.DeleteAsync(deleteOrder);

@@ -39,7 +39,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return user;
         }
 
-        public async Task<User> UpdateUserAsync(int id, User user)
+        public async Task<User> UpdateUserAsync(int id)
         {
             var userUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
 

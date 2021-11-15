@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Text.Json.Serialization;
 using WA.Pizza.Api.Extensions;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Core.Interfaces;
@@ -34,6 +32,10 @@ namespace WA.Pizza.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IOrderItemService, OrderItemService>();
+            services.AddScoped<IBasketService, BasketService>();
+            services.AddScoped<IBasketItemService, BasketItemService>();
+            services.AddScoped<ICatalogBrandService, CatalogBrandService>();
+            services.AddScoped<ICatalogItemService, CatalogItemService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

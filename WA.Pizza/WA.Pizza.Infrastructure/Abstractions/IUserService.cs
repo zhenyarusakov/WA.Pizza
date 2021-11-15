@@ -8,7 +8,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
         Task<User> GetUserAsync(int id);
         Task<User[]> GetUsersAsync();
         Task<User> CreateUserAsync(User user);
-        Task<User> UpdateUserAsync(int id, User user);
+        Task<User> UpdateUserAsync(int id);
         Task DeleteUserAsync(int id);
     }
 }

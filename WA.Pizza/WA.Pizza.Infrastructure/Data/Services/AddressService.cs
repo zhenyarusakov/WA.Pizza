@@ -38,7 +38,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return address;
         }
 
-        public async Task<Address> UpdateAddressAsync(int id, Address user)
+        public async Task<Address> UpdateAddressAsync(int id)
         {
             var addressUpdate = await _context.Addresses.FirstOrDefaultAsync(x => x.Id == id);
 
