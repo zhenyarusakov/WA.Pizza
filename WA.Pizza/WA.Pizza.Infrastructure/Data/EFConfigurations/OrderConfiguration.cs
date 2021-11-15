@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WA.Pizza.Core.Entities.OrderDomain;
 
-namespace WA.Pizza.Infrastructure.EFConfigurations
+namespace WA.Pizza.Infrastructure.Data.EFConfigurations
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder
                 .Property(x => x.Name)
@@ -14,13 +14,14 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
                 .IsRequired();
 
             builder
-                .Property(x => x.Description)
-                .HasMaxLength(150)
+                .Property(x => x.Status)
                 .IsRequired();
 
             builder
-                .Property(x => x.Price)
-                .HasColumnType("decimal(20,8)");
+                .HasMany(x => x.OrderItems)
+                .WithOne(x => x.Order)
+                .HasForeignKey(x => x.OrderId);
+
         }
     }
 }

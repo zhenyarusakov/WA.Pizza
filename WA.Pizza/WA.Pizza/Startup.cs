@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using WA.Pizza.Api.Extensions;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Core.Interfaces;
-using WA.Pizza.Infrastructure.Repository;
+using WA.Pizza.Infrastructure.Abstractions;
+using WA.Pizza.Infrastructure.Data.Services;
 
 namespace WA.Pizza.Api
 {
@@ -24,7 +26,16 @@ namespace WA.Pizza.Api
             services.AddControllers();
             services.ConfigureServicesExtension();
             services.AddDbContextExtensions(Configuration);
+            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IRepository<Order>, RepositoryBase<Order>>();
+            services.AddScoped<IOrderService, OrderService>();
+
+            //services.AddControllers();
+            //services.ConfigureServicesExtension();
+            //services.AddDbContextExtensions(Configuration);
+            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //services.AddScoped<IRepository<Order>, RepositoryBase<Order>>();
+            //services.AddScoped<IOrderService, OrderService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

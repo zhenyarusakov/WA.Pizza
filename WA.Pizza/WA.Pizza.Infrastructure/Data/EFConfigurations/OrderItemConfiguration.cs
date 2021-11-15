@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WA.Pizza.Core.Entities;
+using WA.Pizza.Core.Entities.OrderDomain;
 
-namespace WA.Pizza.Infrastructure.EFConfigurations
+namespace WA.Pizza.Infrastructure.Data.EFConfigurations
 {
-    public class BasketItemConfiguration : IEntityTypeConfiguration<BasketItem>
+    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
     {
-        public void Configure(EntityTypeBuilder<BasketItem> builder)
+        public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder
                 .Property(x => x.Name)
@@ -15,7 +15,7 @@ namespace WA.Pizza.Infrastructure.EFConfigurations
 
             builder
                 .Property(x => x.Description)
-                .HasMaxLength(200)
+                .HasMaxLength(150)
                 .IsRequired();
 
             builder

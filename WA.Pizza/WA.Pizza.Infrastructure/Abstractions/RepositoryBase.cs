@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Interfaces;
-using WA.Pizza.Infrastructure.DbContexts;
+using WA.Pizza.Infrastructure.Data;
 
-namespace WA.Pizza.Infrastructure.Repository
+namespace WA.Pizza.Infrastructure.Abstractions
 {
     public class RepositoryBase<T> : IRepository<T> where T: BaseEntity
     {

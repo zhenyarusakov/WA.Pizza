@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
 
-namespace WA.Pizza.Infrastructure.DbContexts
+namespace WA.Pizza.Infrastructure.Data
 {
     public class WAPizzaContext: DbContext
     {

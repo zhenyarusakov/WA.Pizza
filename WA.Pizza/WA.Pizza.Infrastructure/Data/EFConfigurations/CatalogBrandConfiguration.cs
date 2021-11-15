@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WA.Pizza.Core.Entities.CatalogDomain;
 
-namespace WA.Pizza.Infrastructure.EFConfigurations
+namespace WA.Pizza.Infrastructure.Data.EFConfigurations
 {
     public class CatalogBrandConfiguration : IEntityTypeConfiguration<CatalogBrand>
     {
