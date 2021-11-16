@@ -29,12 +29,7 @@ namespace WA.Pizza.Api
 
             services.AddScoped<IRepository<Order>, RepositoryBase<Order>>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAddressService, AddressService>();
-            services.AddScoped<IOrderItemService, OrderItemService>();
             services.AddScoped<IBasketService, BasketService>();
-            services.AddScoped<IBasketItemService, BasketItemService>();
-            services.AddScoped<ICatalogBrandService, CatalogBrandService>();
             services.AddScoped<ICatalogItemService, CatalogItemService>();
         }
 

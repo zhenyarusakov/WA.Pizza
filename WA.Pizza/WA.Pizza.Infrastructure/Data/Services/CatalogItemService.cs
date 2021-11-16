@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Mapster;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
@@ -12,12 +11,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
     public class CatalogItemService: ICatalogItemService
     {
         private readonly WAPizzaContext _context;
-        private readonly IMapper _mapper;
 
-        public CatalogItemService(WAPizzaContext context, IMapper mapper)
+        public CatalogItemService(WAPizzaContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public Task<CatalogItemDto> GetCatalogItemAsync(int id)
@@ -39,13 +36,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<CatalogItemDto> CreateCatalogItemAsync(CatalogItemForModifyDto modifyDto)
         {
-            var catalogItemDto = _mapper.Map<CatalogItem>(modifyDto);
+            var catalogItemDto = TypeAdapter.Adapt<CatalogItem>(modifyDto);
 
             _context.CatalogItems.Add(catalogItemDto);
 
             await _context.SaveChangesAsync();
-
-            return _mapper.Map<CatalogItemDto>(catalogItemDto);
+            
+            return TypeAdapter.Adapt<CatalogItemDto>(catalogItemDto);
         }
 
         public async Task<CatalogItemDto> UpdateCatalogItemAsync(CatalogItemForModifyDto modifyDto)
@@ -56,14 +53,14 @@ namespace WA.Pizza.Infrastructure.Data.Services
             {
                 throw new ArgumentNullException($"There is no CatalogItem with this {modifyDto.Id}");
             }
-
-            _mapper.Map(modifyDto, catalogItemUpdate);
+            
+            TypeAdapter.Adapt(modifyDto, catalogItemUpdate);
 
             _context.Update(catalogItemUpdate);
 
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<CatalogItemDto>(catalogItemUpdate);
+            return TypeAdapter.Adapt<CatalogItemDto>(catalogItemUpdate);
         }
 
         public async Task DeleteCatalogItemAsync(int id)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Mapster;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
@@ -12,12 +11,9 @@ namespace WA.Pizza.Infrastructure.Data.Services
     public class BasketService: IBasketService
     {
         private readonly WAPizzaContext _context;
-        private readonly IMapper _mapper;
-
-        public BasketService(WAPizzaContext context, IMapper mapper)
+        public BasketService(WAPizzaContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<BasketDto> GetBasketAsync(int id)
@@ -38,13 +34,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<BasketDto> CreateBasketAsync(BasketForModifyDto modifyDto)
         {
-            var basketDto = _mapper.Map<Basket>(modifyDto);
+            var basketDto = modifyDto.Adapt<Basket>();
 
             _context.Baskets.Add(basketDto);
 
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<BasketDto>(basketDto);
+            return basketDto.Adapt<BasketDto>();
         }
 
         public async Task<BasketDto> UpdateBasketAsync(BasketForModifyDto modifyDto)
@@ -55,14 +51,14 @@ namespace WA.Pizza.Infrastructure.Data.Services
             {
                 throw new ArgumentNullException($"There is no Basket with this {modifyDto.Id}");
             }
-
-            _mapper.Map(modifyDto, basketUpdate);
+            
+            TypeAdapter.Adapt(modifyDto, basketUpdate);
 
             _context.Update(basketUpdate);
 
             await _context.SaveChangesAsync();
-
-            return _mapper.Map<BasketDto>(modifyDto);
+            
+            return TypeAdapter.Adapt<BasketDto>(modifyDto);
         }
 
         public async Task DeleteBasketAsync(int id)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Mapster;
-using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Core.Interfaces;
@@ -10,26 +9,24 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class OrderService: IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IRepository<Order> _repository;
-        private readonly IMapper _mapper;
-        public OrderService(IRepository<Order> repository, IMapper mapper)
+        public OrderService(IRepository<Order> repository)
         {
             _repository = repository;
-            _mapper = mapper;
         }
 
         public async Task<OrderDto> GetOrderAsync(int id)
         {
             var orderDto = await _repository.GetById(id);
 
-            if(orderDto == null)
+            if (orderDto == null)
             {
-                throw new ArgumentNullException($"There is no order with this {id}") ;
+                throw new ArgumentNullException($"There is no order with this {id}");
             }
-
-            return _mapper.Map<OrderDto>(orderDto);
+            
+            return TypeAdapter.Adapt<OrderDto>(orderDto);
         }
 
         public Task<OrderDto[]> GetOrdersAsync()
@@ -39,11 +36,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<OrderDto> CreateOrderAsync(OrderForModifyDto modifyDto)
         {
-            var orderDto = _mapper.Map<Order>(modifyDto);
+            var orderDto = TypeAdapter.Adapt<Order>(modifyDto);
 
             await _repository.CreateAsync(orderDto);
 
-            return _mapper.Map<OrderDto>(orderDto);
+            return TypeAdapter.Adapt<OrderDto>(orderDto);
         }
 
         public async Task<OrderDto> UpdateOrderAsync(OrderForModifyDto modifyDto)
@@ -55,11 +52,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 throw new ArgumentNullException($"There is no Order with this {modifyDto.Id}");
             }
 
-            _mapper.Map(modifyDto, updateeOrderDto);
+            TypeAdapter.Adapt(modifyDto, updateeOrderDto);
 
             await _repository.UpdateAsync(updateeOrderDto);
 
-            return _mapper.Map<OrderDto>(updateeOrderDto);
+            return TypeAdapter.Adapt<OrderDto>(updateeOrderDto);
         }
 
         public async Task DeleteOrderAsync(int id)
@@ -73,6 +70,6 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             await _repository.DeleteAsync(deleteOrder);
         }
-        
+
     }
 }
