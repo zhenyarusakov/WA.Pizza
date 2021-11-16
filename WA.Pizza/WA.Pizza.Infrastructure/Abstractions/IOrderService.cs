@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
-using WA.Pizza.Core.Entities.OrderDomain;
+using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Abstractions
 {
     public interface IOrderService
     {
-        Task<Order> GetOrderAsync(int id);
-        Task<Order[]> GetOrdersAsync();
-        Task<Order> CreateOrderAsync(Order order);
-        Task<Order> UpdateOrderAsync(Order order);
+        Task<OrderDto> GetOrderAsync(int id);
+        Task<OrderDto[]> GetOrdersAsync();
+        Task<OrderDto> CreateOrderAsync(OrderForModifyDto modifyDto);
+        Task<OrderDto> UpdateOrderAsync(OrderForModifyDto modifyDto);
         Task DeleteOrderAsync(int id);
     }
 }

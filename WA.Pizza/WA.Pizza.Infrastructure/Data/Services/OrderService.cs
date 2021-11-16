@@ -1,62 +1,65 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.Abstractions;
+using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class OrderService: IOrderService
     {
         private readonly IRepository<Order> _repository;
-        public OrderService(IRepository<Order> repository)
+        private readonly IMapper _mapper;
+        public OrderService(IRepository<Order> repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public Task<Order> GetOrderAsync(int id)
+        public async Task<OrderDto> GetOrderAsync(int id)
         {
-            var order = _repository.GetById(id);
+            var orderDto = await _repository.GetById(id);
 
-            if(order == null)
+            if(orderDto == null)
             {
                 throw new ArgumentNullException($"There is no order with this {id}") ;
             }
 
-            return order;
+            return _mapper.Map<OrderDto>(orderDto);
         }
 
-        public Task<Order[]> GetOrdersAsync()
+        public Task<OrderDto[]> GetOrdersAsync()
         {
-            return _repository.GetAllAsync().ToArrayAsync();
+            return _repository.GetAllAsync().ProjectToType<OrderDto>().ToArrayAsync();
         }
 
-        public async Task<Order> CreateOrderAsync(Order order)
+        public async Task<OrderDto> CreateOrderAsync(OrderForModifyDto modifyDto)
         {
+            var orderDto = _mapper.Map<Order>(modifyDto);
 
-            await _repository.CreateAsync(order);
+            await _repository.CreateAsync(orderDto);
 
-            return order;
+            return _mapper.Map<OrderDto>(orderDto);
         }
 
-        public async Task<Order> UpdateOrderAsync(Order order)
+        public async Task<OrderDto> UpdateOrderAsync(OrderForModifyDto modifyDto)
         {
-            var localeOrder = await _repository.GetById(order.Id);
+            var updateeOrderDto = await _repository.GetById(modifyDto.Id);
 
-            if (localeOrder == null)
+            if (updateeOrderDto == null)
             {
-                throw new ArgumentNullException($"There is no Order with this {order.Id}");
+                throw new ArgumentNullException($"There is no Order with this {modifyDto.Id}");
             }
 
-            localeOrder.Name = order.Name;
-            localeOrder.OrderItems = order.OrderItems;
-            localeOrder.Status = order.Status;
-            localeOrder.User = order.User;
+            _mapper.Map(modifyDto, updateeOrderDto);
 
-            await _repository.UpdateAsync(localeOrder);
+            await _repository.UpdateAsync(updateeOrderDto);
 
-            return localeOrder;
+            return _mapper.Map<OrderDto>(updateeOrderDto);
         }
 
         public async Task DeleteOrderAsync(int id)

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -14,6 +15,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WA.Pizza.Core\WA.Pizza.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MapsterMapping\" />
   </ItemGroup>
 
 </Project>

@@ -4,10 +4,5 @@ using WA.Pizza.Infrastructure.DTO.UserDTO;
 
 namespace WA.Pizza.Infrastructure.DTO.BasketDTO.Basket
 {
-    public class BasketForModifyDto
-    {
-        public int UserId { get; set; }
-        public UserDto User { get; set; }
-        public ICollection<BasketItemDto> BasketItems { get; set; }
-    }
+    public record BasketForModifyDto(int Id, int UserId, UserDto User, ICollection<BasketItemDto> BasketItems);
 }

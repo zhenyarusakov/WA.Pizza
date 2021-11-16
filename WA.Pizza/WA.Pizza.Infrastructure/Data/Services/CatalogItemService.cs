@@ -1,69 +1,73 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class CatalogItemService: ICatalogItemService
     {
         private readonly WAPizzaContext _context;
+        private readonly IMapper _mapper;
 
-        public CatalogItemService(WAPizzaContext context)
+        public CatalogItemService(WAPizzaContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public Task<CatalogItem> GetCatalogItemAsync(int id)
+        public Task<CatalogItemDto> GetCatalogItemAsync(int id)
         {
             return _context.CatalogItems
                 .AsNoTracking()
+                .ProjectToType<CatalogItemDto>()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<CatalogItem[]> GetCatalogItemsAsync()
+        public Task<CatalogItemDto[]> GetCatalogItemsAsync()
         {
             return _context.CatalogItems
                 .Include(x => x.CatalogBrand)
                 .Include(x => x.CatalogType)
+                .ProjectToType<CatalogItemDto>()
                 .ToArrayAsync();
         }
 
-        public async Task<CatalogItem> CreateCatalogItemAsync(CatalogItem catalogItem)
+        public async Task<CatalogItemDto> CreateCatalogItemAsync(CatalogItemForModifyDto modifyDto)
         {
-            _context.CatalogItems.Add(catalogItem);
+            var catalogItemDto = _mapper.Map<CatalogItem>(modifyDto);
+
+            _context.CatalogItems.Add(catalogItemDto);
 
             await _context.SaveChangesAsync();
 
-            return catalogItem;
+            return _mapper.Map<CatalogItemDto>(catalogItemDto);
         }
 
-        public async Task<CatalogItem> UpdateCatalogItemAsync(CatalogItem catalogItem)
+        public async Task<CatalogItemDto> UpdateCatalogItemAsync(CatalogItemForModifyDto modifyDto)
         {
-            var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
+            var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == modifyDto.Id);
 
             if (catalogItemUpdate == null)
             {
-                throw new ArgumentNullException($"There is no CatalogItem with this {catalogItem.Id}");
+                throw new ArgumentNullException($"There is no CatalogItem with this {modifyDto.Id}");
             }
 
-            catalogItemUpdate.CatalogBrand = catalogItem.CatalogBrand;
-            catalogItemUpdate.CatalogType = catalogItem.CatalogType;
-            catalogItemUpdate.Description = catalogItem.Description;
-            catalogItemUpdate.Name = catalogItem.Name;
-            catalogItemUpdate.Price = catalogItem.Price;
+            _mapper.Map(modifyDto, catalogItemUpdate);
 
             _context.Update(catalogItemUpdate);
 
             await _context.SaveChangesAsync();
 
-            return catalogItemUpdate;
+            return _mapper.Map<CatalogItemDto>(catalogItemUpdate);
         }
 
         public async Task DeleteCatalogItemAsync(int id)
         {
-
             _context.CatalogItems.Remove(new CatalogItem()
             {
                 Id = id
