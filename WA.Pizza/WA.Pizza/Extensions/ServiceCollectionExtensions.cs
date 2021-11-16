@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using WA.Pizza.Infrastructure.DbContexts;
+using WA.Pizza.Infrastructure.Data;
 
 namespace WA.Pizza.Api.Extensions
 {
@@ -21,6 +22,13 @@ namespace WA.Pizza.Api.Extensions
             services.AddDbContext<WAPizzaContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));
+        }
+
+        public static void AddControllersWithViewsExtensions(this IServiceCollection services)
+        {
+            services.AddControllers()
+                .AddJsonOptions(o => o.JsonSerializerOptions
+                    .ReferenceHandler = ReferenceHandler.Preserve);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using WA.Pizza.Core.Entities.BasketDomain;
-
-namespace WA.Pizza.Core.Entities
+﻿namespace WA.Pizza.Core.Entities.BasketDomain
 {
     public class BasketItem: BaseEntity
     {
