@@ -14,16 +14,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public async Task<OrderItem> GetOrderItemAsync(int id)
+        public Task<OrderItem> GetOrderItemAsync(int id)
         {
-            return await _context.OrderItems
+            return _context.OrderItems
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<OrderItem[]> GetOrderItemsAsync()
+        public Task<OrderItem[]> GetOrderItemsAsync()
         {
-            return await _context.OrderItems
+            return _context.OrderItems
                 .Include(x=>x.Order).AsNoTracking()
                 .ToArrayAsync();
         }
@@ -37,14 +37,19 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return orderItem;
         }
 
-        public async Task<OrderItem> UpdateOrderItemAsync(int id)
+        public async Task<OrderItem> UpdateOrderItemAsync(OrderItem orderItem)
         {
-            var orderItemUpdate = await _context.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
+            var orderItemUpdate = await _context.OrderItems.FirstOrDefaultAsync(x => x.Id == orderItem.Id);
 
             if (orderItemUpdate == null)
             {
-                throw new ArgumentNullException($"There is no OrderItem with this {id}");
+                throw new ArgumentNullException($"There is no OrderItem with this {orderItem.Id}");
             }
+
+            orderItemUpdate.Description = orderItem.Description;
+            orderItemUpdate.Name = orderItem.Name;
+            orderItemUpdate.Order = orderItem.Order;
+            orderItemUpdate.Price = orderItem.Price;
 
             _context.Update(orderItemUpdate);
 
@@ -55,14 +60,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteOrderItemAsync(int id)
         {
-            var orderItemDelete = await _context.OrderItems.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (orderItemDelete == null)
+            _context.OrderItems.Remove(new OrderItem()
             {
-                throw new ArgumentNullException($"There is no OrderItem with this {id}");
-            }
-
-            _context.Remove(orderItemDelete);
+                Id = id
+            });
 
             await _context.SaveChangesAsync();
         }

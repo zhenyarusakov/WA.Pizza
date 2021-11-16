@@ -8,7 +8,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
         Task<Basket> GetBasketAsync(int id);
         Task<Basket[]> GetBasketsAsync();
         Task<Basket> CreateBasketAsync(Basket basket);
-        Task<Basket> UpdateBasketAsync(int id);
+        Task<Basket> UpdateBasketAsync(Basket basket);
         Task DeleteBasketAsync(int id);
     }
 }

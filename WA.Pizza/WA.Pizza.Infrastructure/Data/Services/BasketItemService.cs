@@ -15,17 +15,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public async Task<BasketItem> GetBasketItemAsync(int id)
+        public Task<BasketItem> GetBasketItemAsync(int id)
         {
-            return await _context.BasketItems
+            return _context.BasketItems
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<BasketItem[]> GetBasketItemsAsync()
+        public Task<BasketItem[]> GetBasketItemsAsync()
         {
-            return await _context.BasketItems
-                .ToArrayAsync();
+            return _context.BasketItems.ToArrayAsync();
         }
 
         public async Task<BasketItem> CreateBasketItemAsync(BasketItem basketItem)
@@ -37,14 +36,19 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return basketItem;
         }
 
-        public async Task<BasketItem> UpdateBasketItemAsync(int id)
+        public async Task<BasketItem> UpdateBasketItemAsync(BasketItem basketItem)
         {
-            var basketItemUpdate = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == id);
+            var basketItemUpdate = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == basketItem.Id);
 
             if (basketItemUpdate == null)
             {
-                throw new ArgumentNullException($"There is no BasketItem with this {id}");
+                throw new ArgumentNullException($"There is no BasketItem with this {basketItem.Id}");
             }
+
+            basketItemUpdate.Name = basketItemUpdate.Name;
+            basketItemUpdate.Basket = basketItemUpdate.Basket;
+            basketItemUpdate.Description = basketItemUpdate.Description;
+            basketItemUpdate.Price = basketItemUpdate.Price;
 
             _context.Update(basketItemUpdate);
 
@@ -55,14 +59,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteBasketItemAsync(int id)
         {
-            var basketItemDelete = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (basketItemDelete == null)
+            _context.BasketItems.Remove(new BasketItem()
             {
-                throw new ArgumentNullException($"There is no BasketItem with this {id}");
-            }
-
-            _context.Remove(basketItemDelete);
+                Id = id
+            });
 
             await _context.SaveChangesAsync();
         }

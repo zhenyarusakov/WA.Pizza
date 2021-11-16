@@ -15,16 +15,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public async Task<CatalogBrand> GetCatalogBrandAsync(int id)
+        public Task<CatalogBrand> GetCatalogBrandAsync(int id)
         {
-            return await _context.CatalogBrands
+            return _context.CatalogBrands
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<CatalogBrand[]> GetCatalogBrandsAsync()
+        public Task<CatalogBrand[]> GetCatalogBrandsAsync()
         {
-            return await _context.CatalogBrands
+            return _context.CatalogBrands
                 .Include(x => x.CatalogItems)
                 .ToArrayAsync();
         }
@@ -38,14 +38,18 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return catalogBrand;
         }
 
-        public async Task<CatalogBrand> UpdateCatalogBrandAsync(int id)
+        public async Task<CatalogBrand> UpdateCatalogBrandAsync(CatalogBrand catalogBrand)
         {
-            var catalogBrandUpdate = await _context.CatalogBrands.FirstOrDefaultAsync(x => x.Id == id);
+            var catalogBrandUpdate = await _context.CatalogBrands.FirstOrDefaultAsync(x => x.Id == catalogBrand.Id);
 
             if(catalogBrandUpdate == null)
             {
-                throw new ArgumentNullException($"There is no CatalogBrand with this {id}");
+                throw new ArgumentNullException($"There is no CatalogBrand with this {catalogBrand.Id}");
             }
+
+            catalogBrandUpdate.CatalogItems = catalogBrand.CatalogItems;
+            catalogBrandUpdate.Description = catalogBrand.Description;
+            catalogBrandUpdate.Name = catalogBrand.Name;
 
             _context.Update(catalogBrandUpdate);
 
@@ -56,14 +60,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteCatalogBrandAsync(int id)
         {
-            var catalogBrandDelete = await _context.CatalogBrands.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (catalogBrandDelete == null)
+            _context.CatalogBrands.Remove(new CatalogBrand()
             {
-                throw new ArgumentNullException($"There is no CatalogBrand with this {id}");
-            }
-
-            _context.Remove(catalogBrandDelete);
+                Id = id
+            });
 
             await _context.SaveChangesAsync();
         }

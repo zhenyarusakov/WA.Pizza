@@ -15,9 +15,9 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _repository = repository;
         }
 
-        public async Task<Order> GetOrderAsync(int id)
+        public Task<Order> GetOrderAsync(int id)
         {
-            var order = await _repository.GetById(id);
+            var order = _repository.GetById(id);
 
             if(order == null)
             {
@@ -27,11 +27,9 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return order;
         }
 
-        public async Task<Order[]> GetOrdersAsync()
+        public Task<Order[]> GetOrdersAsync()
         {
-            var orders = await _repository.GetAllAsync().ToArrayAsync();
-
-            return orders;
+            return _repository.GetAllAsync().ToArrayAsync();
         }
 
         public async Task<Order> CreateOrderAsync(Order order)
@@ -42,18 +40,23 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return order;
         }
 
-        public async Task<Order> UpdateOrderAsync(int id)
+        public async Task<Order> UpdateOrderAsync(Order order)
         {
-            var updateOrder = await _repository.GetById(id);
+            var localeOrder = await _repository.GetById(order.Id);
 
-            if (updateOrder == null)
+            if (localeOrder == null)
             {
-                throw new ArgumentNullException($"There is no Order with this {id}");
+                throw new ArgumentNullException($"There is no Order with this {order.Id}");
             }
-            
-            await _repository.UpdateAsync(updateOrder);
 
-            return updateOrder;
+            localeOrder.Name = order.Name;
+            localeOrder.OrderItems = order.OrderItems;
+            localeOrder.Status = order.Status;
+            localeOrder.User = order.User;
+
+            await _repository.UpdateAsync(localeOrder);
+
+            return localeOrder;
         }
 
         public async Task DeleteOrderAsync(int id)

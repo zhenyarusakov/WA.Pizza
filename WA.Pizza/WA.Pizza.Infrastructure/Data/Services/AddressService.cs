@@ -15,16 +15,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public async Task<Address> GetAddressAsync(int id)
+        public Task<Address> GetAddressAsync(int id)
         {
-            return await _context.Addresses
+            return _context.Addresses
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Address[]> GetAddressesAsync()
+        public Task<Address[]> GetAddressesAsync()
         {
-            return await _context.Addresses
+            return _context.Addresses
                 .Include(x=>x.User)
                 .ToArrayAsync();
         }
@@ -38,14 +38,23 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return address;
         }
 
-        public async Task<Address> UpdateAddressAsync(int id)
+        public async Task<Address> UpdateAddressAsync(Address address)
         {
-            var addressUpdate = await _context.Addresses.FirstOrDefaultAsync(x => x.Id == id);
+            var addressUpdate = await _context.Addresses.FirstOrDefaultAsync(x => x.Id == address.Id);
 
             if (addressUpdate == null)
             {
-                throw new ArgumentNullException($"There is no Address with this {id}");
+                throw new ArgumentNullException($"There is no Address with this {address.Id}");
             }
+
+            addressUpdate.User = address.User;
+            addressUpdate.City = address.City;
+            addressUpdate.Country = address.Country;
+            addressUpdate.Street = address.Street;
+            addressUpdate.Entrance = address.Entrance;
+            addressUpdate.House = address.House;
+            addressUpdate.ApartmentNumber = address.ApartmentNumber;
+            addressUpdate.isPrimary = address.isPrimary;
 
             _context.Update(addressUpdate);
 
@@ -56,14 +65,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteAddressAsync(int id)
         {
-            var addressDelete = await _context.Addresses.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (addressDelete == null)
+            _context.Addresses.Remove(new Address()
             {
-                throw new ArgumentNullException($"There is no Address with this {id}");
-            }
-
-            _context.Remove(addressDelete);
+                Id = id
+            });
 
             await _context.SaveChangesAsync();
         }

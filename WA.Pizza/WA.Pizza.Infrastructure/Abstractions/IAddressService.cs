@@ -8,7 +8,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
         Task<Address> GetAddressAsync(int id);
         Task<Address[]> GetAddressesAsync();
         Task<Address> CreateAddressAsync(Address address);
-        Task<Address> UpdateAddressAsync(int id);
+        Task<Address> UpdateAddressAsync(Address address);
         Task DeleteAddressAsync(int id);
     }
 }

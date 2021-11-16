@@ -15,16 +15,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
         
-        public async Task<User> GetUserAsync(int id)
+        public Task<User> GetUserAsync(int id)
         {
-            return await _context.Users
+            return _context.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<User[]> GetUsersAsync()
+        public Task<User[]> GetUsersAsync()
         {
-            return await _context.Users
+            return _context.Users
                 .Include(x=>x.Addresses)
                 .Include(x=>x.Orders)
                 .ToArrayAsync();
@@ -39,13 +39,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return user;
         }
 
-        public async Task<User> UpdateUserAsync(int id)
+        public async Task<User> UpdateUserAsync(User user)
         {
-            var userUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var userUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
 
             if (userUpdate == null)
             {
-                throw new ArgumentNullException($"There is no User with this {id}");
+                throw new ArgumentNullException($"There is no User with this {user.Id}");
             }
 
             _context.Update(userUpdate);
@@ -57,14 +57,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteUserAsync(int id)
         {
-            var usersDelete = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (usersDelete == null)
+            _context.Users.Remove(new User()
             {
-                throw new ArgumentNullException($"There is no User with this {id}");
-            }
-
-            _context.Remove(usersDelete);
+                Id = id
+            });
             
             await _context.SaveChangesAsync();
         }

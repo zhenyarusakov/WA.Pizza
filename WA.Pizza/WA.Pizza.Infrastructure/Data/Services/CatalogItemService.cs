@@ -15,16 +15,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public async Task<CatalogItem> GetCatalogItemAsync(int id)
+        public Task<CatalogItem> GetCatalogItemAsync(int id)
         {
-            return await _context.CatalogItems
+            return _context.CatalogItems
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<CatalogItem[]> GetCatalogItemsAsync()
+        public Task<CatalogItem[]> GetCatalogItemsAsync()
         {
-            return await _context.CatalogItems
+            return _context.CatalogItems
                 .Include(x => x.CatalogBrand)
                 .Include(x => x.CatalogType)
                 .ToArrayAsync();
@@ -39,14 +39,20 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return catalogItem;
         }
 
-        public async Task<CatalogItem> UpdateCatalogItemAsync(int id)
+        public async Task<CatalogItem> UpdateCatalogItemAsync(CatalogItem catalogItem)
         {
-            var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == id);
+            var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
 
             if (catalogItemUpdate == null)
             {
-                throw new ArgumentNullException($"There is no CatalogItem with this {id}");
+                throw new ArgumentNullException($"There is no CatalogItem with this {catalogItem.Id}");
             }
+
+            catalogItemUpdate.CatalogBrand = catalogItem.CatalogBrand;
+            catalogItemUpdate.CatalogType = catalogItem.CatalogType;
+            catalogItemUpdate.Description = catalogItem.Description;
+            catalogItemUpdate.Name = catalogItem.Name;
+            catalogItemUpdate.Price = catalogItem.Price;
 
             _context.Update(catalogItemUpdate);
 
@@ -57,14 +63,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteCatalogItemAsync(int id)
         {
-            var catalogItemDelete = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (catalogItemDelete == null)
+            _context.CatalogItems.Remove(new CatalogItem()
             {
-                throw new ArgumentNullException($"There is no CatalogItem with this {id}");
-            }
-
-            _context.Remove(catalogItemDelete);
+                Id = id
+            });
 
             await _context.SaveChangesAsync();
         }

@@ -38,14 +38,17 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return basket;
         }
 
-        public async Task<Basket> UpdateBasketAsync(int id)
+        public async Task<Basket> UpdateBasketAsync(Basket basket)
         {
-            var basketUpdate = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == id);
+            var basketUpdate = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == basket.Id);
 
             if (basketUpdate == null)
             {
-                throw new ArgumentNullException($"There is no Basket with this {id}");
+                throw new ArgumentNullException($"There is no Basket with this {basket.Id}");
             }
+
+            basketUpdate.BasketItems = basket.BasketItems;
+            basketUpdate.User = basket.User;
 
             _context.Update(basketUpdate);
 
@@ -56,14 +59,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteBasketAsync(int id)
         {
-            var basketDelete = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (basketDelete == null)
+            _context.BasketItems.Remove(new BasketItem()
             {
-                throw new ArgumentNullException($"There is no Basket with this {id}");
-            }
-
-            _context.Remove(basketDelete);
+                Id = id
+            });
 
             await _context.SaveChangesAsync();
         }
