@@ -4,9 +4,9 @@ using WA.Pizza.Core.Entities.CatalogDomain;
 
 namespace WA.Pizza.Infrastructure.Data.EFConfigurations
 {
-    public class CatalogItemConfiguration : IEntityTypeConfiguration<Catalog>
+    public class CatalogItemConfiguration : IEntityTypeConfiguration<CatalogItem>
     {
-        public void Configure(EntityTypeBuilder<Catalog> builder)
+        public void Configure(EntityTypeBuilder<CatalogItem> builder)
         {
             builder
                 .Property(x => x.Name)

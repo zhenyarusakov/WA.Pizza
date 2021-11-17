@@ -4,6 +4,6 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.OrderStatus;
 
 namespace WA.Pizza.Infrastructure.DTO.OrderDTO.Order
 {
-    public record OrderForModifyDto(int Id, string Name, int UserId, OrderStatusDto StatusDto,
+    public record CreateOrUpdateOrderRequest(int Id, string Name, int UserId, OrderStatusDto StatusDto,
         ICollection<OrderItemDto> OrderItems);
 }

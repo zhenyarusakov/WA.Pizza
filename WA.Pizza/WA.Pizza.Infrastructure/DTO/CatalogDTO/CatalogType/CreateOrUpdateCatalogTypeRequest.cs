@@ -1,6 +1,6 @@
 ﻿namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogType
 {
-    public enum CatalogTypeForModifyDto
+    public enum CreateOrUpdateCatalogTypeRequest
     {
         Pizza,
         Snacks,

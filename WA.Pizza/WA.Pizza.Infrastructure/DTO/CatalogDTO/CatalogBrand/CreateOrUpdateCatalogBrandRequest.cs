@@ -3,10 +3,10 @@ using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand
 {
-    public class CatalogBrandForModifyDto
+    public class CreateOrUpdateCatalogBrandRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<CatalogDto> Catalogs { get; set; }
+        public ICollection<CatalogItemDto> Catalogs { get; set; }
     }
 }

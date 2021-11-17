@@ -1,6 +1,6 @@
 ﻿namespace WA.Pizza.Infrastructure.DTO.OrderDTO.OrderStatus
 {
-    public enum OrderStatusForModifyDto
+    public enum CreateOrUpdateOrderStatusRequest
     {
         InProcessing,
         Preparing,

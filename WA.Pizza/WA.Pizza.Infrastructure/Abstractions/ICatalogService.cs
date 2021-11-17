@@ -5,7 +5,11 @@ namespace WA.Pizza.Infrastructure.Abstractions
 {
     public interface ICatalogService
     {
-        Task<CatalogDto> GetCatalogAsync(int id);
-        Task<CatalogDto[]> GetCatalogsAsync();
+        Task<CatalogItemDto> GetCatalogAsync(int id);
+        Task<CatalogItemDto[]> GetCatalogsAsync();
+        Task<CatalogItemDto> CreateCatalogItemAsync(CreateOrUpdateCatalogRequest catalogRequest);
+        Task<CatalogItemDto> UpdateCatalogItemAsync(CreateOrUpdateCatalogRequest catalogRequest);
+        Task DeleteCatalogItemAsync(int id);
     }
 }
+

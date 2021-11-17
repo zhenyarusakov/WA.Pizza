@@ -1,10 +1,10 @@
 ﻿namespace WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem
 {
-    public class BasketItemForModifyDto
+    public class CreateOrUpdateBasketItemRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public int Count { get; set; }
+        public int Quantity { get; set; }
     }
 }

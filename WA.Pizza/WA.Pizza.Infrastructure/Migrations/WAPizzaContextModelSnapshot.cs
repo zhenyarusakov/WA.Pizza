@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WA.Pizza.Infrastructure.Data;
 
@@ -11,10 +10,9 @@ using WA.Pizza.Infrastructure.Data;
 namespace WA.Pizza.Infrastructure.Migrations
 {
     [DbContext(typeof(WAPizzaContext))]
-    [Migration("20211117122443_AddConfiguration")]
-    partial class AddConfiguration
+    partial class WAPizzaContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,9 +50,6 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -68,6 +63,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(20,8)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BasketId");
@@ -75,7 +73,30 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.ToTable("BasketItems");
                 });
 
-            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.Catalog", b =>
+            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.CatalogBrand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CatalogBrands");
+                });
+
+            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.CatalogItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,30 +127,7 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     b.HasIndex("CatalogBrandId");
 
-                    b.ToTable("Catalogs");
-                });
-
-            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.CatalogBrand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CatalogBrands");
+                    b.ToTable("CatalogItems");
                 });
 
             modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.Address", b =>
@@ -282,7 +280,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Navigation("Basket");
                 });
 
-            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.Catalog", b =>
+            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.CatalogItem", b =>
                 {
                     b.HasOne("WA.Pizza.Core.Entities.CatalogDomain.CatalogBrand", "CatalogBrand")
                         .WithMany("CatalogItems")

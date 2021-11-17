@@ -17,11 +17,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public Task<CatalogDto> GetCatalogAsync(int id)
+        public Task<CatalogItemDto> GetCatalogAsync(int id)
         {
-            var catalog = _context.Catalogs
+            var catalog = _context.CatalogItems
                 .AsNoTracking()
-                .ProjectToType<CatalogDto>()
+                .ProjectToType<CatalogItemDto>()
                 .SingleOrDefaultAsync(x => x.Id == id);
 
             if (catalog == null)
@@ -32,14 +32,52 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return catalog;
         }
 
-        public Task<CatalogDto[]> GetCatalogsAsync()
+        public Task<CatalogItemDto[]> GetCatalogsAsync()
         {
-            return _context.Catalogs
+            return _context.CatalogItems
                 .Include(x => x.CatalogBrand)
-                .Include(x => x.CatalogType)
-                .ProjectToType<CatalogDto>()
+                .ProjectToType<CatalogItemDto>()
                 .ToArrayAsync();
         }
-        
+
+        public async Task<CatalogItemDto> CreateCatalogItemAsync(CreateOrUpdateCatalogRequest catalogRequest)
+        {
+            var catalogItemDto = TypeAdapter.Adapt<CatalogItem>(catalogRequest);
+
+            _context.CatalogItems.Add(catalogItemDto);
+
+            await _context.SaveChangesAsync();
+
+            return TypeAdapter.Adapt<CatalogItemDto>(catalogItemDto);
+        }
+
+        public async Task<CatalogItemDto> UpdateCatalogItemAsync(CreateOrUpdateCatalogRequest catalogRequest)
+        {
+            var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
+
+            if (catalogItemUpdate == null)
+            {
+                throw new ArgumentNullException($"There is no CatalogItem with this {catalogRequest.Id}");
+            }
+
+            TypeAdapter.Adapt(catalogRequest, catalogItemUpdate);
+
+            _context.Update(catalogItemUpdate);
+
+            await _context.SaveChangesAsync();
+
+            return TypeAdapter.Adapt<CatalogItemDto>(catalogItemUpdate);
+        }
+
+        public async Task DeleteCatalogItemAsync(int id)
+        {
+            _context.CatalogItems.Remove(new CatalogItem()
+            {
+                Id = id
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

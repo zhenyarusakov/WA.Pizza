@@ -3,6 +3,6 @@ using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogType;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
 {
-    public record CatalogDto(int Id,string Name, string Description, decimal Price, int CatalogBrandId,
+    public record CatalogItemDto(int Id,string Name, string Description, decimal Price, int CatalogBrandId,
         CatalogBrandDto CatalogBrand, CatalogTypeDto CatalogType);
 }

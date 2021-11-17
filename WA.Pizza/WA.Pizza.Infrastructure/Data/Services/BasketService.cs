@@ -39,9 +39,9 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .ToArrayAsync();
         }
 
-        public async Task<BasketDto> CreateBasketAsync(BasketForModifyDto basketModify)
+        public async Task<BasketDto> CreateBasketAsync(CreateOrUpdateBasketRequest basketRequest)
         {
-            var basketAdd = basketModify.Adapt<Basket>();
+            var basketAdd = basketRequest.Adapt<Basket>();
 
             _context.Baskets.Add(basketAdd);
 
@@ -50,22 +50,22 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return basketAdd.Adapt<BasketDto>();
         }
 
-        public async Task<BasketDto> UpdateBasketAsync(BasketForModifyDto basketModify)
+        public async Task<BasketDto> UpdateBasketAsync(CreateOrUpdateBasketRequest basketRequest)
         {
-            var basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketModify.Id);
+            var basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketRequest.Id);
 
             if (basket == null)
             {
-                throw new ArgumentNullException($"There is no Basket with this {basketModify.Id}");
+                throw new ArgumentNullException($"There is no Basket with this {basketRequest.Id}");
             }
 
-            basketModify.Adapt(basket);
+            basketRequest.Adapt(basket);
 
             _context.Update(basket);
 
             await _context.SaveChangesAsync();
             
-            return basketModify.Adapt<BasketDto>();
+            return basketRequest.Adapt<BasketDto>();
         }
 
         public async Task DeleteBasketAsync(int id)

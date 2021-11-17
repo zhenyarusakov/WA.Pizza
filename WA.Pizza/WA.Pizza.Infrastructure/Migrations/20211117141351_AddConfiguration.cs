@@ -38,7 +38,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Catalogs",
+                name: "CatalogItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -51,9 +51,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Catalogs", x => x.Id);
+                    table.PrimaryKey("PK_CatalogItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Catalogs_CatalogBrands_CatalogBrandId",
+                        name: "FK_CatalogItems_CatalogBrands_CatalogBrandId",
                         column: x => x.CatalogBrandId,
                         principalTable: "CatalogBrands",
                         principalColumn: "Id",
@@ -135,7 +135,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(20,8)", nullable: false),
-                    Count = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     BasketId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -187,8 +187,8 @@ namespace WA.Pizza.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Catalogs_CatalogBrandId",
-                table: "Catalogs",
+                name: "IX_CatalogItems_CatalogBrandId",
+                table: "CatalogItems",
                 column: "CatalogBrandId");
 
             migrationBuilder.CreateIndex(
@@ -211,7 +211,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
-                name: "Catalogs");
+                name: "CatalogItems");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
