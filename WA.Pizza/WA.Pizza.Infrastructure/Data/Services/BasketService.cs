@@ -18,10 +18,17 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<BasketDto> GetBasketAsync(int id)
         {
-            return await _context.Baskets
+            var basket = await _context.Baskets
                 .AsNoTracking()
                 .ProjectToType<BasketDto>()
                 .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (basket == null)
+            {
+                throw new ArgumentNullException($"There is no Basket with this {id}");
+            }
+
+            return basket;
         }
 
         public async Task<BasketDto[]> GetBasketsAsync()
@@ -32,33 +39,33 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .ToArrayAsync();
         }
 
-        public async Task<BasketDto> CreateBasketAsync(BasketForModifyDto modifyDto)
+        public async Task<BasketDto> CreateBasketAsync(BasketForModifyDto basketModify)
         {
-            var basketDto = modifyDto.Adapt<Basket>();
+            var basketAdd = basketModify.Adapt<Basket>();
 
-            _context.Baskets.Add(basketDto);
+            _context.Baskets.Add(basketAdd);
 
             await _context.SaveChangesAsync();
 
-            return basketDto.Adapt<BasketDto>();
+            return basketAdd.Adapt<BasketDto>();
         }
 
-        public async Task<BasketDto> UpdateBasketAsync(BasketForModifyDto modifyDto)
+        public async Task<BasketDto> UpdateBasketAsync(BasketForModifyDto basketModify)
         {
-            var basketUpdate = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == modifyDto.Id);
+            var basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketModify.Id);
 
-            if (basketUpdate == null)
+            if (basket == null)
             {
-                throw new ArgumentNullException($"There is no Basket with this {modifyDto.Id}");
+                throw new ArgumentNullException($"There is no Basket with this {basketModify.Id}");
             }
-            
-            TypeAdapter.Adapt(modifyDto, basketUpdate);
 
-            _context.Update(basketUpdate);
+            basketModify.Adapt(basket);
+
+            _context.Update(basket);
 
             await _context.SaveChangesAsync();
             
-            return TypeAdapter.Adapt<BasketDto>(modifyDto);
+            return basketModify.Adapt<BasketDto>();
         }
 
         public async Task DeleteBasketAsync(int id)

@@ -1,6 +1,6 @@
 ﻿namespace WA.Pizza.Core.Entities.CatalogDomain
 {
-    public class CatalogItem : BaseEntity
+    public class Catalog : BaseEntity
     {
         public string Name { get; set; }
         public string Description { get; set; }

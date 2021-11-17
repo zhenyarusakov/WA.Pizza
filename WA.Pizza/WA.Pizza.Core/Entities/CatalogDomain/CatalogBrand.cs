@@ -6,6 +6,6 @@ namespace WA.Pizza.Core.Entities.CatalogDomain
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<CatalogItem> CatalogItems { get; set; }
+        public ICollection<Catalog> CatalogItems { get; set; }
     }
 }

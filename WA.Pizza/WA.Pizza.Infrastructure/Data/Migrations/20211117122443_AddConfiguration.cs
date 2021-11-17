@@ -4,7 +4,7 @@
 
 namespace WA.Pizza.Infrastructure.Migrations
 {
-    public partial class AddConfigurationEF : Migration
+    public partial class AddConfiguration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,7 +23,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,11 +34,11 @@ namespace WA.Pizza.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CatalogItems",
+                name: "Catalogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -51,9 +51,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CatalogItems", x => x.Id);
+                    table.PrimaryKey("PK_Catalogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CatalogItems_CatalogBrands_CatalogBrandId",
+                        name: "FK_Catalogs_CatalogBrands_CatalogBrandId",
                         column: x => x.CatalogBrandId,
                         principalTable: "CatalogBrands",
                         principalColumn: "Id",
@@ -79,9 +79,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_User_UserId",
+                        name: "FK_Addresses_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -98,9 +98,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Baskets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Baskets_User_UserId",
+                        name: "FK_Baskets_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -119,9 +119,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_User_UserId",
+                        name: "FK_Orders_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -135,6 +135,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(20,8)", nullable: false),
+                    Count = table.Column<int>(type: "int", nullable: false),
                     BasketId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -186,8 +187,8 @@ namespace WA.Pizza.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CatalogItems_CatalogBrandId",
-                table: "CatalogItems",
+                name: "IX_Catalogs_CatalogBrandId",
+                table: "Catalogs",
                 column: "CatalogBrandId");
 
             migrationBuilder.CreateIndex(
@@ -210,7 +211,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
-                name: "CatalogItems");
+                name: "Catalogs");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
@@ -225,7 +226,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }

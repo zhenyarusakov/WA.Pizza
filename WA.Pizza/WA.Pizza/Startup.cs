@@ -30,7 +30,7 @@ namespace WA.Pizza.Api
             services.AddScoped<IRepository<Order>, RepositoryBase<Order>>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IBasketService, BasketService>();
-            services.AddScoped<ICatalogItemService, CatalogItemService>();
+            services.AddScoped<ICatalogService, CatalogService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

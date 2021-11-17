@@ -7,8 +7,6 @@ namespace WA.Pizza.Infrastructure.Abstractions
     {
         Task<OrderDto> GetOrderAsync(int id);
         Task<OrderDto[]> GetOrdersAsync();
-        Task<OrderDto> CreateOrderAsync(OrderForModifyDto modifyDto);
-        Task<OrderDto> UpdateOrderAsync(OrderForModifyDto modifyDto);
-        Task DeleteOrderAsync(int id);
+        Task<OrderDto> CreateOrderAsync(OrderForModifyDto orderModify);
     }
 }

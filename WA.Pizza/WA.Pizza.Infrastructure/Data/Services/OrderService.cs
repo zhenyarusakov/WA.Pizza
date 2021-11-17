@@ -19,14 +19,14 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<OrderDto> GetOrderAsync(int id)
         {
-            var orderDto = await _repository.GetById(id);
+            var getOrder = await _repository.GetById(id);
 
-            if (orderDto == null)
+            if (getOrder == null)
             {
-                throw new ArgumentNullException($"There is no order with this {id}");
+                throw new ArgumentNullException($"There is no Order with this {id}");
             }
             
-            return TypeAdapter.Adapt<OrderDto>(orderDto);
+            return getOrder.Adapt<OrderDto>();
         }
 
         public Task<OrderDto[]> GetOrdersAsync()
@@ -34,41 +34,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return _repository.GetAllAsync().ProjectToType<OrderDto>().ToArrayAsync();
         }
 
-        public async Task<OrderDto> CreateOrderAsync(OrderForModifyDto modifyDto)
+        public async Task<OrderDto> CreateOrderAsync(OrderForModifyDto orderModify)
         {
-            var orderDto = TypeAdapter.Adapt<Order>(modifyDto);
+            var createOrder = orderModify.Adapt<Order>();
 
-            await _repository.CreateAsync(orderDto);
+            await _repository.CreateAsync(createOrder);
 
-            return TypeAdapter.Adapt<OrderDto>(orderDto);
-        }
-
-        public async Task<OrderDto> UpdateOrderAsync(OrderForModifyDto modifyDto)
-        {
-            var updateeOrderDto = await _repository.GetById(modifyDto.Id);
-
-            if (updateeOrderDto == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {modifyDto.Id}");
-            }
-
-            TypeAdapter.Adapt(modifyDto, updateeOrderDto);
-
-            await _repository.UpdateAsync(updateeOrderDto);
-
-            return TypeAdapter.Adapt<OrderDto>(updateeOrderDto);
-        }
-
-        public async Task DeleteOrderAsync(int id)
-        {
-            var deleteOrder = await _repository.GetById(id);
-
-            if (deleteOrder == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {id}");
-            }
-
-            await _repository.DeleteAsync(deleteOrder);
+            return createOrder.Adapt<OrderDto>();
         }
 
     }
