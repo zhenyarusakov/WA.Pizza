@@ -50,7 +50,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             return catalogItemDto.Adapt<CatalogItemDto>();
         }
-
+        
         public async Task<CatalogItemDto> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest)
         {
             var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
