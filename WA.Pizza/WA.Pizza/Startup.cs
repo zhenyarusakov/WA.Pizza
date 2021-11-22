@@ -4,9 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WA.Pizza.Api.Extensions;
-using WA.Pizza.Core.Entities.OrderDomain;
-using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.Abstractions;
+using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Data.Services;
 
 namespace WA.Pizza.Api
@@ -27,7 +26,8 @@ namespace WA.Pizza.Api
             services.AddDbContextExtensions(Configuration);
             services.AddControllersWithViewsExtensions();
 
-            services.AddScoped<IRepository<Order>, RepositoryBase<Order>>();
+            MapperGlobal.Configure();
+
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICatalogService, CatalogService>();

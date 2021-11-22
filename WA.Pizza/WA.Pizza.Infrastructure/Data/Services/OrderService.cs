@@ -1,90 +1,56 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.OrderDomain;
-using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.Abstractions;
-using WA.Pizza.Infrastructure.DTO;
 using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository<Order> _repository;
-        public OrderService(IRepository<Order> repository)
+        private readonly WAPizzaContext _context;
+        public OrderService(WAPizzaContext context)
         {
-            _repository = repository;
+            _context = context;
         }
-
-        public async Task<OrderDto> GetOrderAsync(int id)
-        {
-            var getOrder = await _repository.GetById(id);
-
-            if (getOrder == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {id}");
-            }
-            
-            return getOrder.Adapt<OrderDto>();
-        }
-
+        
         public Task<OrderDto[]> GetOrdersAsync()
         {
-            return _repository.GetAllAsync().ProjectToType<OrderDto>().ToArrayAsync();
+            return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
 
-        public async Task<OrderDto> CreateOrderAsync(CreateOrUpdateOrderRequest orderRequest)
+        public async Task<OrderDto> CreateOrderAsync(int basketId, int userId)
         {
-            var createOrder = orderRequest.Adapt<Order>();
+            var basket = await _context.Baskets
+                .Include(x => x.BasketItems)
+                .SingleOrDefaultAsync(x => x.Id == basketId);
+            
 
-            await _repository.CreateAsync(createOrder);
-
-            return createOrder.Adapt<OrderDto>();
-        }
-
-        public async Task<OrderDto> UpdateOrderAsync(CreateOrUpdateOrderRequest orderRequest)
-        {
-            var updateOrderDto = await _repository.GetById(orderRequest.Id);
-
-            if (updateOrderDto == null)
+            if (basket == null)
             {
-                throw new ArgumentNullException($"There is no Order with this {orderRequest.Id}");
+                throw new ArgumentNullException($"There is no Basket with this {basketId}");
             }
 
-            TypeAdapter.Adapt(orderRequest, updateOrderDto);
+            var order = basket.Adapt<Order>();
 
-            await _repository.UpdateAsync(updateOrderDto);
+            _context.Add(order);
 
-            return TypeAdapter.Adapt<OrderDto>(updateOrderDto);
+            await _context.SaveChangesAsync();
+
+            return order.Adapt<OrderDto>();
         }
 
-        public async Task UpdateOrderStatus(UpdateOrderStatusDto orderRequest)
+        public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
         {
-            var order = await _repository.GetById(orderRequest.OrderId);
+            var order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
 
-            if (order == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {orderRequest.OrderId}");
-            }
+            order.Status = status;
 
-            order.Status = orderRequest.OrderStatus;
+            await _context.SaveChangesAsync();
 
-            await _repository.UpdateAsync(order);
-        }
-
-        public async Task DeleteOrderAsync(int id)
-        {
-            var deleteOrder = await _repository.GetById(id);
-
-            if (deleteOrder == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {id}");
-            }
-
-            await _repository.DeleteAsync(deleteOrder);
+            return order;
         }
     }
 }

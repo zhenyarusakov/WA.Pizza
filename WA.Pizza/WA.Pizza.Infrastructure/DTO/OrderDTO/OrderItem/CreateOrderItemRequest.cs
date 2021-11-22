@@ -2,7 +2,7 @@
 
 namespace WA.Pizza.Infrastructure.DTO.OrderDTO.OrderItem
 {
-    public class CreateOrUpdateOrderItemRequest
+    public class CreateOrderItemRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }

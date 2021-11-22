@@ -3,7 +3,7 @@ using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand
 {
-    public class CreateOrUpdateCatalogBrandRequest
+    public class CreateCatalogBrandRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }

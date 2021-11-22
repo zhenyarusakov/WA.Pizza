@@ -17,8 +17,4 @@
     <ProjectReference Include="..\WA.Pizza.Core\WA.Pizza.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MapsterMapping\" />
-  </ItemGroup>
-
 </Project>

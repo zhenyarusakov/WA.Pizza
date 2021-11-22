@@ -92,6 +92,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -136,6 +137,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(20,8)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    CatalogItemId = table.Column<int>(type: "int", nullable: false),
                     BasketId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -145,6 +147,12 @@ namespace WA.Pizza.Infrastructure.Migrations
                         name: "FK_BasketItems_Baskets_BasketId",
                         column: x => x.BasketId,
                         principalTable: "Baskets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BasketItems_CatalogItems_CatalogItemId",
+                        column: x => x.CatalogItemId,
+                        principalTable: "CatalogItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -182,6 +190,11 @@ namespace WA.Pizza.Infrastructure.Migrations
                 column: "BasketId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BasketItems_CatalogItemId",
+                table: "BasketItems",
+                column: "CatalogItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Baskets_UserId",
                 table: "Baskets",
                 column: "UserId");
@@ -211,19 +224,19 @@ namespace WA.Pizza.Infrastructure.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
-                name: "CatalogItems");
-
-            migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
                 name: "Baskets");
 
             migrationBuilder.DropTable(
-                name: "CatalogBrands");
+                name: "CatalogItems");
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "CatalogBrands");
 
             migrationBuilder.DropTable(
                 name: "Users");
