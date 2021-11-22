@@ -131,6 +131,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(20,8)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CatalogBrandId");
@@ -232,6 +235,9 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(20,8)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

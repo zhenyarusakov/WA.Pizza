@@ -27,12 +27,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .Include(x => x.BasketItems)
                 .SingleOrDefaultAsync(x => x.Id == basketId);
             
-
             if (basket == null)
             {
                 throw new ArgumentNullException($"There is no Basket with this {basketId}");
             }
-
+            
             var order = basket.Adapt<Order>();
 
             _context.Add(order);

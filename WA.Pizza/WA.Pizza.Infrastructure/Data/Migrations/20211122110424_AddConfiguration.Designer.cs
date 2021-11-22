@@ -11,7 +11,7 @@ using WA.Pizza.Infrastructure.Data;
 namespace WA.Pizza.Infrastructure.Migrations
 {
     [DbContext(typeof(WAPizzaContext))]
-    [Migration("20211119150725_AddConfiguration")]
+    [Migration("20211122110424_AddConfiguration")]
     partial class AddConfiguration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -133,6 +133,9 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(20,8)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CatalogBrandId");
@@ -234,6 +237,9 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(20,8)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

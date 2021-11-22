@@ -4,6 +4,6 @@ using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
 {
-    public record CreateCatalogRequest(string Name, string Description, decimal Price,
+    public record CreateCatalogRequest(string Name, int Quantity, string Description, decimal Price,
         int CatalogBrandId, CatalogBrandDto CatalogBrand, ICollection<BasketItem> BasketItems);
 }

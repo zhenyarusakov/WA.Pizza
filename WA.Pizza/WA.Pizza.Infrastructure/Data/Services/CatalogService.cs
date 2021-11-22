@@ -59,7 +59,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             {
                 throw new ArgumentNullException($"There is no CatalogItem with this {catalogRequest.Id}");
             }
-
+            
             catalogRequest.Adapt(catalogItemUpdate);
 
             _context.Update(catalogItemUpdate);
