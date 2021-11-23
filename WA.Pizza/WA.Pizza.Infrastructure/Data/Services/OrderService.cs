@@ -1,75 +1,82 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
-using WA.Pizza.Core.Interfaces;
 using WA.Pizza.Infrastructure.Abstractions;
+using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class OrderService: IOrderService
+    public class OrderService : IOrderService
     {
-        private readonly IRepository<Order> _repository;
-        public OrderService(IRepository<Order> repository)
+        private readonly WAPizzaContext _context;
+        public OrderService(WAPizzaContext context)
         {
-            _repository = repository;
-        }
-
-        public Task<Order> GetOrderAsync(int id)
-        {
-            var order = _repository.GetById(id);
-
-            if(order == null)
-            {
-                throw new ArgumentNullException($"There is no order with this {id}") ;
-            }
-
-            return order;
-        }
-
-        public Task<Order[]> GetOrdersAsync()
-        {
-            return _repository.GetAllAsync().ToArrayAsync();
-        }
-
-        public async Task<Order> CreateOrderAsync(Order order)
-        {
-
-            await _repository.CreateAsync(order);
-
-            return order;
-        }
-
-        public async Task<Order> UpdateOrderAsync(Order order)
-        {
-            var localeOrder = await _repository.GetById(order.Id);
-
-            if (localeOrder == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {order.Id}");
-            }
-
-            localeOrder.Name = order.Name;
-            localeOrder.OrderItems = order.OrderItems;
-            localeOrder.Status = order.Status;
-            localeOrder.User = order.User;
-
-            await _repository.UpdateAsync(localeOrder);
-
-            return localeOrder;
-        }
-
-        public async Task DeleteOrderAsync(int id)
-        {
-            var deleteOrder = await _repository.GetById(id);
-
-            if (deleteOrder == null)
-            {
-                throw new ArgumentNullException($"There is no Order with this {id}");
-            }
-
-            await _repository.DeleteAsync(deleteOrder);
+            _context = context;
         }
         
+        public Task<OrderDto[]> GetOrdersAsync()
+        {
+            return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
+        }
+
+        public async Task<OrderDto> CreateOrderAsync(int basketId, int userId)
+        {
+            var basket = await _context.Baskets
+                .Include(x => x.BasketItems)
+                .SingleOrDefaultAsync(x => x.Id == basketId);
+            
+            if (basket == null)
+            {
+                throw new ArgumentNullException($"There is no Basket with this {basketId}");
+            }
+            
+
+            IEnumerable<int> catalogItemIds = basket.BasketItems.Select(x => x.CatalogItemId);
+            
+            Dictionary<int, CatalogItem> catalogItemsCountById = await _context.CatalogItems
+                .Where(x => catalogItemIds.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id);
+
+            foreach (var basketItem in basket.BasketItems)
+            {
+                var isInStock = catalogItemsCountById.TryGetValue(basketItem.Id, out CatalogItem catalogItem);
+
+                if (!isInStock)
+                {
+                    throw new InvalidOperationException($"An catalog item with id {basketItem.CatalogItemId} is missing.");
+                }
+
+                catalogItem.Quantity -= basketItem.Quantity;
+
+                if (basketItem.Quantity > catalogItem.Quantity)
+                {
+                    throw new InvalidOperationException("The number of selected items is greater than the allowed value");
+                }
+            }
+
+            var order = basket.Adapt<Order>();
+
+            _context.Add(order);
+
+            await _context.SaveChangesAsync();
+
+            return order.Adapt<OrderDto>();
+        }
+
+        public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
+        {
+            var order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
+
+            order.Status = status;
+
+            await _context.SaveChangesAsync();
+
+            return order;
+        }
     }
 }

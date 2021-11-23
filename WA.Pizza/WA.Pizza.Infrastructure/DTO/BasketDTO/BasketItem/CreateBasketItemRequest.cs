@@ -1,6 +1,6 @@
 ﻿namespace WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem
 {
-    public class BasketItemDto
+    public class CreateBasketItemRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }

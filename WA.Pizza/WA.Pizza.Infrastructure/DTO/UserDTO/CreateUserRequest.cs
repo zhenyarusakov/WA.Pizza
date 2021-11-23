@@ -3,7 +3,7 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.Address;
 
 namespace WA.Pizza.Infrastructure.DTO.UserDTO
 {
-    public class UserForModifyDto
+    public class CreateUserRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

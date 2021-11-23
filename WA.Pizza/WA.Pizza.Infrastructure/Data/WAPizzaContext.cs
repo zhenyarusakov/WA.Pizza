@@ -24,7 +24,7 @@ namespace WA.Pizza.Infrastructure.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public  DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
     }
 }

@@ -1,70 +1,50 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
-using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
+using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class BasketService: IBasketService
     {
         private readonly WAPizzaContext _context;
-
         public BasketService(WAPizzaContext context)
         {
             _context = context;
         }
 
-        public async Task<Basket> GetBasketAsync(int id)
+        public Task<BasketDto[]> GetBasketsAsync()
         {
-            return await _context.Baskets
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task<Basket[]> GetBasketsAsync()
-        {
-            return await _context.Baskets
+            return _context.Baskets
                 .Include(x => x.BasketItems)
+                .ProjectToType<BasketDto>()
                 .ToArrayAsync();
         }
 
-        public async Task<Basket> CreateBasketAsync(Basket basket)
+        public async Task<BasketDto> UpdateBasketAsync(UpdateBasketRequest basketRequest)
         {
-            _context.Baskets.Add(basket);
+            var basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketRequest.Id);
 
-            await _context.SaveChangesAsync();
-
-            return basket;
-        }
-
-        public async Task<Basket> UpdateBasketAsync(Basket basket)
-        {
-            var basketUpdate = await _context.Baskets.FirstOrDefaultAsync(x => x.Id == basket.Id);
-
-            if (basketUpdate == null)
+            if (basket == null)
             {
-                throw new ArgumentNullException($"There is no Basket with this {basket.Id}");
+                throw new ArgumentNullException($"There is no Basket with this {basketRequest.Id}");
             }
 
-            basketUpdate.BasketItems = basket.BasketItems;
-            basketUpdate.User = basket.User;
-
-            _context.Update(basketUpdate);
-
-            await _context.SaveChangesAsync();
-
-            return basketUpdate;
-        }
-
-        public async Task DeleteBasketAsync(int id)
-        {
-            _context.BasketItems.Remove(new BasketItem()
+            if (basketRequest.BasketItems.Any(x => x.Quantity < 1))
             {
-                Id = id
-            });
+                throw new ArgumentException("The number of products cannot be less than one");
+            }
+
+            basketRequest.Adapt(basket);
+
+            _context.Update(basket);
 
             await _context.SaveChangesAsync();
+            
+            return basketRequest.Adapt<BasketDto>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace WA.Pizza.Infrastructure.DTO.OrderDTO.Address
 {
-    public class AddressDto
+    public class UpdateAddressRequest
     {
         public string Country { get; set; }
         public string City { get; set; }
