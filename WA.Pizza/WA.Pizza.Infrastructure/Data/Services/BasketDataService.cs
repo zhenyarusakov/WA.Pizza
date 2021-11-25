@@ -8,10 +8,10 @@ using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class BasketService: IBasketService
+    public class BasketDataService: IBasketService
     {
         private readonly WAPizzaContext _context;
-        public BasketService(WAPizzaContext context)
+        public BasketDataService(WAPizzaContext context)
         {
             _context = context;
         }
@@ -45,6 +45,20 @@ namespace WA.Pizza.Infrastructure.Data.Services
             await _context.SaveChangesAsync();
             
             return basketRequest.Adapt<BasketDto>();
+        }
+
+        public async Task DeleteBasketItemAsync(int id)
+        {
+            var basketItemDelete = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (basketItemDelete == null)
+            {
+                throw new ArgumentNullException($"There is no BasketItem with this {id}");
+            }
+
+            _context.Remove(basketItemDelete);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

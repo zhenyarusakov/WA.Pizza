@@ -8,7 +8,6 @@ namespace WA.Pizza.Infrastructure.Data
 {
     public class WAPizzaContext: DbContext
     {
-        public WAPizzaContext(){}
         public WAPizzaContext(DbContextOptions<WAPizzaContext> options)
             : base(options)
         { }

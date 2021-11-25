@@ -11,10 +11,10 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class OrderService : IOrderService
+    public class OrderDataService : IOrderService
     {
         private readonly WAPizzaContext _context;
-        public OrderService(WAPizzaContext context)
+        public OrderDataService(WAPizzaContext context)
         {
             _context = context;
         }

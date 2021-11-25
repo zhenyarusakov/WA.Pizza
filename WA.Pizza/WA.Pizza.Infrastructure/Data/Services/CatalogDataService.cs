@@ -8,11 +8,11 @@ using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class CatalogService: ICatalogService
+    public class CatalogDataService: ICatalogService
     {
         private readonly WAPizzaContext _context;
 
-        public CatalogService(WAPizzaContext context)
+        public CatalogDataService(WAPizzaContext context)
         {
             _context = context;
         }

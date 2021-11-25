@@ -28,9 +28,9 @@ namespace WA.Pizza.Api
 
             MapperGlobal.Configure();
 
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IBasketService, BasketService>();
-            services.AddScoped<ICatalogService, CatalogService>();
+            services.AddScoped<IOrderService, OrderDataService>();
+            services.AddScoped<IBasketService, BasketDataService>();
+            services.AddScoped<ICatalogService, CatalogDataService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
