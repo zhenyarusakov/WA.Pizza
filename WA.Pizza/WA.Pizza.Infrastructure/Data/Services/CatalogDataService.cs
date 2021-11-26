@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class CatalogDataService: ICatalogService
+    public class CatalogDataService: ICatalogDataService
     {
         private readonly WAPizzaContext _context;
 
@@ -19,7 +20,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public Task<CatalogItemDto> GetCatalogAsync(int id)
         {
-            var catalog = _context.CatalogItems
+            Task<CatalogItemDto?> catalog = _context.CatalogItems
                 .AsNoTracking()
                 .ProjectToType<CatalogItemDto>()
                 .SingleOrDefaultAsync(x => x.Id == id);
@@ -32,7 +33,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return catalog;
         }
 
-        public Task<CatalogItemDto[]> GetCatalogsAsync()
+        public Task<CatalogItemDto[]> GetAllCatalogsAsync()
         {
             return _context.CatalogItems
                 .Include(x => x.CatalogBrand)
@@ -42,7 +43,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<CatalogItemDto> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest)
         {
-            var catalogItemDto = catalogRequest.Adapt<CatalogItem>();
+            CatalogItem catalogItemDto = catalogRequest.Adapt<CatalogItem>();
 
             _context.CatalogItems.Add(catalogItemDto);
 
@@ -53,7 +54,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
         
         public async Task<CatalogItemDto> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest)
         {
-            var catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
+            CatalogItem? catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
 
             if (catalogItemUpdate == null)
             {
@@ -71,6 +72,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteCatalogItemAsync(int id)
         {
+            BasketItem? catalogItemDelete = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (catalogItemDelete == null)
+            {
+                throw new ArgumentNullException($"There is no CatalogItem with this {id}");
+            }
+
             _context.CatalogItems.Remove(new CatalogItem()
             {
                 Id = id

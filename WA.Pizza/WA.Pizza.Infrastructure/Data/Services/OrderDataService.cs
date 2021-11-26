@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Infrastructure.Abstractions;
@@ -11,7 +12,7 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class OrderDataService : IOrderService
+    public class OrderDataService : IOrderDataService
     {
         private readonly WAPizzaContext _context;
         public OrderDataService(WAPizzaContext context)
@@ -19,14 +20,14 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
         
-        public Task<OrderDto[]> GetOrdersAsync()
+        public Task<OrderDto[]> GetAllOrdersAsync()
         {
             return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
 
         public async Task<OrderDto> CreateOrderAsync(int basketId, int userId)
         {
-            var basket = await _context.Baskets
+            Basket? basket = await _context.Baskets
                 .Include(x => x.BasketItems)
                 .SingleOrDefaultAsync(x => x.Id == basketId);
             
@@ -42,9 +43,9 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .Where(x => catalogItemIds.Contains(x.Id))
                 .ToDictionaryAsync(x => x.Id);
 
-            foreach (var basketItem in basket.BasketItems)
+            foreach (BasketItem basketItem in basket.BasketItems)
             {
-                var isInStock = catalogItemsCountById.TryGetValue(basketItem.Id, out CatalogItem catalogItem);
+                bool isInStock = catalogItemsCountById.TryGetValue(basketItem.Id, out CatalogItem catalogItem);
 
                 if (!isInStock)
                 {
@@ -59,7 +60,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 }
             }
 
-            var order = basket.Adapt<Order>();
+            Order order = basket.Adapt<Order>();
 
             _context.Add(order);
 
@@ -70,7 +71,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
+            Order? order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
 
             order.Status = status;
 

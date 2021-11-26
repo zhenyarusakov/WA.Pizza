@@ -1,9 +1,10 @@
 ﻿using Xunit;
 using System;
-using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using WA.Pizza.Core.Entities.BasketDomain;
+using WA.Pizza.Infrastructure.Data;
 using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
@@ -17,68 +18,86 @@ namespace WA.Pizza.Infrastructure.Tests
         public async Task Succeed_return_all_existed_Baskets()
         {
             // Arrange
-            await using var context = await DbContextFactory.CreateAsync(BasketHelpers.GetAllBaskets());
-
-            var basketService = new BasketDataService(context);
+            IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            BasketDataService basketService = new BasketDataService(context);
+            int basketId = 2;
 
             // Act
+            BasketDto[] basketDtos = await basketService.GetAllBasketsAsync();
             
-            var baskets = await basketService.GetBasketsAsync();
-
             // Assert
-            baskets.Should().NotBeNullOrEmpty();
-
-            baskets.Select(x => x.Id).Should().Contain(2);
+            basketDtos.Should().HaveCount(basketId);
         }
 
         [Fact]
-        public async Task Succeed_return_changed_name_for_BasketItem()
+        public async Task Successful_shopping_cart_creation()
         {
             // Arrange
-            await using var context = await DbContextFactory.CreateAsync(BasketHelpers.GetBasket());
-            
-            var basket = new UpdateBasketRequest(1, DateTime.Now,  1, new List<BasketItemDto>
+            Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{basket});
+            BasketDataService basketService = new BasketDataService(context);
+
+            CreateBasketRequest createBasketRequest = new CreateBasketRequest(new List<BasketItemDto>
             {
                 new BasketItemDto
                 {
-                    Quantity = 3,
-                    Description = "qwe",
-                    Name = "qwe",
-                    Price = 13
+                    Name = "",
+                    Description = ""
                 }
             });
-
-            var basketService = new BasketDataService(context);
+            await context.SaveChangesAsync();
 
             // Act
-            var updateBasket = await basketService.UpdateBasketAsync(basket);
+            BasketDto basketDto = await basketService.CreateBasketAsync(createBasketRequest);
+            
+            // Assert
+            basketDto.BasketItems.Should().NotBeNull();
+        }
 
+        [Fact]
+        public async Task Successful_change_of_item_quantity()
+        {
+            // Arrange
+            IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+
+            UpdateBasketRequest updateBasketRequest = new UpdateBasketRequest
+            {
+                Id = 1,
+                BasketItems = new List<BasketItemDto>
+                {
+                    new BasketItemDto
+                    {
+                        Quantity = 3,
+                        Description = "qwe",
+                        Name = "qwe",
+                        Price = 12
+                    }
+                }
+            };
+
+            BasketDataService basketService = new BasketDataService(context);
+            int quantity = 3;
+            await context.SaveChangesAsync();
+
+            // Act
+            BasketDto updateBasket = await basketService.UpdateBasketAsync(updateBasketRequest);
+            
             // Assert
             updateBasket.Should().NotBeNull();
-            updateBasket.Id.Should().Be(1);
-            updateBasket.BasketItems.Select(x => x.Name)
-                .Should().BeEquivalentTo("qwe");
+            updateBasket.BasketItems.Should().Contain(x => x.Quantity == quantity);
         }
 
         [Fact]
-        public async Task Exception_will_be_returned_the_absence_of_the_BasketItem_body()
+        public async Task Exception_will_returned_for_nonexistent_Id()
         {
             // Arrange
-            await using var context = await DbContextFactory.CreateAsync();
-            var basketService = new BasketDataService(context);
+            IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            BasketDataService basketService = new BasketDataService(context);
+            UpdateBasketRequest basket = new UpdateBasketRequest();
 
-            var basket = new UpdateBasketRequest(0, DateTime.Now, 1, new List<BasketItemDto>
-            {
-                new BasketItemDto
-                {
-                    Quantity = 1,
-                    Description = "qwe",
-                    Name = "qwe",
-                    Price = 13
-                }
-            });
-
-            basket.Id.Should().Be(0);
             // Act
             Func<Task> func = async () => await basketService.UpdateBasketAsync(basket);
 
@@ -87,59 +106,50 @@ namespace WA.Pizza.Infrastructure.Tests
         }
 
         [Fact]
-        public async Task Exception_will_be_thrown_whenthe_cardinality_less_than_one()
+        public async Task Exception_will_thrown_when_quantity_items_less_than_one()
         {
             // Arrange
-            await using var context = await DbContextFactory.CreateAsync();
-            var basketService = new BasketDataService(context);
+            Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{ basket });
+            BasketDataService basketService = new BasketDataService(context);
+            UpdateBasketRequest basketRequest = new UpdateBasketRequest();
 
-            var basket = new UpdateBasketRequest(1, DateTime.Now, 1, new List<BasketItemDto>
-            {
-                new BasketItemDto
-                {
-                    Quantity = 0,
-                    Description = "qwe",
-                    Name = "qwe",
-                    Price = 13
-                }
-            });
-
-            basket.BasketItems.Select(x => x.Quantity < 1);
             // Act
-            Func<Task> func = async () => await basketService.UpdateBasketAsync(basket);
+            Func<Task> act = async () => await basketService.UpdateBasketAsync(basketRequest);
 
             // Assert
-            await func.Should().ThrowAsync<ArgumentException>();
+            await act.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
-        public async Task Successful_deletion_of_basket_items()
+        public async Task Successful_cleaning_of_basket_items()
         {
             // Arrange
-            await using var context = await DbContextFactory.CreateAsync(BasketHelpers.GetAllBaskets());
-            var basketService = new BasketDataService(context);
+            Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{ basket });
+            BasketDataService basketService = new BasketDataService(context);
+            await context.SaveChangesAsync();
 
             // Act
-            var basket = basketService.DeleteBasketItemAsync(1);
+            await basketService.CleanBasketItemsAsync(basket.Id);
 
             // Assert
-
-            basket.Should().NotBeNull();
-            basket.Id.Should().Be(1);
+            basket.BasketItems.Should().BeEmpty();
         }
 
         [Fact]
-        public async Task Successfully_return_an_error_with_a_non_existent_identifier()
+        public async Task Successfully_return_error_with_non_existent_id()
         {
             // Arrange
-            await using var context = await DbContextFactory.CreateAsync(BasketHelpers.GetBasket());
-            var basketService = new BasketDataService(context);
+            Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
+            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new[] { basket });
+            BasketDataService basketService = new BasketDataService(context);
+            int basketId = 5;
 
             // Act
-            Func<Task> func = async () => await basketService.DeleteBasketItemAsync(9);
+            Func<Task> func = async () => await basketService.CleanBasketItemsAsync(basketId);
 
             // Assert
-
             await func.Should().ThrowAsync<ArgumentNullException>();
         }
 

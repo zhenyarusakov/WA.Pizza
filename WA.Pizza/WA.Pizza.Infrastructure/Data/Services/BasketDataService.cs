@@ -3,12 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class BasketDataService: IBasketService
+    public class BasketDataService: IBasketDataService
     {
         private readonly WAPizzaContext _context;
         public BasketDataService(WAPizzaContext context)
@@ -16,7 +17,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public Task<BasketDto[]> GetBasketsAsync()
+        public Task<BasketDto[]> GetAllBasketsAsync()
         {
             return _context.Baskets
                 .Include(x => x.BasketItems)
@@ -24,9 +25,20 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .ToArrayAsync();
         }
 
+        public async Task<BasketDto> CreateBasketAsync(CreateBasketRequest basketRequest)
+        {
+            Basket basket = basketRequest.Adapt<Basket>();
+
+            _context.Baskets.Add(basket);
+
+            await _context.SaveChangesAsync();
+            
+            return basket.Adapt<BasketDto>();
+        }
+
         public async Task<BasketDto> UpdateBasketAsync(UpdateBasketRequest basketRequest)
         {
-            var basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketRequest.Id);
+            Basket? basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketRequest.Id);
 
             if (basket == null)
             {
@@ -40,23 +52,23 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             basketRequest.Adapt(basket);
 
-            _context.Update(basket);
+            _context.Baskets.Update(basket);
 
             await _context.SaveChangesAsync();
             
             return basketRequest.Adapt<BasketDto>();
         }
 
-        public async Task DeleteBasketItemAsync(int id)
+        public async Task CleanBasketItemsAsync(int id)
         {
-            var basketItemDelete = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (basketItemDelete == null)
+            BasketItem[] basketItems = await _context.BasketItems.Where(x => x.BasketId == id).ToArrayAsync();
+            
+            if (!basketItems.Any())
             {
                 throw new ArgumentNullException($"There is no BasketItem with this {id}");
             }
 
-            _context.Remove(basketItemDelete);
+            _context.BasketItems.RemoveRange(basketItems);
 
             await _context.SaveChangesAsync();
         }

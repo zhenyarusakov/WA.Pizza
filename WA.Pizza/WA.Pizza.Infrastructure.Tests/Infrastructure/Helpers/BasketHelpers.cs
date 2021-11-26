@@ -7,11 +7,11 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {
     public static class BasketHelpers
     {
-        public static IEnumerable<Basket> GetAllBaskets()
+        public static IEnumerable<Basket> CreateListOfFilledBaskets()
         {
-            List<Basket> basket = new List<Basket>();
+            List<Basket> baskets = new List<Basket>();
 
-            basket.Add(new Basket
+            baskets.Add(new Basket
             {
                 LastModified = DateTime.Now,
                 BasketItems = new List<BasketItem>
@@ -39,7 +39,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
                 }
             });
 
-            basket.Add(new Basket
+            baskets.Add(new Basket
             {
                 LastModified = DateTime.Now,
                 BasketItems = new List<BasketItem>
@@ -67,14 +67,25 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
                 }
             });
 
-            return basket;
+            return baskets;
         }
 
-        public static IEnumerable<Basket> GetBasket()
-        {
-            var basket = new List<Basket>();
 
-            basket.Add(new Basket()
+
+        public static Basket CreateOneEmptyShoppingCart()
+        {
+            return new Basket
+            {
+                BasketItems = new List<BasketItem>
+                {
+                }
+            };
+
+        }
+
+        public static Basket CreateOneFilledShoppingBasket()
+        {
+            return new Basket
             {
                 LastModified = DateTime.Now,
                 BasketItems = new List<BasketItem>
@@ -100,10 +111,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
                         }
                     }
                 }
-            });
-
-            return basket;
+            };
         }
-
     }
 }

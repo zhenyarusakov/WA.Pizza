@@ -4,9 +4,9 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Abstractions
 {
-    public interface IOrderService
+    public interface IOrderDataService
     {
-        Task<OrderDto[]> GetOrdersAsync();
+        Task<OrderDto[]> GetAllOrdersAsync();
         Task<OrderDto> CreateOrderAsync(int basketId, int userId);
         Task<Order> UpdateOrderStatus(int id, OrderStatus status);
     }

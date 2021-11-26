@@ -11,14 +11,14 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
     {
         private const string DbName = "WA.Pizza";
 
-        public static async Task<WAPizzaContext> CreateAsync(IEnumerable<BaseEntity> seedingData = default)
+        public static async Task<WAPizzaContext> CreateContextInSeedData(IEnumerable<BaseEntity> seedingData = default)
         {
-            var builder = new DbContextOptionsBuilder<WAPizzaContext>()
+            DbContextOptions<WAPizzaContext> builder = new DbContextOptionsBuilder<WAPizzaContext>()
                 .UseInMemoryDatabase(DbName)
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
 
-            var context = new WAPizzaContext(builder);
+            WAPizzaContext context = new WAPizzaContext(builder);
 
             if (seedingData is not null)
             {
