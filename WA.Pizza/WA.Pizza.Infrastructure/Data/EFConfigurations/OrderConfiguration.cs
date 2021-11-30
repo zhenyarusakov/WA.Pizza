@@ -9,11 +9,6 @@ namespace WA.Pizza.Infrastructure.Data.EFConfigurations
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder
-                .Property(x => x.Name)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            builder
                 .Property(x => x.Status)
                 .IsRequired();
 

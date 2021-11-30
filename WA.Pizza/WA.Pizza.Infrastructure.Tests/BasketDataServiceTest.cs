@@ -38,14 +38,11 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{basket});
             BasketDataService basketService = new BasketDataService(context);
 
-            CreateBasketRequest createBasketRequest = new CreateBasketRequest(new List<BasketItemDto>
+            CreateBasketRequest createBasketRequest = new CreateBasketRequest
             {
-                new BasketItemDto
-                {
-                    Name = "",
-                    Description = ""
-                }
-            });
+                BasketItems = new List<BasketItemDto>(),
+                UserId = 1
+            };
             await context.SaveChangesAsync();
 
             // Act

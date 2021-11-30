@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -18,19 +19,16 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context = context;
         }
 
-        public Task<CatalogItemDto> GetCatalogAsync(int id)
+        public async Task<CatalogItemDto> GetCatalogAsync(int id)
         {
-            Task<CatalogItemDto?> catalog = _context.CatalogItems
-                .AsNoTracking()
-                .ProjectToType<CatalogItemDto>()
-                .SingleOrDefaultAsync(x => x.Id == id);
+            CatalogItem catalogItem = await _context.CatalogItems.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
 
-            if (catalog == null)
+            if (catalogItem == null)
             {
-                throw new ArgumentNullException($"There is no Catalog with this {id}");
+                throw new ArgumentNullException($"There is no Catalog item with this {id}");
             }
 
-            return catalog;
+            return catalogItem.Adapt<CatalogItemDto>();
         }
 
         public Task<CatalogItemDto[]> GetAllCatalogsAsync()
@@ -54,7 +52,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
         
         public async Task<CatalogItemDto> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest)
         {
-            CatalogItem? catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
+            CatalogItem catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
 
             if (catalogItemUpdate == null)
             {
@@ -72,17 +70,15 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task DeleteCatalogItemAsync(int id)
         {
-            BasketItem? catalogItemDelete = await _context.BasketItems.FirstOrDefaultAsync(x => x.Id == id);
+            CatalogItem catalogItemDelete = await _context.CatalogItems
+                .SingleOrDefaultAsync(x => x.Id == id);
 
             if (catalogItemDelete == null)
             {
                 throw new ArgumentNullException($"There is no CatalogItem with this {id}");
             }
 
-            _context.CatalogItems.Remove(new CatalogItem()
-            {
-                Id = id
-            });
+            _context.CatalogItems.RemoveRange(catalogItemDelete);
 
             await _context.SaveChangesAsync();
         }

@@ -21,6 +21,8 @@ namespace WA.Pizza.Infrastructure.Data.EFConfigurations
             builder
                 .Property(x => x.Price)
                 .HasColumnType("decimal(20,8)");
+
+            builder.HasOne(x => x.CatalogItem).WithMany();
         }
     }
 }

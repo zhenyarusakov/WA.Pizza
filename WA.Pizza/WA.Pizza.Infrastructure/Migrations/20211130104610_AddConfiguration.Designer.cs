@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WA.Pizza.Infrastructure.Data;
 
@@ -11,9 +12,10 @@ using WA.Pizza.Infrastructure.Data;
 namespace WA.Pizza.Infrastructure.Migrations
 {
     [DbContext(typeof(WAPizzaContext))]
-    partial class WAPizzaContextModelSnapshot : ModelSnapshot
+    [Migration("20211130104610_AddConfiguration")]
+    partial class AddConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,11 +197,6 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -221,6 +218,9 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CatalogItemId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -241,6 +241,8 @@ namespace WA.Pizza.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CatalogItemId");
 
                     b.HasIndex("OrderId");
 
@@ -291,7 +293,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("WA.Pizza.Core.Entities.CatalogDomain.CatalogItem", "CatalogItem")
-                        .WithMany("BasketItems")
+                        .WithMany()
                         .HasForeignKey("CatalogItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -336,11 +338,19 @@ namespace WA.Pizza.Infrastructure.Migrations
 
             modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.OrderItem", b =>
                 {
+                    b.HasOne("WA.Pizza.Core.Entities.CatalogDomain.CatalogItem", "CatalogItem")
+                        .WithMany()
+                        .HasForeignKey("CatalogItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WA.Pizza.Core.Entities.OrderDomain.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CatalogItem");
 
                     b.Navigation("Order");
                 });
@@ -353,11 +363,6 @@ namespace WA.Pizza.Infrastructure.Migrations
             modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.CatalogBrand", b =>
                 {
                     b.Navigation("CatalogItems");
-                });
-
-            modelBuilder.Entity("WA.Pizza.Core.Entities.CatalogDomain.CatalogItem", b =>
-                {
-                    b.Navigation("BasketItems");
                 });
 
             modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.Order", b =>

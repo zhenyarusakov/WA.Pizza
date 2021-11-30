@@ -15,9 +15,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
     public class OrderDataService : IOrderDataService
     {
         private readonly WAPizzaContext _context;
-        public OrderDataService(WAPizzaContext context)
+        private readonly BasketDataService _basketDataService;
+        public OrderDataService(WAPizzaContext context, BasketDataService basketDataService)
         {
             _context = context;
+            _basketDataService = basketDataService;
         }
         
         public Task<OrderDto[]> GetAllOrdersAsync()
@@ -27,18 +29,18 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<OrderDto> CreateOrderAsync(int basketId, int userId)
         {
-            Basket? basket = await _context.Baskets
+            Basket basket = await _context.Baskets
                 .Include(x => x.BasketItems)
-                .SingleOrDefaultAsync(x => x.Id == basketId);
-            
+                .ThenInclude(x => x.CatalogItem)
+                .FirstOrDefaultAsync(x => x.Id == basketId);
+
             if (basket == null)
             {
                 throw new ArgumentNullException($"There is no Basket with this {basketId}");
             }
-            
 
             IEnumerable<int> catalogItemIds = basket.BasketItems.Select(x => x.CatalogItemId);
-            
+
             Dictionary<int, CatalogItem> catalogItemsCountById = await _context.CatalogItems
                 .Where(x => catalogItemIds.Contains(x.Id))
                 .ToDictionaryAsync(x => x.Id);
@@ -52,12 +54,12 @@ namespace WA.Pizza.Infrastructure.Data.Services
                     throw new InvalidOperationException($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                 }
 
-                catalogItem.Quantity -= basketItem.Quantity;
-
                 if (basketItem.Quantity > catalogItem.Quantity)
                 {
                     throw new InvalidOperationException("The number of selected items is greater than the allowed value");
                 }
+
+                catalogItem.Quantity -= basketItem.Quantity;
             }
 
             Order order = basket.Adapt<Order>();
@@ -66,12 +68,14 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             await _context.SaveChangesAsync();
 
+            await _basketDataService.CleanBasketItemsAsync(basketId);
+
             return order.Adapt<OrderDto>();
         }
-
+        
         public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
         {
-            Order? order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
+            Order order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
 
             order.Status = status;
 
