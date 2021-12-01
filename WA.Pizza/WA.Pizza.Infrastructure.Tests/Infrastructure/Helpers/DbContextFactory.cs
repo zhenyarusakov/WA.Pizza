@@ -11,7 +11,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
     {
         private const string DbName = "WA.Pizza";
 
-        public static async Task<WAPizzaContext> CreateContextInSeedData(IEnumerable<BaseEntity> seedingData = default)
+        public static async Task<WAPizzaContext> CreateContextAndSeedData(IEnumerable<BaseEntity> seedingData = default)
         {
             DbContextOptions<WAPizzaContext> builder = new DbContextOptionsBuilder<WAPizzaContext>()
                 .UseInMemoryDatabase(DbName)

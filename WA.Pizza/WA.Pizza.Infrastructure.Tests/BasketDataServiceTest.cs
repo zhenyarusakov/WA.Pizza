@@ -19,7 +19,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
             BasketDataService basketService = new BasketDataService(context);
             int basketId = 2;
 
@@ -35,7 +35,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{basket});
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new []{basket});
             BasketDataService basketService = new BasketDataService(context);
 
             CreateBasketRequest createBasketRequest = new CreateBasketRequest
@@ -57,7 +57,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
 
             UpdateBasketRequest updateBasketRequest = new UpdateBasketRequest
             {
@@ -91,7 +91,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
             BasketDataService basketService = new BasketDataService(context);
             UpdateBasketRequest basket = new UpdateBasketRequest();
 
@@ -107,7 +107,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{ basket });
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new []{ basket });
             BasketDataService basketService = new BasketDataService(context);
             UpdateBasketRequest basketRequest = new UpdateBasketRequest();
 
@@ -123,7 +123,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{ basket });
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new []{ basket });
             BasketDataService basketService = new BasketDataService(context);
             await context.SaveChangesAsync();
 
@@ -139,7 +139,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new[] { basket });
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new[] { basket });
             BasketDataService basketService = new BasketDataService(context);
             int basketId = 5;
 

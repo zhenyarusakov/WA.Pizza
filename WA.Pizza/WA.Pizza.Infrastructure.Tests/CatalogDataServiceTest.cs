@@ -21,7 +21,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService service = new CatalogDataService(context);
             int catalogId = 1;
 
@@ -37,7 +37,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
             int catalogId = 5;
 
@@ -53,7 +53,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
             int catalogId = 2;
 
@@ -69,7 +69,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
 
             CreateCatalogRequest catalogRequest = new CreateCatalogRequest
@@ -105,7 +105,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
 
             UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
@@ -133,7 +133,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
             UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
             {
@@ -153,7 +153,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
             int catalogId = 1;
             await context.SaveChangesAsync();
@@ -172,7 +172,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
             UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
             {

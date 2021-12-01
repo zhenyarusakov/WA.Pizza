@@ -29,7 +29,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Order> orders = OrderHelper.CreateListOfFilledOrders();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(orders);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(orders);
             OrderDataService orderService = new OrderDataService(context, new BasketDataService(context));
             int ordersId = 2;
 
@@ -45,7 +45,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
             Basket basket = baskets.First();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
@@ -76,7 +76,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
             Basket basket = baskets.First();
             await context.SaveChangesAsync();
@@ -99,7 +99,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
             int basketId = 5;
             int userId = 1;
@@ -116,7 +116,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             IEnumerable<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(baskets);
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(baskets);
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
             // Act
@@ -152,7 +152,7 @@ namespace WA.Pizza.Infrastructure.Tests
                 }
             };
 
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new BaseEntity[] { catalogItem, basket });
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new BaseEntity[] { catalogItem, basket });
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
             // Act
@@ -187,7 +187,7 @@ namespace WA.Pizza.Infrastructure.Tests
                 }
             };
 
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new BaseEntity[] {catalogItem, basket});
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new BaseEntity[] {catalogItem, basket});
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
             // Act
@@ -202,7 +202,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             Order filledOrders = OrderHelper.CreateOneFilledOrders();
-            await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(new []{ filledOrders });
+            await using WAPizzaContext context = await DbContextFactory.CreateContextAndSeedData(new []{ filledOrders });
             OrderDataService orderService = new OrderDataService(context, new BasketDataService(context));
             int orderId = filledOrders.Id;
             OrderStatus expectedStatus = OrderStatus.Dispatch;
