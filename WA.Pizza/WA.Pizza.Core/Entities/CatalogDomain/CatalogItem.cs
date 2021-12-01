@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using WA.Pizza.Core.Entities.BasketDomain;
-using WA.Pizza.Core.Entities.OrderDomain;
-
-namespace WA.Pizza.Core.Entities.CatalogDomain
+﻿namespace WA.Pizza.Core.Entities.CatalogDomain
 {
     public class CatalogItem : BaseEntity
     {
@@ -10,7 +6,7 @@ namespace WA.Pizza.Core.Entities.CatalogDomain
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public int CatalogBrandId { get; set; }
+        public int? CatalogBrandId { get; set; }
         public CatalogBrand CatalogBrand { get; set; }
         public CatalogType CatalogType { get; set; }
     }

@@ -27,7 +27,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
 
-        public async Task<OrderDto> CreateOrderAsync(int basketId, int userId)
+        public async Task<int> CreateOrderAsync(int basketId, int userId)
         {
             Basket basket = await _context.Baskets
                 .Include(x => x.BasketItems)
@@ -70,18 +70,23 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             await _basketDataService.CleanBasketItemsAsync(basketId);
 
-            return order.Adapt<OrderDto>();
+            return order.Id;
         }
         
-        public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
+        public async Task<int> UpdateOrderStatus(int orderId, OrderStatus status)
         {
             Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                throw new ArgumentException("Order not found");
+            }
 
             order.Status = status;
 
             await _context.SaveChangesAsync();
 
-            return order;
+            return order.Id;
         }
     }
 }

@@ -7,8 +7,8 @@ namespace WA.Pizza.Infrastructure.Abstractions
     {
         Task<CatalogItemDto> GetCatalogAsync(int id);
         Task<CatalogItemDto[]> GetAllCatalogsAsync();
-        Task<CatalogItemDto> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest);
-        Task<CatalogItemDto> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest);
+        Task<int> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest);
+        Task<int> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest);
         Task DeleteCatalogItemAsync(int id);
     }
 }
