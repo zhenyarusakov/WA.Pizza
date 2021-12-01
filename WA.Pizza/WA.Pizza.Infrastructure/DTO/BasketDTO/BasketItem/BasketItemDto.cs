@@ -1,10 +1,8 @@
-﻿using System.Dynamic;
-using WA.Pizza.Core.Entities.CatalogDomain;
-
-namespace WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem
+﻿namespace WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem
 {
     public class BasketItemDto
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }

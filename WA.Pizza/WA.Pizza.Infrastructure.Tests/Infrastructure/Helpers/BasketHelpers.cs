@@ -7,7 +7,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {
     public static class BasketHelpers
     {
-        public static IEnumerable<Basket> CreateListOfFilledBaskets()
+        public static ICollection<Basket> CreateListOfFilledBaskets()
         {
             List<Basket> baskets = new List<Basket>();
 

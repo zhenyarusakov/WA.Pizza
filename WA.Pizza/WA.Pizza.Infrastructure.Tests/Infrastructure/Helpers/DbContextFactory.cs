@@ -11,7 +11,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
     {
         private const string DbName = "WA.Pizza";
 
-        public static async Task<WAPizzaContext> CreateContextAndSeedData(IEnumerable<BaseEntity> seedingData = default)
+        public static async Task<WAPizzaContext> CreateContext()
         {
             DbContextOptions<WAPizzaContext> builder = new DbContextOptionsBuilder<WAPizzaContext>()
                 .UseInMemoryDatabase(DbName)
@@ -19,14 +19,6 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
                 .Options;
 
             WAPizzaContext context = new WAPizzaContext(builder);
-
-            if (seedingData is not null)
-            {
-                await context.AddRangeAsync(seedingData);
-            }
-            
-            await context.SaveChangesAsync();
-
             return context;
         }
     }

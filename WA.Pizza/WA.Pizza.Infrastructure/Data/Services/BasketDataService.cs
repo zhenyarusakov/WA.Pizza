@@ -38,7 +38,8 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<int> UpdateBasketAsync(UpdateBasketRequest basketRequest)
         {
-            Basket basket = await _context.Baskets.FirstOrDefaultAsync(x=>x.Id == basketRequest.Id);
+            var basket = await _context.Baskets.Include(i => i.BasketItems)
+                .FirstOrDefaultAsync(x => x.Id == basketRequest.Id);
 
             if (basket == null)
             {
@@ -55,7 +56,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             _context.Baskets.Update(basket);
 
             await _context.SaveChangesAsync();
-            
+
             return basketRequest.Id;
         }
 
