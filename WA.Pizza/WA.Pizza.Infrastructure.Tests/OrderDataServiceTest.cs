@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
@@ -88,10 +87,6 @@ namespace WA.Pizza.Infrastructure.Tests
             createOrder.Should().NotBeNull();
 
             createOrder.UserId.Should().Be(basket.UserId);
-
-            createOrder.OrderItemDtos.Should().BeEquivalentTo(
-                basket.BasketItems,
-                options => options.Excluding(x => x.Id).ExcludingMissingMembers());
         }
 
         [Fact]

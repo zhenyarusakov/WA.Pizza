@@ -112,10 +112,10 @@ namespace WA.Pizza.Infrastructure.Tests
             UpdateBasketRequest basketRequest = new UpdateBasketRequest();
 
             // Act
-            Func<Task> act = async () => await basketService.UpdateBasketAsync(basketRequest);
+            Func<Task> func = async () => await basketService.UpdateBasketAsync(basketRequest);
 
             // Assert
-            await act.Should().ThrowAsync<ArgumentException>();
+            await func.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]

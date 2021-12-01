@@ -15,8 +15,8 @@ namespace WA.Pizza.Infrastructure.Data.Services
     public class OrderDataService : IOrderDataService
     {
         private readonly WAPizzaContext _context;
-        private readonly BasketDataService _basketDataService;
-        public OrderDataService(WAPizzaContext context, BasketDataService basketDataService)
+        private readonly IBasketDataService _basketDataService;
+        public OrderDataService(WAPizzaContext context, IBasketDataService basketDataService)
         {
             _context = context;
             _basketDataService = basketDataService;
@@ -75,7 +75,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
         
         public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
         {
-            Order order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
+            Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
 
             order.Status = status;
 

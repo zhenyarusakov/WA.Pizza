@@ -1,5 +1,11 @@
+using System.Net;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +31,7 @@ namespace WA.Pizza.Api
             services.ConfigureServicesExtension();
             services.AddDbContextExtensions(Configuration);
             services.AddControllersWithViewsExtensions();
+            services.AddControllersExtensions();
 
             MapperGlobal.Configure();
 
@@ -40,6 +47,11 @@ namespace WA.Pizza.Api
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WA.Pizza v1"));
+                app.UseExceptionHandler("/error-local-development");
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             app.UseHttpsRedirection();

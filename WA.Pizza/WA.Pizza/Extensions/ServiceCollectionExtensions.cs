@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Net.Mime;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +31,23 @@ namespace WA.Pizza.Api.Extensions
             services.AddControllers()
                 .AddJsonOptions(o => o.JsonSerializerOptions
                     .ReferenceHandler = ReferenceHandler.Preserve);
+        }
+
+        public static void AddControllersExtensions(this IServiceCollection services)
+        {
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        BadRequestObjectResult result = new BadRequestObjectResult(context.ModelState);
+                        
+                        result.ContentTypes.Add(MediaTypeNames.Application.Json);
+                        result.ContentTypes.Add(MediaTypeNames.Application.Xml);
+
+                        return result;
+                    };
+                });
         }
     }
 }

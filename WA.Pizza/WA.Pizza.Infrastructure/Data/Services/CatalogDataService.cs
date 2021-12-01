@@ -21,7 +21,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<CatalogItemDto> GetCatalogAsync(int id)
         {
-            CatalogItem catalogItem = await _context.CatalogItems.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            CatalogItem catalogItem = await _context.CatalogItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
             if (catalogItem == null)
             {
@@ -71,7 +71,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
         public async Task DeleteCatalogItemAsync(int id)
         {
             CatalogItem catalogItemDelete = await _context.CatalogItems
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (catalogItemDelete == null)
             {

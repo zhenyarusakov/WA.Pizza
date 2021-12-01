@@ -55,7 +55,7 @@ namespace WA.Pizza.Infrastructure.Tests
             IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContextInSeedData(catalogItems);
             CatalogDataService catalogDataService = new CatalogDataService(context);
-            int catalogId = 2;
+            int catalogId = 3;
 
             // Act
             CatalogItemDto[] catalogItem = await catalogDataService.GetAllCatalogsAsync();
@@ -137,7 +137,7 @@ namespace WA.Pizza.Infrastructure.Tests
             CatalogDataService catalogDataService = new CatalogDataService(context);
             UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
             {
-                Id = 3
+                Id = 4
             };
             await context.SaveChangesAsync();
 
@@ -176,7 +176,7 @@ namespace WA.Pizza.Infrastructure.Tests
             CatalogDataService catalogDataService = new CatalogDataService(context);
             UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
             {
-                Id = 3
+                Id = 4
             };
             await context.SaveChangesAsync();
 
