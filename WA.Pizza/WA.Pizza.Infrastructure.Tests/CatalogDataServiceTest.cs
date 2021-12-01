@@ -1,190 +1,196 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using FluentAssertions;
-//using Microsoft.EntityFrameworkCore;
-//using WA.Pizza.Core.Entities.BasketDomain;
-//using WA.Pizza.Core.Entities.CatalogDomain;
-//using WA.Pizza.Infrastructure.Data;
-//using WA.Pizza.Infrastructure.Data.Services;
-//using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
-//using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
-//using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities.CatalogDomain;
+using WA.Pizza.Infrastructure.Data;
+using WA.Pizza.Infrastructure.Data.Services;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
+using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
+using Xunit;
 
-//namespace WA.Pizza.Infrastructure.Tests
-//{
-//    public class CatalogDataServiceTest
-//    {
-//        [Fact]
-//        public async Task Successfully_return_one_existing_directory()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService service = new CatalogDataService(context);
-//            int catalogId = 1;
+namespace WA.Pizza.Infrastructure.Tests
+{
+    public class CatalogDataServiceTest
+    {
+        [Fact]
+        public async Task Successfully_return_one_existing_directory()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService service = new CatalogDataService(context);
+            int returnFirstId = catalogItems.First().Id;
 
-//            // Act
-//            CatalogItemDto catalogItemDto = await service.GetCatalogAsync(catalogId);
+            // Act
+            CatalogItemDto catalogItemDto = await service.GetCatalogAsync(returnFirstId);
 
-//            // Assert
-//            catalogItemDto.Id.Should().Be(catalogId);
-//        }
+            // Assert
+            catalogItemDto.Id.Should().Be(returnFirstId);
+        }
 
-//        [Fact]
-//        public async Task Exception_will_return_for_non_existent_CatalogItem_id()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
-//            int catalogId = 5;
+        [Fact]
+        public async Task Exception_will_return_for_non_existent_CatalogItem_id()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
+            int nonExistentId = catalogItems.First().Id + 5;
 
-//            // Act
-//            Func<Task> func = async () => await catalogDataService.GetCatalogAsync(catalogId);
+            // Act
+            Func<Task> func = async () => await catalogDataService.GetCatalogAsync(nonExistentId);
 
-//            // Assert
-//            await func.Should().ThrowAsync<ArgumentNullException>();
-//        }
+            // Assert
+            await func.Should().ThrowAsync<ArgumentNullException>();
+        }
 
-//        [Fact]
-//        public async Task Succeed_return_all_existed_CatalogItems()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
-//            int catalogId = 2;
+        [Fact]
+        public async Task Succeed_return_all_existed_CatalogItems()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
 
-//            // Act
-//            CatalogItemDto[] catalogItem = await catalogDataService.GetAllCatalogsAsync();
+            // Act
+            CatalogItemDto[] catalogItem = await catalogDataService.GetAllCatalogsAsync();
 
-//            // Assert
-//            catalogItem.Should().HaveCount(catalogId);
-//        }
+            // Assert
+            catalogItem.Should().HaveCount(catalogItems.Count());
+        }
 
-//        [Fact]
-//        public async Task Successful_creation_of_the_catalogItem()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
+        [Fact]
+        public async Task Successful_creation_catalogItem()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
 
-//            CreateCatalogRequest catalogRequest = new CreateCatalogRequest
-//            {
-//                Name = "qwe",
-//                Quantity = 10,
-//                Description = "qwe",
-//                Price = 12,
-//                CatalogBrandId = 1,
-//                BasketItems = new List<BasketItem>
-//                {
-//                    new ()
-//                    {
-//                        Name = "qwe",
-//                        Quantity = 1,
-//                        Price = 12,
-//                        Description = "qwe"
-//                    }
-//                }
-//            };
-//            await context.SaveChangesAsync();
+            CreateCatalogRequest catalogRequest = new CreateCatalogRequest
+            {
+                Name = catalogItems.First().Name,
+                Quantity = catalogItems.First().Quantity + 1,
+                Description = catalogItems.First().Description,
+                Price = catalogItems.First().Price
+            };
 
-//            // Act
-//            CatalogItemDto catalogItemDto = await catalogDataService.CreateCatalogItemAsync(catalogRequest);
+            // Act
+            int catalogItemId = await catalogDataService.CreateCatalogItemAsync(catalogRequest);
 
-//            // Assert
-//            catalogItemDto.Should().NotBeNull();
-//            catalogItemDto.Name.Should().Be("qwe");
-//        }
+            // Assert
+            CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
+            catalogItem.Should().NotBeNull();
+            catalogItem!.Quantity.Should().Be(catalogRequest.Quantity);
+        }
 
-//        [Fact]
-//        public async Task Successful_change_of_item_quantity_Catalog_Item()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
+        [Fact]
+        public async Task Successful_change_of_item_quantity_Catalog_Item()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
 
-//            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
-//            {
-//                Id = 1,
-//                Name = "BasketItem",
-//                Quantity = 11,
-//                Description = "BasketItem",
-//                Price = 12,
-//                CatalogBrandId = 1
-//            };
-//            await context.SaveChangesAsync();
+            int newQuantity = catalogItems.First().Quantity + 20;
 
-//            // Act
-//            CatalogItemDto catalogItemDto = await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
+            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
+            {
+                Id = catalogItems.First().Id,
+                Name = catalogItems.First().Name,
+                Quantity = newQuantity,
+                Description = catalogItems.First().Description,
+                Price = catalogItems.First().Price
+            };
 
-//            // Assert
-//            catalogItemDto.Should().NotBeNull();
-//            catalogItemDto.Name.Should().Contain("BasketItem");
-//            catalogItemDto.Quantity.Should().NotBe(10);
-//        }
+            // Act
+            int catalogItemId = await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
 
-//        [Fact]
-//        public async Task Exception_will_thrown_if_Id_CatalogItem_does_not_exist()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
-//            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
-//            {
-//                Id = 3
-//            };
-//            await context.SaveChangesAsync();
+            // Assert
+            CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
+            catalogItem!.Quantity.Should().Be(catalogItem.Quantity);
+            catalogItem.Should().NotBeNull();
+        }
 
-//            // Act
-//            Func<Task> func = async () => await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
+        [Fact]
+        public async Task Exception_will_thrown_if_Id_CatalogItem_does_not_exist()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
 
-//            // Assert
-//            await func.Should().ThrowAsync<ArgumentNullException>();
-//        }
+            int newCatalogItemId = catalogItems.First().Id + 3;
 
-//        [Fact]
-//        public async Task Success_deleting_one_item_the_CatalogItem()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
-//            int catalogId = 1;
-//            await context.SaveChangesAsync();
+            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
+            {
+                Id = newCatalogItemId
+            };
 
-//            // Act
-//            await catalogDataService.DeleteCatalogItemAsync(catalogId);
+            // Act
+            Func<Task> func = async () => await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
 
-//            CatalogItem result =  await context.CatalogItems.SingleOrDefaultAsync(x => x.Id == catalogId);
+            // Assert
+            await func.Should().ThrowAsync<ArgumentNullException>();
+        }
 
-//            // Assert
-//            result.Should().BeNull();
-//        }
+        [Fact]
+        public async Task Success_deleting_one_item_the_CatalogItem()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
+            int catalogId = catalogItems.First().Id;
 
-//        [Fact]
-//        public async Task Exception_will_thrown_when_deleting_non_existent_Id()
-//        {
-//            // Arrange
-//            IEnumerable<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-//            await using WAPizzaContext context = await DbContextFactory.CreateContext(catalogItems);
-//            CatalogDataService catalogDataService = new CatalogDataService(context);
-//            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
-//            {
-//                Id = 3
-//            };
-//            await context.SaveChangesAsync();
+            // Act
+            await catalogDataService.DeleteCatalogItemAsync(catalogId);
 
-//            // Act
-//            Func<Task> func = async () => await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
+            CatalogItem result = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogId);
 
-//            // Assert
-//            await func.Should().ThrowAsync<ArgumentNullException>();
-//        }
-//    }
-//}
+            // Assert
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Exception_will_thrown_when_deleting_non_existent_Id()
+        {
+            // Arrange
+            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            await context.CatalogItems.AddRangeAsync(catalogItems);
+            await context.SaveChangesAsync();
+            CatalogDataService catalogDataService = new CatalogDataService(context);
+
+            int newCatalogId = catalogItems.First().Id + 3;
+
+            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
+            {
+                Id = newCatalogId
+            };
+
+            // Act
+            Func<Task> func = async () => await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
+
+            // Assert
+            await func.Should().ThrowAsync<ArgumentNullException>();
+        }
+    }
+}

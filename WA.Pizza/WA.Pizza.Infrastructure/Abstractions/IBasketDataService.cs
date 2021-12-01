@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
+using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
 
 namespace WA.Pizza.Infrastructure.Abstractions
 {
@@ -8,7 +8,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
     {
         Task<BasketDto[]> GetAllBasketsAsync();
         Task<int> CreateBasketAsync(CreateBasketRequest basketRequest);
-        Task<int> UpdateBasketAsync(UpdateBasketRequest basketRequest);
+        Task<int> UpdateBasketItemAsync(UpdateBasketItemRequest basketRequest);
         Task CleanBasketItemsAsync(int id);
     }
 }

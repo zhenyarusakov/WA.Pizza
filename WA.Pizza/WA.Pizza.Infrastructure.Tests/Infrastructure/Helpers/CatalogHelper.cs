@@ -6,12 +6,13 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {
     public static class CatalogHelper
     {
-        public static IEnumerable<CatalogItem> CreateListOfFilledCatalogItems()
+        public static ICollection<CatalogItem> CreateListOfFilledCatalogItems()
         {
             List<CatalogItem> catalogs = new List<CatalogItem>();
 
             catalogs.Add(new CatalogItem
             {
+                Id = 1,
                 Name = "Desserts",
                 Description = "Desserts",
                 Price = 12,
@@ -21,6 +22,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 
             catalogs.Add(new CatalogItem
             {
+                Id = 2,
                 Name = "Drinks",
                 Description = "Drinks",
                 Price = 12,
@@ -30,6 +32,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 
             catalogs.Add(new CatalogItem
             {
+                Id = 3,
                 Name = "Snacks",
                 Description = "Snacks",
                 Price = 12,

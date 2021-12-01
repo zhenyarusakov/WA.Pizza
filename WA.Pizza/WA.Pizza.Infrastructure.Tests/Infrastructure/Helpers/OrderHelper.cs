@@ -5,7 +5,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {
     public class OrderHelper
     {
-        public static IEnumerable<Order> CreateListOfFilledOrders()
+        public static ICollection<Order> CreateListOfFilledOrders()
         {
             List<Order> orders = new List<Order>();
 

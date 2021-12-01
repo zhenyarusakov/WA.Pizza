@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
+using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
@@ -36,28 +37,24 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return basket.Id;
         }
 
-        public async Task<int> UpdateBasketAsync(UpdateBasketRequest basketRequest)
+        public async Task<int> UpdateBasketItemAsync(UpdateBasketItemRequest updateBasketItemRequest)
         {
-            var basket = await _context.Baskets.Include(i => i.BasketItems)
-                .FirstOrDefaultAsync(x => x.Id == basketRequest.Id);
+            BasketItem item = await _context.BasketItems.Include(x => x.Basket)
+                .FirstOrDefaultAsync(x => x.Id == updateBasketItemRequest.Id);
 
-            if (basket == null)
-            {
-                throw new ArgumentNullException($"There is no Basket with this {basketRequest.Id}");
-            }
+            if (item == null)
+                throw new ArgumentNullException($"BasketItem {updateBasketItemRequest.Id}");
 
-            if (basketRequest.BasketItems.Any(x => x.Quantity < 1))
-            {
-                throw new ArgumentException("The number of products cannot be less than one");
-            }
+            if (updateBasketItemRequest.Quantity <= 0)
+                _context.BasketItems.Remove(item);
+            else
+                item.Quantity = updateBasketItemRequest.Quantity;
 
-            basketRequest.Adapt(basket);
-
-            _context.Baskets.Update(basket);
+            item.Basket!.LastModified = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
-            return basketRequest.Id;
+            return item.Id;
         }
 
         public async Task CleanBasketItemsAsync(int id)
