@@ -39,33 +39,33 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .ToArrayAsync();
         }
 
-        public async Task<CatalogItemDto> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest)
+        public async Task<int> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest)
         {
-            CatalogItem catalogItemDto = catalogRequest.Adapt<CatalogItem>();
+            CatalogItem catalogItem = catalogRequest.Adapt<CatalogItem>();
 
-            _context.CatalogItems.Add(catalogItemDto);
+            _context.CatalogItems.Add(catalogItem);
 
             await _context.SaveChangesAsync();
 
-            return catalogItemDto.Adapt<CatalogItemDto>();
+            return catalogItem.Id;
         }
         
-        public async Task<CatalogItemDto> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest)
+        public async Task<int> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest)
         {
-            CatalogItem catalogItemUpdate = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
+            CatalogItem catalogItem = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
 
-            if (catalogItemUpdate == null)
+            if (catalogItem == null)
             {
                 throw new ArgumentNullException($"There is no CatalogItem with this {catalogRequest.Id}");
             }
             
-            catalogRequest.Adapt(catalogItemUpdate);
+            catalogRequest.Adapt(catalogItem);
 
-            _context.Update(catalogItemUpdate);
+            _context.Update(catalogItem);
 
             await _context.SaveChangesAsync();
 
-            return catalogItemUpdate.Adapt<CatalogItemDto>();
+            return catalogItem.Id;
         }
 
         public async Task DeleteCatalogItemAsync(int id)
