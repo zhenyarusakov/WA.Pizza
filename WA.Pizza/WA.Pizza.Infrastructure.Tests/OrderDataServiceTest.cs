@@ -47,7 +47,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.Baskets.AddRangeAsync(baskets);
+            context.Baskets.AddRange(baskets);
             await context.SaveChangesAsync();
             Basket basket = baskets.First();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
@@ -81,7 +81,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.Baskets.AddRangeAsync(baskets);
+            context.Baskets.AddRange(baskets);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
             Basket basket = baskets.First();
@@ -104,7 +104,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.Baskets.AddRangeAsync(baskets);
+            context.Baskets.AddRange(baskets);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
             int basketId = baskets.First().Id + 5;
@@ -123,7 +123,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.Baskets.AddRangeAsync(baskets);
+            context.Baskets.AddRange(baskets);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
@@ -161,8 +161,8 @@ namespace WA.Pizza.Infrastructure.Tests
             };
 
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItem);
-            await context.Baskets.AddRangeAsync(basket);
+            context.CatalogItems.AddRange(catalogItem);
+            context.Baskets.AddRange(basket);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
@@ -199,8 +199,8 @@ namespace WA.Pizza.Infrastructure.Tests
             };
 
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItem);
-            await context.Baskets.AddRangeAsync(basket);
+            context.CatalogItems.AddRange(catalogItem);
+            context.Baskets.AddRange(basket);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new OrderDataService(context, new BasketDataService(context));
 
@@ -217,7 +217,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             Order filledOrders = OrderHelper.CreateOneFilledOrders();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.Orders.AddRangeAsync(filledOrders);
+            context.Orders.AddRange(filledOrders);
             await context.SaveChangesAsync();
             OrderDataService orderService = new OrderDataService(context, new BasketDataService(context));
             int orderId = filledOrders.Id;

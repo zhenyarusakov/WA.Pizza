@@ -12,7 +12,7 @@ namespace WA.Pizza.Infrastructure.Data.MapperConfiguration
         {
             TypeAdapterConfig<BasketItem, OrderItem>
                 .NewConfig()
-                .Ignore(x=>x.CatalogItem);
+                .Ignore(x=>x.Id, x=>x.CatalogItem);
 
             TypeAdapterConfig<Basket, Order>
                 .NewConfig()

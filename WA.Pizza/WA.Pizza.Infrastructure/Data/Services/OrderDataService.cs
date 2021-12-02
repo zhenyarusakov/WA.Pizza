@@ -68,7 +68,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             await _context.SaveChangesAsync();
 
-            await _basketDataService.CleanBasketItemsAsync(basketId);
+            await _basketDataService.CleanBasketAsync(basketId);
 
             return order.Id;
         }

@@ -15,31 +15,10 @@ namespace WA.Pizza.Api.Controllers
             _service = service;
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetOrder(int id)
-        //{
-        //    var result = await _service.GetOrderAsync(id);
-
-        //    return Ok(result);
-        //}
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetOrders()
-        //{
-        //    var result = await _service.GetOrdersAsync();
-
-        //    if (!result.Any())
-        //    {
-        //        return NoContent();
-        //    }
-
-        //    return Ok(result);
-        //}
-
         [HttpPost]
         public async Task<IActionResult> CreateOrder(int basketId, int userId)
         {
-            var result = await _service.CreateOrderAsync(basketId, userId);
+            int result = await _service.CreateOrderAsync(basketId, userId);
 
             return Ok(result);
         }

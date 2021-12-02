@@ -57,7 +57,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return item.Id;
         }
 
-        public async Task CleanBasketItemsAsync(int id)
+        public async Task CleanBasketAsync(int id)
         {
             BasketItem[] basketItems = await _context.BasketItems.Where(x => x.BasketId == id).ToArrayAsync();
             

@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using WA.Pizza.Core.Entities;
 
 namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {

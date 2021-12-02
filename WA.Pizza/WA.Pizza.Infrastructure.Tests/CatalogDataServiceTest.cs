@@ -21,7 +21,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
+            context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
             CatalogDataService service = new CatalogDataService(context);
             int returnFirstId = catalogItems.First().Id;
@@ -34,30 +34,12 @@ namespace WA.Pizza.Infrastructure.Tests
         }
 
         [Fact]
-        public async Task Exception_will_return_for_non_existent_CatalogItem_id()
-        {
-            // Arrange
-            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
-            await context.SaveChangesAsync();
-            CatalogDataService catalogDataService = new CatalogDataService(context);
-            int nonExistentId = catalogItems.First().Id + 5;
-
-            // Act
-            Func<Task> func = async () => await catalogDataService.GetCatalogAsync(nonExistentId);
-
-            // Assert
-            await func.Should().ThrowAsync<ArgumentNullException>();
-        }
-
-        [Fact]
         public async Task Succeed_return_all_existed_CatalogItems()
         {
             // Arrange
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
+            context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new CatalogDataService(context);
 
@@ -71,10 +53,10 @@ namespace WA.Pizza.Infrastructure.Tests
         [Fact]
         public async Task Successful_creation_catalogItem()
         {
-            // Arrange
+            // Arrange  
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
+            context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new CatalogDataService(context);
 
@@ -101,7 +83,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
+            context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new CatalogDataService(context);
 
@@ -131,7 +113,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
+            context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new CatalogDataService(context);
 
@@ -155,7 +137,7 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
+            context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new CatalogDataService(context);
             int catalogId = catalogItems.First().Id;
@@ -167,30 +149,6 @@ namespace WA.Pizza.Infrastructure.Tests
 
             // Assert
             result.Should().BeNull();
-        }
-
-        [Fact]
-        public async Task Exception_will_thrown_when_deleting_non_existent_Id()
-        {
-            // Arrange
-            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
-            await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            await context.CatalogItems.AddRangeAsync(catalogItems);
-            await context.SaveChangesAsync();
-            CatalogDataService catalogDataService = new CatalogDataService(context);
-
-            int newCatalogId = catalogItems.First().Id + 3;
-
-            UpdateCatalogRequest catalogRequest = new UpdateCatalogRequest
-            {
-                Id = newCatalogId
-            };
-
-            // Act
-            Func<Task> func = async () => await catalogDataService.UpdateCatalogItemAsync(catalogRequest);
-
-            // Assert
-            await func.Should().ThrowAsync<ArgumentNullException>();
         }
     }
 }

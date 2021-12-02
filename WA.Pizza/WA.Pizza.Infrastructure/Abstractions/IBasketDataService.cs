@@ -9,6 +9,6 @@ namespace WA.Pizza.Infrastructure.Abstractions
         Task<BasketDto[]> GetAllBasketsAsync();
         Task<int> CreateBasketAsync(CreateBasketRequest basketRequest);
         Task<int> UpdateBasketItemAsync(UpdateBasketItemRequest basketRequest);
-        Task CleanBasketItemsAsync(int id);
+        Task CleanBasketAsync(int id);
     }
 }
