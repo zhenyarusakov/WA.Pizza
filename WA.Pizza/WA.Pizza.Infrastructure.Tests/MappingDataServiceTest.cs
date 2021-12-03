@@ -14,7 +14,7 @@ namespace WA.Pizza.Infrastructure.Tests
         public MappingDataServiceTest()
         {
             MapperGlobal.Configure();
-        } 
+        }
 
         [Fact]
         public void Checking_mapping_of_UpdateBasketRequest_to_Basket()

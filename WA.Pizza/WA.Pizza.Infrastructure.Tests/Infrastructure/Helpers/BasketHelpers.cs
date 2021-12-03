@@ -13,7 +13,6 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 
             baskets.Add(new Basket
             {
-                UserId = 1,
                 LastModified = DateTime.Now,
                 BasketItems = new List<BasketItem>
                 {
@@ -42,7 +41,6 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 
             baskets.Add(new Basket
             {
-                UserId = 1,
                 LastModified = DateTime.Now,
                 BasketItems = new List<BasketItem>
                 {

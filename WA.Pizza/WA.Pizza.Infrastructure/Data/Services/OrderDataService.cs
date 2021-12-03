@@ -26,7 +26,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
         {
             return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
-
+        
         public async Task<int> CreateOrderAsync(int basketId, int userId)
         {
             Basket basket = await _context.Baskets
@@ -72,7 +72,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             return order.Id;
         }
-        
+
         public async Task<int> UpdateOrderStatus(int orderId, OrderStatus status)
         {
             Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);

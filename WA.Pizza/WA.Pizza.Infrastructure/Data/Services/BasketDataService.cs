@@ -57,13 +57,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return item.Id;
         }
 
-        public async Task CleanBasketAsync(int id)
+        public async Task CleanBasketAsync(int basketId)
         {
-            BasketItem[] basketItems = await _context.BasketItems.Where(x => x.BasketId == id).ToArrayAsync();
+            BasketItem[] basketItems = await _context.BasketItems.Where(x => x.BasketId == basketId).ToArrayAsync();
             
             if (!basketItems.Any())
             {
-                throw new ArgumentNullException($"There is no BasketItem with this {id}");
+                throw new ArgumentNullException($"There is no BasketItem with this {basketId}");
             }
 
             _context.BasketItems.RemoveRange(basketItems);
