@@ -7,30 +7,36 @@ using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data.Services;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 using WA.Pizza.Infrastructure.Tests.Customizations;
+using WA.Pizza.Infrastructure.Data.MapperConfiguration;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 
 namespace WA.Pizza.Infrastructure.Tests
 {
     public class CatalogDataServiceTest
     {
-        [Fact]
-        public async Task Return_one_existing_directory_success()
+        public CatalogDataServiceTest()
+        {
+            MapperGlobal.Configure();
+        }
+
+        [Theory, CustomAutoData]
+        public async Task Return_one_existing_directory_success(CatalogItem item)
         {
             // Arrange
-            ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.CatalogItems.AddRange(catalogItems);
+            context.CatalogItems.AddRange(item);
             await context.SaveChangesAsync();
             CatalogDataService service = new (context);
-            int returnFirstId = catalogItems.First().Id;
+            int returnFirstId = item.Id;
 
             // Act
-            CatalogItemDto catalogItemDto = await service.GetCatalogAsync(returnFirstId);
+            CatalogItemDto catalogItem = await service.GetCatalogAsync(returnFirstId);
 
             // Assert
-            catalogItemDto.Id.Should().Be(returnFirstId);
+            CatalogItem firstItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
+            firstItem!.Id.Should().Be(catalogItem.Id);
         }
 
         [Fact]
@@ -47,22 +53,21 @@ namespace WA.Pizza.Infrastructure.Tests
             CatalogItemDto[] catalogItem = await catalogDataService.GetAllCatalogsAsync();
 
             // Assert
-            catalogItem.Should().HaveCount(catalogItems.Count());
+            int catalogItemsCount = context.CatalogItems.Count();
+            catalogItemsCount!.Should().Be(catalogItems.Count);
         }
 
-        [Theory, CustomAutoData]
-        public async Task Creation_catalogItem_success(CatalogItem catalogItems)
+        [Fact]
+        public async Task Creation_catalogItem_success()
         {
             // Arrange  
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.CatalogItems.AddRange(catalogItems);
-            await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new (context);
 
             CreateCatalogRequest catalogRequest = new ()
             {
                 Name = "Name",
-                Quantity = catalogItems.Quantity
+                Quantity = 1
             };
 
             // Act
@@ -72,25 +77,25 @@ namespace WA.Pizza.Infrastructure.Tests
             CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
             catalogItem.Should().NotBeNull();
             catalogItem!.Name.Should().Be(catalogRequest.Name);
-            catalogItem!.Name.Should().NotBe(catalogItems.Name);
+            catalogItem!.Quantity.Should().Be(catalogRequest.Quantity);
         }
 
         [Theory, CustomAutoData]
-        public async Task Change_item_quantity_CatalogItem_success(CatalogItem catalogItems)
+        public async Task Change_item_quantity_CatalogItem_success(CatalogItem item)
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.CatalogItems.AddRange(catalogItems);
+            context.CatalogItems.AddRange(item);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new (context);
-
-            int newQuantity = catalogItems.Quantity + 2;
-
+            
             UpdateCatalogRequest catalogRequest = new ()
             {
-                Id = catalogItems.Id,
-                Name = catalogItems.Name,
-                Quantity = newQuantity
+                Id = item.Id,
+                Name = "Name",
+                Quantity = 3,
+                Description = "Description",
+                Price = 12
             };
 
             // Act
@@ -99,26 +104,28 @@ namespace WA.Pizza.Infrastructure.Tests
             // Assert
             CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
             catalogItem.Should().NotBeNull();
+            catalogItem!.Name.Should().Be(catalogItem.Name);
             catalogItem!.Quantity.Should().Be(catalogItem.Quantity);
+            catalogItem!.Description.Should().Be(catalogItem.Description);
+            catalogItem!.Price.Should().Be(catalogItem.Price);
         }
 
         [Theory, CustomAutoData]
-        public async Task Deleting_one_item_the_CatalogItem_success(CatalogItem catalogItems)
+        public async Task Deleting_catalogItem_success(CatalogItem catalogItem)
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.CatalogItems.AddRange(catalogItems);
+            context.CatalogItems.AddRange(catalogItem);
             await context.SaveChangesAsync();
             CatalogDataService catalogDataService = new (context);
-            int catalogId = catalogItems.Id;
+            int catalogId = catalogItem.Id;
 
             // Act
             await catalogDataService.DeleteCatalogItemAsync(catalogId);
 
-            CatalogItem result = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogId);
-
             // Assert
-            result.Should().BeNull();
+            CatalogItem item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
+            item!.Should().BeNull();
         }
     }
 }

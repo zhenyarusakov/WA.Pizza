@@ -14,9 +14,7 @@ namespace WA.Pizza.Infrastructure.Data.MapperConfiguration
                 .NewConfig()
                 .Ignore(
                     x => x.Id,
-                    x => x.CatalogItem,
-                    x=>x.OrderId,
-                    x=>x.Order);
+                    x => x.CatalogItem);
 
             TypeAdapterConfig<Basket, Order>
                 .NewConfig()
@@ -33,30 +31,4 @@ namespace WA.Pizza.Infrastructure.Data.MapperConfiguration
 
         }
     }
-    //public class MappingRegistration : IRegister
-    //{
-    //    void IRegister.Register(TypeAdapterConfig config)
-    //    {
-    //        config
-    //            .NewConfig<BasketItem, OrderItem>()
-    //            .Ignore(
-    //                x => x.Id,
-    //                x => x.CatalogItem,
-    //                x => x.OrderId,
-    //                x => x.Order);
-
-    //        config
-    //            .NewConfig<Basket, Order>()
-    //            .Ignore(x => x.Id)
-    //            .Map(dist => dist.OrderItems, s => s.BasketItems);
-
-    //        config
-    //            .NewConfig<OrderItem, OrderItemDto>();
-
-    //        config
-    //            .NewConfig<Order, OrderDto>()
-    //            .Map(dst => dst.OrderItemDtos, src => src.OrderItems);
-
-    //    }
-    //}
 }

@@ -1,22 +1,26 @@
 ﻿using Xunit;
-using System;
+using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.BasketDomain;
-using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
+using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
-using WA.Pizza.Infrastructure.Tests.Customizations;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 
 namespace WA.Pizza.Infrastructure.Tests
 {
     public class BasketDataServiceTest
     {
+        public BasketDataServiceTest()
+        {
+            MapperGlobal.Configure();
+        }
+
         [Fact]
         public async Task Return_all_existed_baskets_success()
         {
@@ -25,31 +29,27 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Baskets.AddRange(baskets);
             await context.SaveChangesAsync();
-
             BasketDataService basketService = new (context);
 
             // Act
             BasketDto[] allBaskets = await basketService.GetAllBasketsAsync();
-            
+
             // Assert
-            allBaskets.Should().HaveCount(baskets.Count);
+            int basketsCount = context.BasketItems.Count();
+            basketsCount!.Should().Be(baskets.Count);
         }
 
-        [Theory, CustomAutoData]
-        public async Task Create_not_empty_basket_success(CatalogItem catalogItem)
+        [Fact]
+        public async Task Create_not_empty_basket_success()
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
 
-            context.CatalogItems.Add(catalogItem);
-            await context.SaveChangesAsync();
-
             BasketItemDto basketItemDto = new ()
             {
-                CatalogItemId = catalogItem.Id,
-                Name = catalogItem.Name,
-                Price = catalogItem.Price,
-                Quantity = catalogItem.Quantity
+                Name = "Name",
+                Price = 12,
+                Quantity = 2
             };
             CreateBasketRequest createBasketRequest = new ()
             {
@@ -74,20 +74,25 @@ namespace WA.Pizza.Infrastructure.Tests
         public async Task Change_item_quantity_success()
         {
             // Arrange
-            BasketItem item = new()
+            Basket item = new ()
             {
-                Quantity = 2,
-                Description = "Dessert",
-                Name = "Dessert",
-                Price = 12,
-                Basket = new Basket()
+                BasketItems = new List<BasketItem>()
+                {
+                    new ()
+                    {
+                        Quantity = 2,
+                        Description = "Dessert",
+                        Name = "Dessert",
+                        Price = 12,
+                        Basket = new Basket()
+                    }
+                }
             };
-
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.BasketItems.AddRange(item);
+            context.Baskets.AddRange(item);
             await context.SaveChangesAsync();
 
-            int newQuantity = item.Quantity + 1;
+            int newQuantity = item.BasketItems.First().Quantity + 1;
             UpdateBasketItemRequest updateBasketRequest = new()
             {
                 Id = item.Id,
@@ -110,28 +115,38 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-
-            BasketItem basket = new ()
+            
+            Basket basketItem = new Basket
             {
-                Quantity = 2,
-                Name = "Dessert",
+                BasketItems = new List<BasketItem>
+                {
+                    new BasketItem()
+                    {
+                        Quantity = 2,
+                        Basket = new Basket(),
+                        Description = "qwe",
+                        Name = "qwe"
+                    }
+                }
             };
 
-            context.Add(basket);
+            context.Add(basketItem);
             await context.SaveChangesAsync();
             BasketDataService basketService = new (context);
 
             UpdateBasketItemRequest basketRequest = new ()
             {
-                Id = basket.Id,
+                Id = basketItem.Id,
+                Name = "qwe",
                 Quantity = 0,
             };
 
             // Act
-            Func<Task> act = async () => await basketService.UpdateBasketItemAsync(basketRequest);
+            int basketId =  await basketService.UpdateBasketItemAsync(basketRequest);
 
             // Assert
-            await act.Should().ThrowAsync<ArgumentException>();
+            BasketItem item = await context.BasketItems.FirstOrDefaultAsync(x => x.Id == basketId);
+            item!.Should().BeNull();
         }
 
         [Fact]

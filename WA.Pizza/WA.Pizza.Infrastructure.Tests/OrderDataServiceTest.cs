@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
-using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
+using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 
 namespace WA.Pizza.Infrastructure.Tests
@@ -22,6 +22,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             MapperGlobal.Configure();
         }
+
         [Fact]
         public async Task Return_all_existed_Orders()
         {
@@ -30,14 +31,14 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Orders.AddRange(orders);
             await context.SaveChangesAsync();
-
             OrderDataService orderService = new (context, new BasketDataService(context));
 
             //Act
             OrderDto[] allOrders = await orderService.GetAllOrdersAsync();
 
             //Assert
-            allOrders.Should().HaveCount(orders.Count());
+            int ordersCount = context.CatalogItems.Count();
+            ordersCount!.Should().Be(orders.Count);
         }
 
         [Fact]
@@ -77,21 +78,21 @@ namespace WA.Pizza.Infrastructure.Tests
         public async Task Creation_order_success()
         {
             // Arrange
-            Basket baskets = BasketHelpers.CreateOneFilledShoppingBasket();
+            Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.Baskets.AddRange(baskets);
+            context.Baskets.AddRange(basket);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new (context, new BasketDataService(context));
 
             // Act
-            int orderId = await orderDataService.CreateOrderAsync(baskets.Id, baskets.UserId.GetValueOrDefault());
+            int orderId = await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
 
             // Assert
             Order order = await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
             order.Should().NotBeNull();
-            order!.Id.Should().Be(baskets.Id);
+            order!.Id.Should().Be(basket.Id);
             order!.Should().BeEquivalentTo(
-                baskets,
+                basket,
                 options => options.Excluding(x => x.Id).Excluding(x=>x.UserId).ExcludingMissingMembers());
         }
 
