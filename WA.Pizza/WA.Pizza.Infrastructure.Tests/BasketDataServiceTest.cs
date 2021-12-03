@@ -35,7 +35,7 @@ namespace WA.Pizza.Infrastructure.Tests
             BasketDto[] allBaskets = await basketService.GetAllBasketsAsync();
 
             // Assert
-            int basketsCount = context.BasketItems.Count();
+            int basketsCount = context.Baskets.Count();
             basketsCount!.Should().Be(baskets.Count);
         }
 

@@ -37,7 +37,7 @@ namespace WA.Pizza.Infrastructure.Tests
             OrderDto[] allOrders = await orderService.GetAllOrdersAsync();
 
             //Assert
-            int ordersCount = context.CatalogItems.Count();
+            int ordersCount = context.Orders.Count();
             ordersCount!.Should().Be(orders.Count);
         }
 
