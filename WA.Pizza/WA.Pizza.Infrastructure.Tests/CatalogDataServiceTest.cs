@@ -22,7 +22,7 @@ namespace WA.Pizza.Infrastructure.Tests
         }
 
         [Theory, CustomAutoData]
-        public async Task Return_one_existing_directory_success(CatalogItem item)
+        public async Task Return_one_CatalogItems_success(CatalogItem item)
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
@@ -37,10 +37,13 @@ namespace WA.Pizza.Infrastructure.Tests
             // Assert
             CatalogItem firstItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
             firstItem!.Id.Should().Be(catalogItem.Id);
+            firstItem!.Quantity.Should().Be(catalogItem.Quantity);
+            firstItem!.Name.Should().Be(catalogItem.Name);
+            firstItem!.Description.Should().Be(catalogItem.Description);
         }
 
         [Fact]
-        public async Task Return_all_existed_CatalogItems_success()
+        public async Task Return_all_CatalogItems_success()
         {
             // Arrange
             ICollection<CatalogItem> catalogItems = CatalogHelper.CreateListOfFilledCatalogItems();
@@ -50,11 +53,17 @@ namespace WA.Pizza.Infrastructure.Tests
             CatalogDataService catalogDataService = new (context);
 
             // Act
-            CatalogItemDto[] catalogItem = await catalogDataService.GetAllCatalogsAsync();
+            CatalogItemDto[] getAllCatalogItems = await catalogDataService.GetAllCatalogsAsync();
 
             // Assert
-            int catalogItemsCount = context.CatalogItems.Count();
-            catalogItemsCount!.Should().Be(catalogItems.Count);
+            DbSet<CatalogItem> contextCatalogItems = context.CatalogItems;
+            getAllCatalogItems.Should().HaveCount(contextCatalogItems.Count());
+            getAllCatalogItems.Should().Equal(contextCatalogItems, (actual, expected) =>
+                actual.Id == expected.Id &&
+                actual.Quantity == expected.Quantity &&
+                actual.Price == expected.Price &&
+                actual.Description == expected.Description &&
+                actual.Name == expected.Name);
         }
 
         [Fact]
@@ -66,8 +75,10 @@ namespace WA.Pizza.Infrastructure.Tests
 
             CreateCatalogRequest catalogRequest = new ()
             {
-                Name = "Name",
-                Quantity = 1
+                Name = "Pizza",
+                Quantity = 1,
+                Description = "Pizza",
+                Price = 12
             };
 
             // Act
@@ -78,10 +89,12 @@ namespace WA.Pizza.Infrastructure.Tests
             catalogItem.Should().NotBeNull();
             catalogItem!.Name.Should().Be(catalogRequest.Name);
             catalogItem!.Quantity.Should().Be(catalogRequest.Quantity);
+            catalogItem!.Description.Should().Be(catalogRequest.Description);
+            catalogItem!.Price.Should().Be(catalogRequest.Price);
         }
 
         [Theory, CustomAutoData]
-        public async Task Change_item_quantity_CatalogItem_success(CatalogItem item)
+        public async Task Change_CatalogItem_success(CatalogItem item)
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
@@ -104,10 +117,10 @@ namespace WA.Pizza.Infrastructure.Tests
             // Assert
             CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
             catalogItem.Should().NotBeNull();
-            catalogItem!.Name.Should().Be(catalogItem.Name);
-            catalogItem!.Quantity.Should().Be(catalogItem.Quantity);
-            catalogItem!.Description.Should().Be(catalogItem.Description);
-            catalogItem!.Price.Should().Be(catalogItem.Price);
+            catalogItem!.Name.Should().Be(catalogRequest.Name);
+            catalogItem!.Quantity.Should().Be(catalogRequest.Quantity);
+            catalogItem!.Description.Should().Be(catalogRequest.Description);
+            catalogItem!.Price.Should().Be(catalogRequest.Price);
         }
 
         [Theory, CustomAutoData]

@@ -26,18 +26,8 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
                 Name = "Drinks",
                 Description = "Drinks",
                 Price = 12,
-                Quantity = 10,
+                Quantity = 15,
                 CatalogType = CatalogType.Drinks
-            });
-
-            catalogs.Add(new CatalogItem
-            {
-                Id = 3,
-                Name = "Snacks",
-                Description = "Snacks",
-                Price = 12,
-                Quantity = 10,
-                CatalogType = CatalogType.Snacks
             });
 
             return catalogs;

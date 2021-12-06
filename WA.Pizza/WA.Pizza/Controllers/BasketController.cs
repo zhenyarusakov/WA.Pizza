@@ -9,7 +9,7 @@ namespace WA.Pizza.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BasketController: ControllerBase
+    public class BasketController: Controller
     {
         private readonly IBasketDataService _service;
 
@@ -34,7 +34,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateBasketRequest modifyDto)
         {
-            var result = await _service.CreateBasketAsync(modifyDto);
+            int result = await _service.CreateBasketAsync(modifyDto);
 
             return Ok(result);
         }
@@ -42,7 +42,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateBasket([FromBody] UpdateBasketItemRequest modifyDto)
         {
-            var result = await _service.UpdateBasketItemAsync(modifyDto);
+            int result = await _service.UpdateBasketItemAsync(modifyDto);
 
             return Ok(result);
         }

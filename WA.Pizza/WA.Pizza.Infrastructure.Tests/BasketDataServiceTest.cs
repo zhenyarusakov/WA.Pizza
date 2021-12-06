@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
@@ -25,18 +26,22 @@ namespace WA.Pizza.Infrastructure.Tests
         public async Task Return_all_existed_baskets_success()
         {
             // Arrange
-            ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
+            ICollection<Basket> expectedBaskets = BasketHelpers.CreateListOfFilledBaskets();
+
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.Baskets.AddRange(baskets);
+            context.Baskets.AddRange(expectedBaskets);
             await context.SaveChangesAsync();
+
             BasketDataService basketService = new (context);
 
             // Act
-            BasketDto[] allBaskets = await basketService.GetAllBasketsAsync();
+            BasketDto[] actualBaskets = await basketService.GetAllBasketsAsync();
 
             // Assert
-            int basketsCount = context.Baskets.Count();
-            basketsCount!.Should().Be(baskets.Count);
+            DbSet<Basket> baskets = context.Baskets;
+            actualBaskets.Should().HaveCount(baskets.Count());
+            actualBaskets.Should().Equal(baskets, (actual, expected) => 
+                actual.Id == expected.Id);
         }
 
         [Fact]
@@ -71,10 +76,10 @@ namespace WA.Pizza.Infrastructure.Tests
         }
 
         [Fact]
-        public async Task Change_item_quantity_success()
+        public async Task Change_BasketItems_quantity_success()
         {
             // Arrange
-            Basket item = new ()
+            Basket basket = new ()
             {
                 BasketItems = new List<BasketItem>()
                 {
@@ -89,13 +94,13 @@ namespace WA.Pizza.Infrastructure.Tests
                 }
             };
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.Baskets.AddRange(item);
+            context.Baskets.Add(basket);
             await context.SaveChangesAsync();
 
-            int newQuantity = item.BasketItems.First().Quantity + 1;
+            int newQuantity = basket.BasketItems.First().Quantity + 1;
             UpdateBasketItemRequest updateBasketRequest = new()
             {
-                Id = item.Id,
+                Id = basket.Id,
                 Quantity = newQuantity
             };
 
@@ -111,12 +116,12 @@ namespace WA.Pizza.Infrastructure.Tests
         }
 
         [Fact]
-        public async Task Not_possible_create_BasketItem_with_quantity_equal_or_less_zero()
+        public async Task Unable_to_create_BasketItem_with_existing_id()
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            
-            Basket basketItem = new Basket
+
+            Basket basket = new Basket
             {
                 BasketItems = new List<BasketItem>
                 {
@@ -130,13 +135,51 @@ namespace WA.Pizza.Infrastructure.Tests
                 }
             };
 
-            context.Add(basketItem);
+            context.Add(basket);
+            await context.SaveChangesAsync();
+            BasketDataService basketService = new(context);
+
+            UpdateBasketItemRequest basketRequest = new()
+            {
+                Id = 2,
+                Name = "qwe",
+                Quantity = 2,
+            };
+
+            // Act
+            Func<Task> act = async () => await basketService.UpdateBasketItemAsync(basketRequest);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Fact]
+        public async Task Not_possible_create_BasketItem_with_quantity_equal_or_less_zero()
+        {
+            // Arrange
+            await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            
+            Basket basket = new Basket
+            {
+                BasketItems = new List<BasketItem>
+                {
+                    new BasketItem()
+                    {
+                        Quantity = 2,
+                        Basket = new Basket(),
+                        Description = "qwe",
+                        Name = "qwe"
+                    }
+                }
+            };
+
+            context.Add(basket);
             await context.SaveChangesAsync();
             BasketDataService basketService = new (context);
 
             UpdateBasketItemRequest basketRequest = new ()
             {
-                Id = basketItem.Id,
+                Id = basket.Id,
                 Name = "qwe",
                 Quantity = 0,
             };

@@ -1,12 +1,14 @@
+using WA.Pizza.Api.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using WA.Pizza.Api.Extensions;
 using WA.Pizza.Infrastructure.Abstractions;
-using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Data.Services;
+using Microsoft.Extensions.DependencyInjection;
+using WA.Pizza.Api.GlobalException;
+using WA.Pizza.Infrastructure.Data.MapperConfiguration;
+
 
 namespace WA.Pizza.Api
 {
@@ -17,15 +19,14 @@ namespace WA.Pizza.Api
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.ConfigureServicesExtension();
-            services.AddDbContextExtensions(Configuration);
-            services.AddControllersWithViewsExtensions();
-            services.AddControllersExtensions();
+            services.ConfigureServices();
+            services.AddDbContext(Configuration);
+            ServiceCollectionExtensions.AddControllersWithViews(services);
 
             MapperGlobal.Configure();
 
@@ -38,26 +39,16 @@ namespace WA.Pizza.Api
         {
             if (env.IsDevelopment())
             {
+                app.UseMiddleware<ErrorHandlerMiddleware>();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WA.Pizza v1"));
-                app.UseExceptionHandler("/error-local-development");
-            }
-            else
-            {
-                app.UseExceptionHandler("/error");
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
         {
             return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
-        
+
         public async Task<int> CreateOrderAsync(int basketId, int userId)
         {
             Basket basket = await _context.Baskets

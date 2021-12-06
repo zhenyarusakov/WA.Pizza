@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Fare;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.OrderDomain;
@@ -13,6 +14,7 @@ using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
+using Xunit.Sdk;
 
 namespace WA.Pizza.Infrastructure.Tests
 {
@@ -24,7 +26,7 @@ namespace WA.Pizza.Infrastructure.Tests
         }
 
         [Fact]
-        public async Task Return_all_existed_Orders()
+        public async Task Return_all_Orders()
         {
             //Arrange
             ICollection<Order> orders = OrderHelper.CreateListOfFilledOrders();
@@ -37,52 +39,27 @@ namespace WA.Pizza.Infrastructure.Tests
             OrderDto[] allOrders = await orderService.GetAllOrdersAsync();
 
             //Assert
-            int ordersCount = context.Orders.Count();
-            ordersCount!.Should().Be(orders.Count);
-        }
-
-        [Fact]
-        public async Task Checking_the_equality_value_Basket_and_Order()
-        {
-            // Arrange
-            ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
-            await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.Baskets.AddRange(baskets);
-            await context.SaveChangesAsync();
-            Basket basket = baskets.First();
-            OrderDataService orderDataService = new (context, new BasketDataService(context));
-
-            Dictionary<int, int> basketItems = basket.BasketItems.ToDictionary(x => x.CatalogItemId, x => x.Quantity);
-
-            // Act
-            int orderId = await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
-
-            Order order = await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
-            
-            Dictionary<int, int> orderItems = order!.OrderItems.ToDictionary(x => x.CatalogItemId, x => x.Quantity);
-
-            // Assert
-            foreach (KeyValuePair<int, int> basketItem in basketItems)
-            {
-                bool isOrderItemExists = orderItems.TryGetValue(basketItem.Key, out int orderItemQuantity);
-
-                isOrderItemExists.Should().BeTrue();
-
-                bool isQuantityMatch = basketItem.Value == orderItemQuantity;
-
-                isQuantityMatch.Should().BeTrue();
-            }
+            var contextOrders = await context.Orders.ToArrayAsync();
+            allOrders.Should().HaveCount(contextOrders.Length);
+            allOrders.Should().Equal(contextOrders, (actual, expected) =>
+                actual.Id == expected.Id);
+            allOrders.Should().OnlyHaveUniqueItems(x => x.Status == OrderStatus.Dispatch);
         }
 
         [Fact]
         public async Task Creation_order_success()
         {
             // Arrange
-            Basket basket = BasketHelpers.CreateOneFilledShoppingBasket();
+            ICollection<CatalogItem> catalogItem = CatalogHelper.CreateListOfFilledCatalogItems();
+            Basket basket = BasketHelpers.CreateCollectionBaskets();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
+            context.CatalogItems.AddRange(catalogItem);
             context.Baskets.AddRange(basket);
             await context.SaveChangesAsync();
-            OrderDataService orderDataService = new (context, new BasketDataService(context));
+            
+            BasketItem[] newBasketItem = new BasketItem [basket.BasketItems.Count];
+            basket.BasketItems.CopyTo(newBasketItem, 0);
+            OrderDataService orderDataService = new(context, new BasketDataService(context));
 
             // Act
             int orderId = await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
@@ -90,31 +67,52 @@ namespace WA.Pizza.Infrastructure.Tests
             // Assert
             Order order = await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
             order.Should().NotBeNull();
-            order!.Id.Should().Be(basket.Id);
-            order!.Should().BeEquivalentTo(
-                basket,
-                options => options.Excluding(x => x.Id).Excluding(x=>x.UserId).ExcludingMissingMembers());
+            order!.OrderItems.Select(x => x.Quantity).Should()
+                .BeEquivalentTo(newBasketItem.Select(x=>x.Quantity));
+            order!.Status.Should().Be(OrderStatus.InProcessing);
         }
 
         [Fact]
-        public async Task Checking_for_the_presence_BasketItems()
+        public async Task Not_possible_create_order_with_nonexistent_CatalogItem()
         {
             // Arrange
-            ICollection<Basket> baskets = BasketHelpers.CreateListOfFilledBaskets();
+            CatalogItem catalogItem = new CatalogItem
+            {
+                Id = 1,
+                Name = "name",
+                Description = "description",
+                Quantity = 10
+            };
+
+            Basket basket = new Basket
+            {
+                BasketItems = new List<BasketItem>
+                {
+                    new()
+                    {
+                        Name = "name",
+                        Description = "description",
+                        CatalogItemId = 5,
+                        Quantity = 1
+                    }
+                }
+            };
+
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.Baskets.AddRange(baskets);
+            context.CatalogItems.Add(catalogItem);
+            context.Baskets.Add(basket);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new (context, new BasketDataService(context));
 
             // Act
-            IEnumerable<ICollection<BasketItem>> catalogItemIds = baskets.Select(x => x.BasketItems);
+            Func<Task> func = async () => await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
 
             // Assert
-            catalogItemIds.Should().HaveCount(baskets.Count());
+            await func.Should().ThrowAsync<InvalidOperationException>();
         }
-        
+
         [Fact]
-        public async Task Exception_will_thrown_if_the_number_items_exceeds_the_allowed_value()
+        public async Task Not_possible_create_order_with_Quantity_more_allowed_value()
         {
             // Arrange
             CatalogItem catalogItem = new ()
@@ -133,7 +131,7 @@ namespace WA.Pizza.Infrastructure.Tests
                         Name = "name",
                         Description = "description",
                         CatalogItemId = 1,
-                        Quantity = 15
+                        Quantity = 1
                     }
                 }
             };

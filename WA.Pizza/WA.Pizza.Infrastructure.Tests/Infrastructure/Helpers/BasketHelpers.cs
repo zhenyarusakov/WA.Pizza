@@ -7,6 +7,33 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {
     public static class BasketHelpers
     {
+        public static Basket CreateCollectionBaskets()
+        {
+            return new Basket
+            {
+                LastModified = DateTime.Now,
+                BasketItems = new List<BasketItem>
+                {
+                    new BasketItem
+                    {
+                        Quantity = 2,
+                        Description = "Dessert",
+                        Name = "Dessert",
+                        Price = 12,
+                        CatalogItemId = 1
+                    },
+                    new BasketItem
+                    {
+                        Quantity = 3,
+                        Description = "Drink",
+                        Name = "Drink",
+                        Price = 12,
+                        CatalogItemId = 2
+                    }
+                }
+            };
+        }
+        
         public static ICollection<Basket> CreateListOfFilledBaskets()
         {
             List<Basket> baskets = new List<Basket>();

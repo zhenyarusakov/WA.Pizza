@@ -9,7 +9,7 @@ namespace WA.Pizza.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CatalogItemController: ControllerBase
+    public class CatalogItemController: Controller
     {
         private readonly ICatalogDataService _service;
 
@@ -21,7 +21,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCatalogItem(int id)
         {
-            var result = await _service.GetCatalogAsync(id);
+            CatalogItemDto result = await _service.GetCatalogAsync(id);
 
             return Ok(result);
         }
@@ -29,7 +29,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatalogItems()
         {
-            var result = await _service.GetAllCatalogsAsync();
+            CatalogItemDto[] result = await _service.GetAllCatalogsAsync();
 
             if (!result.Any())
             {
@@ -42,7 +42,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCatalogItem([FromBody] CreateCatalogRequest modifyDto)
         {
-            var result = await _service.CreateCatalogItemAsync(modifyDto);
+            int result = await _service.CreateCatalogItemAsync(modifyDto);
 
             return Ok(result);
         }
@@ -50,7 +50,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateCatalogItem([FromBody] UpdateCatalogRequest modifyDto)
         {
-            var result = await _service.UpdateCatalogItemAsync(modifyDto);
+            int result = await _service.UpdateCatalogItemAsync(modifyDto);
 
             return Ok(result);
         }
