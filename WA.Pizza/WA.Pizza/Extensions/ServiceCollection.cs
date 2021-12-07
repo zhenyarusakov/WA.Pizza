@@ -9,7 +9,7 @@ namespace WA.Pizza.Api.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void ConfigureServicesExtension(this IServiceCollection services)
+        public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
@@ -17,18 +17,19 @@ namespace WA.Pizza.Api.Extensions
             });
         }
 
-        public static void AddDbContextExtensions(this IServiceCollection services, IConfiguration configuration)
+        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<WAPizzaContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));
         }
 
-        public static void AddControllersWithViewsExtensions(this IServiceCollection services)
+        public static void AddControllersOptions(this IServiceCollection services)
         {
             services.AddControllers()
                 .AddJsonOptions(o => o.JsonSerializerOptions
                     .ReferenceHandler = ReferenceHandler.Preserve);
         }
+
     }
 }

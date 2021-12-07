@@ -1,8 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
-using WA.Pizza.Infrastructure.DTO.UserDTO;
 
 namespace WA.Pizza.Infrastructure.DTO.BasketDTO.Basket
 {
-    public record BasketDto(int Id, string Name, int UserId, UserDto User, ICollection<BasketItemDto> BasketItems);
+    public record BasketDto()
+    {
+        public int Id { get; init; }
+        public ICollection<BasketItemDto> BasketItems { get; init; }
+        public int? UserId { get; init; }
+        public DateTime? LastModified { get; init; }
+    }
 }

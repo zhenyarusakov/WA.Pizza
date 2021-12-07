@@ -12,18 +12,23 @@ namespace WA.Pizza.Infrastructure.Data.MapperConfiguration
         {
             TypeAdapterConfig<BasketItem, OrderItem>
                 .NewConfig()
-                .Ignore(x => x.Id);
+                .Ignore(
+                    x => x.Id,
+                    x => x.CatalogItem);
 
             TypeAdapterConfig<Basket, Order>
                 .NewConfig()
                 .Ignore(x => x.Id)
-                .Map(dst => dst.OrderItems, src => src.BasketItems);
+                .Map(dist => dist.OrderItems, s => s.BasketItems);
 
-            TypeAdapterConfig<OrderItem, OrderItemDto>.NewConfig();
-            
+            TypeAdapterConfig<OrderItem, OrderItemDto>
+                .NewConfig();
+
             TypeAdapterConfig<Order, OrderDto>
-                .NewConfig() 
+                .NewConfig()
                 .Map(dst => dst.OrderItemDtos, src => src.OrderItems);
+
+
         }
     }
 }

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\WA.Pizza.Infrastructure\WA.Pizza.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

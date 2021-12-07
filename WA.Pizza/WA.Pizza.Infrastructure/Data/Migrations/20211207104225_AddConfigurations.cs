@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace WA.Pizza.Infrastructure.Migrations
 {
-    public partial class AddConfiguration : Migration
+    public partial class AddConfigurations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,10 +45,10 @@ namespace WA.Pizza.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(20,8)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    CatalogBrandId = table.Column<int>(type: "int", nullable: false),
+                    CatalogBrandId = table.Column<int>(type: "int", nullable: true),
                     CatalogType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -57,8 +58,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                         name: "FK_CatalogItems_CatalogBrands_CatalogBrandId",
                         column: x => x.CatalogBrandId,
                         principalTable: "CatalogBrands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -93,8 +93,8 @@ namespace WA.Pizza.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -103,8 +103,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                         name: "FK_Baskets_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -113,7 +112,6 @@ namespace WA.Pizza.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -135,7 +133,7 @@ namespace WA.Pizza.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(20,8)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     CatalogItemId = table.Column<int>(type: "int", nullable: false),
@@ -168,11 +166,18 @@ namespace WA.Pizza.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(20,8)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    CatalogItemId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_CatalogItems_CatalogItemId",
+                        column: x => x.CatalogItemId,
+                        principalTable: "CatalogItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
@@ -205,6 +210,11 @@ namespace WA.Pizza.Infrastructure.Migrations
                 name: "IX_CatalogItems_CatalogBrandId",
                 table: "CatalogItems",
                 column: "CatalogBrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_CatalogItemId",
+                table: "OrderItems",
+                column: "CatalogItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",

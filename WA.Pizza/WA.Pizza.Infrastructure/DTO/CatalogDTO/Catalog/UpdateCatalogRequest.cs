@@ -1,9 +1,16 @@
 ﻿using System.Collections.Generic;
 using WA.Pizza.Core.Entities.BasketDomain;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
 {
-    public record UpdateCatalogRequest(int Id, string Name, int Quantity, string Description, decimal Price,
-        int CatalogBrandId, CatalogBrandDto CatalogBrand, ICollection<BasketItem> BasketItems);
+    public record UpdateCatalogRequest
+    {
+        public int Id { get; init; }
+        public string Name { get; init; }
+        public int Quantity { get; init; }
+        public string Description { get; init; }
+        public decimal Price { get; init; }
+        public int CatalogBrandId { get; init; }
+        public ICollection<BasketItem> BasketItems { get; init; }
+    }
 }

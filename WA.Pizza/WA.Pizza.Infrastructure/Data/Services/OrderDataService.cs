@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Infrastructure.Abstractions;
@@ -11,72 +12,83 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
-    public class OrderService : IOrderService
+    public class OrderDataService : IOrderDataService
     {
         private readonly WAPizzaContext _context;
-        public OrderService(WAPizzaContext context)
+        private readonly IBasketDataService _basketDataService;
+        public OrderDataService(WAPizzaContext context, IBasketDataService basketDataService)
         {
             _context = context;
+            _basketDataService = basketDataService;
         }
         
-        public Task<OrderDto[]> GetOrdersAsync()
+        public Task<OrderDto[]> GetAllOrdersAsync()
         {
             return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
 
-        public async Task<OrderDto> CreateOrderAsync(int basketId, int userId)
+        public async Task<int> CreateOrderAsync(int basketId, int userId)
         {
-            var basket = await _context.Baskets
+            Basket basket = await _context.Baskets
                 .Include(x => x.BasketItems)
-                .SingleOrDefaultAsync(x => x.Id == basketId);
-            
+                .ThenInclude(x => x.CatalogItem)
+                .FirstOrDefaultAsync(x => x.Id == basketId);
+
             if (basket == null)
             {
                 throw new ArgumentNullException($"There is no Basket with this {basketId}");
             }
-            
 
             IEnumerable<int> catalogItemIds = basket.BasketItems.Select(x => x.CatalogItemId);
-            
+
             Dictionary<int, CatalogItem> catalogItemsCountById = await _context.CatalogItems
                 .Where(x => catalogItemIds.Contains(x.Id))
                 .ToDictionaryAsync(x => x.Id);
 
-            foreach (var basketItem in basket.BasketItems)
+            foreach (BasketItem basketItem in basket.BasketItems)
             {
-                var isInStock = catalogItemsCountById.TryGetValue(basketItem.Id, out CatalogItem catalogItem);
+                bool isInStock = catalogItemsCountById.TryGetValue(basketItem.Id, out CatalogItem catalogItem);
 
                 if (!isInStock)
                 {
                     throw new InvalidOperationException($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                 }
 
-                catalogItem.Quantity -= basketItem.Quantity;
-
                 if (basketItem.Quantity > catalogItem.Quantity)
                 {
                     throw new InvalidOperationException("The number of selected items is greater than the allowed value");
                 }
+
+                catalogItem.Quantity -= basketItem.Quantity;
             }
 
-            var order = basket.Adapt<Order>();
+            Order order = basket.Adapt<Order>();
+
+            order.Status = OrderStatus.New;
 
             _context.Add(order);
 
             await _context.SaveChangesAsync();
 
-            return order.Adapt<OrderDto>();
+            await _basketDataService.CleanBasketAsync(basketId);
+
+            return order.Id;
         }
 
-        public async Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
+        public async Task<int> UpdateOrderStatus(int orderId, OrderStatus status)
         {
-            var order = await _context.Orders.SingleOrDefaultAsync(x => x.Id == orderId);
+            Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                throw new ArgumentException("Order not found");
+            }
 
             order.Status = status;
 
             await _context.SaveChangesAsync();
 
-            return order;
+            return order.Id;
         }
     }
 }

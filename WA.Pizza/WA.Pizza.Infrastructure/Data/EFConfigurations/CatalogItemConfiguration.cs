@@ -15,17 +15,11 @@ namespace WA.Pizza.Infrastructure.Data.EFConfigurations
 
             builder
                 .Property(x => x.Description)
-                .HasMaxLength(200)
-                .IsRequired();
+                .HasMaxLength(200);
 
             builder
                 .Property(x => x.Price)
                 .HasColumnType("decimal(20,8)");
-
-            builder
-                .HasMany(x => x.BasketItems)
-                .WithOne(x => x.CatalogItem)
-                .HasForeignKey(x => x.CatalogItemId);
         }
     }
 }
