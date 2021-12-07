@@ -38,7 +38,7 @@ namespace WA.Pizza.Infrastructure.Tests
             BasketDto[] actualBaskets = await basketService.GetAllBasketsAsync();
 
             // Assert
-            DbSet<Basket> baskets = context.Baskets;
+            Basket[] baskets = await context.Baskets.ToArrayAsync();
             actualBaskets.Should().HaveCount(baskets.Count());
             actualBaskets.Should().Equal(baskets, (actual, expected) => 
                 actual.Id == expected.Id);
@@ -113,44 +113,6 @@ namespace WA.Pizza.Infrastructure.Tests
             BasketItem basketItem = await context.BasketItems.FirstOrDefaultAsync(i => i.Id == basketItemId);
             basketItem.Should().NotBeNull();
             basketItem!.Quantity.Should().Be(newQuantity);
-        }
-
-        [Fact]
-        public async Task Unable_to_create_BasketItem_with_existing_id()
-        {
-            // Arrange
-            await using WAPizzaContext context = await DbContextFactory.CreateContext();
-
-            Basket basket = new Basket
-            {
-                BasketItems = new List<BasketItem>
-                {
-                    new BasketItem()
-                    {
-                        Quantity = 2,
-                        Basket = new Basket(),
-                        Description = "qwe",
-                        Name = "qwe"
-                    }
-                }
-            };
-
-            context.Add(basket);
-            await context.SaveChangesAsync();
-            BasketDataService basketService = new(context);
-
-            UpdateBasketItemRequest basketRequest = new()
-            {
-                Id = 2,
-                Name = "qwe",
-                Quantity = 2,
-            };
-
-            // Act
-            Func<Task> act = async () => await basketService.UpdateBasketItemAsync(basketRequest);
-
-            // Assert
-            await act.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]

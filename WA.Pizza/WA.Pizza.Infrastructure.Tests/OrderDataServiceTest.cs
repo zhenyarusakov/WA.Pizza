@@ -4,7 +4,6 @@ using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Fare;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.OrderDomain;
@@ -14,7 +13,6 @@ using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.DTO.OrderDTO.Order;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
-using Xunit.Sdk;
 
 namespace WA.Pizza.Infrastructure.Tests
 {
@@ -39,11 +37,10 @@ namespace WA.Pizza.Infrastructure.Tests
             OrderDto[] allOrders = await orderService.GetAllOrdersAsync();
 
             //Assert
-            var contextOrders = await context.Orders.ToArrayAsync();
+            Order[] contextOrders = await context.Orders.ToArrayAsync();
             allOrders.Should().HaveCount(contextOrders.Length);
             allOrders.Should().Equal(contextOrders, (actual, expected) =>
                 actual.Id == expected.Id);
-            allOrders.Should().OnlyHaveUniqueItems(x => x.Status == OrderStatus.Dispatch);
         }
 
         [Fact]
@@ -51,7 +48,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             ICollection<CatalogItem> catalogItem = CatalogHelper.CreateListOfFilledCatalogItems();
-            Basket basket = BasketHelpers.CreateCollectionBaskets();
+            Basket basket = BasketHelpers.CreateBasket();
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.CatalogItems.AddRange(catalogItem);
             context.Baskets.AddRange(basket);
@@ -78,7 +75,6 @@ namespace WA.Pizza.Infrastructure.Tests
             // Arrange
             CatalogItem catalogItem = new CatalogItem
             {
-                Id = 1,
                 Name = "name",
                 Description = "description",
                 Quantity = 10
@@ -92,7 +88,7 @@ namespace WA.Pizza.Infrastructure.Tests
                     {
                         Name = "name",
                         Description = "description",
-                        CatalogItemId = 5,
+                        CatalogItemId = -1,
                         Quantity = 1
                     }
                 }
@@ -101,44 +97,6 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.CatalogItems.Add(catalogItem);
             context.Baskets.Add(basket);
-            await context.SaveChangesAsync();
-            OrderDataService orderDataService = new (context, new BasketDataService(context));
-
-            // Act
-            Func<Task> func = async () => await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
-
-            // Assert
-            await func.Should().ThrowAsync<InvalidOperationException>();
-        }
-
-        [Fact]
-        public async Task Not_possible_create_order_with_Quantity_more_allowed_value()
-        {
-            // Arrange
-            CatalogItem catalogItem = new ()
-            {
-                Name = "name",
-                Description = "description",
-                Quantity = 10
-            };
-
-            Basket basket = new ()
-            {
-                BasketItems = new List<BasketItem>
-                {
-                    new()
-                    {
-                        Name = "name",
-                        Description = "description",
-                        CatalogItemId = 1,
-                        Quantity = 1
-                    }
-                }
-            };
-
-            await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            context.CatalogItems.AddRange(catalogItem);
-            context.Baskets.AddRange(basket);
             await context.SaveChangesAsync();
             OrderDataService orderDataService = new (context, new BasketDataService(context));
 

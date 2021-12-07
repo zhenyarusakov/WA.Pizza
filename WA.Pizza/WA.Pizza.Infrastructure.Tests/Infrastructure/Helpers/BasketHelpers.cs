@@ -7,7 +7,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
 {
     public static class BasketHelpers
     {
-        public static Basket CreateCollectionBaskets()
+        public static Basket CreateBasket()
         {
             return new Basket
             {

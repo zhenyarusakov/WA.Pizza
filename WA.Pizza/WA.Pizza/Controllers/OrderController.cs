@@ -5,9 +5,7 @@ using WA.Pizza.Infrastructure.Abstractions;
 
 namespace WA.Pizza.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OrderController : Controller
+    public class OrderController : BaseApiController
     {
         private readonly IOrderDataService _service;
         public OrderController(IOrderDataService service)

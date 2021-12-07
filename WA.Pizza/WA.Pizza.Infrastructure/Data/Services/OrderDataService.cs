@@ -64,6 +64,8 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             Order order = basket.Adapt<Order>();
 
+            order.Status = OrderStatus.Shaping;
+
             _context.Add(order);
 
             await _context.SaveChangesAsync();

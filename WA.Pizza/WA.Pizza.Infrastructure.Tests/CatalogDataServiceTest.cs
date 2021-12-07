@@ -56,7 +56,7 @@ namespace WA.Pizza.Infrastructure.Tests
             CatalogItemDto[] getAllCatalogItems = await catalogDataService.GetAllCatalogsAsync();
 
             // Assert
-            DbSet<CatalogItem> contextCatalogItems = context.CatalogItems;
+            CatalogItem[] contextCatalogItems = await context.CatalogItems.ToArrayAsync();
             getAllCatalogItems.Should().HaveCount(contextCatalogItems.Count());
             getAllCatalogItems.Should().Equal(contextCatalogItems, (actual, expected) =>
                 actual.Id == expected.Id &&

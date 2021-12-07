@@ -23,10 +23,9 @@ namespace WA.Pizza.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
             services.ConfigureServices();
             services.AddDbContext(Configuration);
-            ServiceCollectionExtensions.AddControllersWithViews(services);
+            services.AddControllersOptions();
 
             MapperGlobal.Configure();
 

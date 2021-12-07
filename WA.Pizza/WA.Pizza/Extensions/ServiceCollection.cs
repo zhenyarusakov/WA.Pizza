@@ -24,7 +24,7 @@ namespace WA.Pizza.Api.Extensions
                     configuration.GetConnectionString("DefaultConnection")));
         }
 
-        public static void AddControllersWithViews(this IServiceCollection services)
+        public static void AddControllersOptions(this IServiceCollection services)
         {
             services.AddControllers()
                 .AddJsonOptions(o => o.JsonSerializerOptions

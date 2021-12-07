@@ -7,9 +7,7 @@ using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
 
 namespace WA.Pizza.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CatalogItemController: Controller
+    public class CatalogItemController: BaseApiController
     {
         private readonly ICatalogDataService _service;
 

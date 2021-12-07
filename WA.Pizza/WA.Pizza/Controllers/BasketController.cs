@@ -7,9 +7,7 @@ using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
 
 namespace WA.Pizza.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BasketController: Controller
+    public class BasketController: BaseApiController
     {
         private readonly IBasketDataService _service;
 
