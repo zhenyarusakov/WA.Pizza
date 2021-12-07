@@ -2,7 +2,7 @@
 {
     public enum OrderStatus
     {
-        Shaping,
+        New,
         InProcessing,
         Preparing,
         Dispatch
