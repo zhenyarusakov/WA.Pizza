@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
-using WA.Pizza.Api.GlobalException;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 
 
@@ -38,7 +37,6 @@ namespace WA.Pizza.Api
         {
             if (env.IsDevelopment())
             {
-                app.UseMiddleware<ErrorHandlerMiddleware>();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
