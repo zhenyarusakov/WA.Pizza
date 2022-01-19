@@ -1,8 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using WA.Pizza.Infrastructure.GlobalErrorHandling;
 
 namespace WA.Pizza.Api.Extensions
 {
@@ -29,14 +29,15 @@ namespace WA.Pizza.Api.Extensions
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     context.Response.ContentType = "application/json";
-                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    var contextFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                     if(contextFeature != null)
                     {
-                        await context.Response.WriteAsync(new ErrorDetails()
+                        await context.Response.WriteAsJsonAsync(new
                         {
-                            StatusCode = context.Response.StatusCode,
-                            Message = "Internal Server Error."
-                        }.ToString());
+                            Message = contextFeature.Error.Message,
+                            Path = contextFeature.Path,
+                            StackTrace = contextFeature.Error.StackTrace
+                        });
                     }
                 });
             });
