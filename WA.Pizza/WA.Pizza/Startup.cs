@@ -42,6 +42,8 @@ namespace WA.Pizza.Api
                 app.UseSwaggerUI();
             }
 
+            app.ConfigureExceptionHandler();
+            
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

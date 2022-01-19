@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
+using WA.Pizza.Infrastructure.ErrorHandling;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
@@ -23,7 +24,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItem == null)
             {
-                throw new ArgumentNullException($"There is no Catalog item with this {id}");
+                throw new InvalidException($"There is no Catalog item with this {id}");
             }
 
             return catalogItem.Adapt<CatalogItemDto>();
