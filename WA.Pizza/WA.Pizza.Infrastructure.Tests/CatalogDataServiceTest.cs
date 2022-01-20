@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using Serilog;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.Tests.Customizations;
@@ -16,6 +18,7 @@ namespace WA.Pizza.Infrastructure.Tests
 {
     public class CatalogDataServiceTest
     {
+        private readonly ILogger _logger = new Mock<ILogger>().Object;
         public CatalogDataServiceTest()
         {
             MapperGlobal.Configure();
@@ -28,7 +31,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.CatalogItems.AddRange(item);
             await context.SaveChangesAsync();
-            CatalogDataService service = new (context);
+            CatalogDataService service = new (context, _logger);
             int returnFirstId = item.Id;
 
             // Act
@@ -50,7 +53,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.CatalogItems.AddRange(catalogItems);
             await context.SaveChangesAsync();
-            CatalogDataService catalogDataService = new (context);
+            CatalogDataService catalogDataService = new (context, _logger);
 
             // Act
             CatalogItemDto[] getAllCatalogItems = await catalogDataService.GetAllCatalogsAsync();
@@ -71,7 +74,7 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange  
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-            CatalogDataService catalogDataService = new (context);
+            CatalogDataService catalogDataService = new (context, _logger);
 
             CreateCatalogRequest catalogRequest = new ()
             {
@@ -100,7 +103,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.CatalogItems.AddRange(item);
             await context.SaveChangesAsync();
-            CatalogDataService catalogDataService = new (context);
+            CatalogDataService catalogDataService = new (context, _logger);
             
             UpdateCatalogRequest catalogRequest = new ()
             {
@@ -130,7 +133,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.CatalogItems.AddRange(catalogItem);
             await context.SaveChangesAsync();
-            CatalogDataService catalogDataService = new (context);
+            CatalogDataService catalogDataService = new (context, _logger);
             int catalogId = catalogItem.Id;
 
             // Act

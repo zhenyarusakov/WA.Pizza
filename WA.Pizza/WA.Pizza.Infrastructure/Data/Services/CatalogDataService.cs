@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
@@ -13,9 +14,12 @@ namespace WA.Pizza.Infrastructure.Data.Services
     {
         private readonly WAPizzaContext _context;
 
-        public CatalogDataService(WAPizzaContext context)
+        private readonly ILogger _logger;
+
+        public CatalogDataService(WAPizzaContext context, ILogger logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<CatalogItemDto> GetCatalogAsync(int id)
@@ -24,6 +28,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItem == null)
             {
+                _logger.Error($"There is no Catalog item with this {id}");
                 throw new InvalidException($"There is no Catalog item with this {id}");
             }
 
@@ -55,6 +60,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItem == null)
             {
+                _logger.Error($"There is no CatalogItem with this {catalogRequest.Id}");
                 throw new ArgumentNullException($"There is no CatalogItem with this {catalogRequest.Id}");
             }
             
@@ -74,6 +80,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItemDelete == null)
             {
+                _logger.Error($"There is no CatalogItem with this {id}");
                 throw new ArgumentNullException($"There is no CatalogItem with this {id}");
             }
 

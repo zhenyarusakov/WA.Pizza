@@ -7,19 +7,26 @@ using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
+using ILogger = Serilog.ILogger;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class BasketDataService: IBasketDataService
     {
         private readonly WAPizzaContext _context;
-        public BasketDataService(WAPizzaContext context)
+
+        private readonly ILogger _logger;
+
+        public BasketDataService(WAPizzaContext context, ILogger logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public Task<BasketDto[]> GetAllBasketsAsync()
         {
+            _logger.Information("very good");
+            
             return _context.Baskets
                 .Include(x => x.BasketItems)
                 .ProjectToType<BasketDto>()
@@ -43,7 +50,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .FirstOrDefaultAsync(x => x.Id == updateBasketItemRequest.Id);
 
             if (item == null)
+            {
+                _logger.Error($"BasketItem {updateBasketItemRequest.Id}");
                 throw new ArgumentNullException($"BasketItem {updateBasketItemRequest.Id}");
+            }
 
             if (updateBasketItemRequest.Quantity <= 0)
                 _context.BasketItems.Remove(item);
@@ -63,6 +73,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             
             if (!basketItems.Any())
             {
+                _logger.Error($"There is no BasketItem with this {basketId}");
                 throw new ArgumentNullException($"There is no BasketItem with this {basketId}");
             }
 
