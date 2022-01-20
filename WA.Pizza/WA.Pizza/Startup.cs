@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 
 
@@ -23,10 +22,6 @@ namespace WA.Pizza.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
-            
             services.ConfigureServices();
             services.AddDbContext(Configuration);
             services.AddControllersOptions();
