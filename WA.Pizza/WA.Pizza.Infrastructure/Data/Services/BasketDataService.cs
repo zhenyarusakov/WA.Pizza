@@ -3,27 +3,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
-using ILogger = Serilog.ILogger;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class BasketDataService: IBasketDataService
     {
         private readonly WAPizzaContext _context;
+        private readonly ILogger<BasketDataService> _logger;
 
-        public BasketDataService(WAPizzaContext context)
+        public BasketDataService(WAPizzaContext context, ILogger<BasketDataService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public Task<BasketDto[]> GetAllBasketsAsync()
         {
-            Log.Information("very good");
+            _logger.LogInformation("very good");
             
             return _context.Baskets
                 .Include(x => x.BasketItems)
@@ -49,8 +50,8 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (item == null)
             {
-                Log.Error($"BasketItem {updateBasketItemRequest.Id}");
-                throw new ArgumentNullException($"BasketItem {updateBasketItemRequest.Id}");
+                _logger.LogError($"BasketItem cannot be {updateBasketItemRequest.Id}");
+                throw new ArgumentNullException($"BasketItem cannot be  {updateBasketItemRequest.Id}");
             }
 
             if (updateBasketItemRequest.Quantity <= 0)
@@ -71,7 +72,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             
             if (!basketItems.Any())
             {
-                Log.Error($"There is no BasketItem with this {basketId}");
+                _logger.LogError($"There is no BasketItem item with this {basketId}");
                 throw new ArgumentNullException($"There is no BasketItem with this {basketId}");
             }
 

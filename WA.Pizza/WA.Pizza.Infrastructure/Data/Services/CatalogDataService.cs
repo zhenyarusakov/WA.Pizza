@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
@@ -13,10 +13,12 @@ namespace WA.Pizza.Infrastructure.Data.Services
     public class CatalogDataService: ICatalogDataService
     {
         private readonly WAPizzaContext _context;
+        private readonly ILogger<CatalogDataService> _logger;
 
-        public CatalogDataService(WAPizzaContext context)
+        public CatalogDataService(WAPizzaContext context, ILogger<CatalogDataService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<CatalogItemDto> GetCatalogAsync(int id)
@@ -25,7 +27,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItem == null)
             {
-                Log.Error($"There is no Catalog item with this {id}");
+                _logger.LogError($"There is no Catalog item with this {id}");
                 throw new InvalidException($"There is no Catalog item with this {id}");
             }
 
@@ -57,7 +59,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItem == null)
             {
-                Log.Error($"There is no CatalogItem with this {catalogRequest.Id}");
+                _logger.LogError($"There is no CatalogItem with this {catalogRequest.Id}");
                 throw new ArgumentNullException($"There is no CatalogItem with this {catalogRequest.Id}");
             }
             
@@ -77,7 +79,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (catalogItemDelete == null)
             {
-                Log.Error($"There is no CatalogItem with this {id}");
+                _logger.LogError($"There is no CatalogItem with this {id}");
                 throw new ArgumentNullException($"There is no CatalogItem with this {id}");
             }
 

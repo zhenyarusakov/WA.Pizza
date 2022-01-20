@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Core.Entities.OrderDomain;
@@ -17,10 +17,12 @@ namespace WA.Pizza.Infrastructure.Data.Services
     {
         private readonly WAPizzaContext _context;
         private readonly IBasketDataService _basketDataService;
-        public OrderDataService(WAPizzaContext context, IBasketDataService basketDataService)
+        private readonly ILogger<OrderDataService> _logger;
+        public OrderDataService(WAPizzaContext context, IBasketDataService basketDataService, ILogger<OrderDataService> logger)
         {
             _context = context;
             _basketDataService = basketDataService;
+            _logger = logger;
         }
         
         public Task<OrderDto[]> GetAllOrdersAsync()
@@ -37,7 +39,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (basket == null)
             {
-                Log.Error($"There is no Basket with this {basketId}");
+                _logger.LogError($"There is no Basket with this {basketId}");
                 throw new ArgumentNullException($"There is no Basket with this {basketId}");
             }
 
@@ -53,13 +55,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
                 if (!isInStock)
                 {
-                    Log.Error($"An catalog item with id {basketItem.CatalogItemId} is missing.");
+                    _logger.LogError($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                     throw new InvalidOperationException($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                 }
 
                 if (basketItem.Quantity > catalogItem.Quantity)
                 {
-                    Log.Error($"The number of selected items is greater than the allowed value");
+                    _logger.LogError($"The number of selected items is greater than the allowed value");
                     throw new InvalidOperationException("The number of selected items is greater than the allowed value");
                 }
 
@@ -85,7 +87,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (order == null)
             {
-                Log.Error($"Order not found");
+                _logger.LogError($"Order not found");
                 throw new ArgumentException("Order not found");
             }
 
