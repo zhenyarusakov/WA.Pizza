@@ -17,12 +17,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
     {
         private readonly WAPizzaContext _context;
         private readonly IBasketDataService _basketDataService;
-        private readonly ILogger _logger;
-        public OrderDataService(WAPizzaContext context, IBasketDataService basketDataService, ILogger logger)
+        public OrderDataService(WAPizzaContext context, IBasketDataService basketDataService)
         {
             _context = context;
             _basketDataService = basketDataService;
-            _logger = logger;
         }
         
         public Task<OrderDto[]> GetAllOrdersAsync()
@@ -39,7 +37,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (basket == null)
             {
-                _logger.Error($"There is no Basket with this {basketId}");
+                Log.Error($"There is no Basket with this {basketId}");
                 throw new ArgumentNullException($"There is no Basket with this {basketId}");
             }
 
@@ -55,13 +53,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
                 if (!isInStock)
                 {
-                    _logger.Error($"An catalog item with id {basketItem.CatalogItemId} is missing.");
+                    Log.Error($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                     throw new InvalidOperationException($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                 }
 
                 if (basketItem.Quantity > catalogItem.Quantity)
                 {
-                    _logger.Error($"The number of selected items is greater than the allowed value");
+                    Log.Error($"The number of selected items is greater than the allowed value");
                     throw new InvalidOperationException("The number of selected items is greater than the allowed value");
                 }
 
@@ -87,7 +85,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (order == null)
             {
-                _logger.Error($"Order not found");
+                Log.Error($"Order not found");
                 throw new ArgumentException("Order not found");
             }
 

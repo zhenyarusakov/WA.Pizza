@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
@@ -15,17 +16,14 @@ namespace WA.Pizza.Infrastructure.Data.Services
     {
         private readonly WAPizzaContext _context;
 
-        private readonly ILogger _logger;
-
-        public BasketDataService(WAPizzaContext context, ILogger logger)
+        public BasketDataService(WAPizzaContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public Task<BasketDto[]> GetAllBasketsAsync()
         {
-            _logger.Information("very good");
+            Log.Information("very good");
             
             return _context.Baskets
                 .Include(x => x.BasketItems)
@@ -51,7 +49,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             if (item == null)
             {
-                _logger.Error($"BasketItem {updateBasketItemRequest.Id}");
+                Log.Error($"BasketItem {updateBasketItemRequest.Id}");
                 throw new ArgumentNullException($"BasketItem {updateBasketItemRequest.Id}");
             }
 
@@ -73,7 +71,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             
             if (!basketItems.Any())
             {
-                _logger.Error($"There is no BasketItem with this {basketId}");
+                Log.Error($"There is no BasketItem with this {basketId}");
                 throw new ArgumentNullException($"There is no BasketItem with this {basketId}");
             }
 

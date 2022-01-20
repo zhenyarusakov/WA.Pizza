@@ -20,7 +20,6 @@ namespace WA.Pizza.Infrastructure.Tests
 {
     public class OrderDataServiceTest
     {
-        private readonly ILogger _logger = new Mock<ILogger>().Object;
         public OrderDataServiceTest()
         {
             MapperGlobal.Configure();
@@ -34,7 +33,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Orders.AddRange(orders);
             await context.SaveChangesAsync();
-            OrderDataService orderService = new (context, new BasketDataService(context, _logger), _logger);
+            OrderDataService orderService = new (context, new BasketDataService(context));
 
             //Act
             OrderDto[] allOrders = await orderService.GetAllOrdersAsync();
@@ -59,7 +58,7 @@ namespace WA.Pizza.Infrastructure.Tests
             
             BasketItem[] newBasketItem = new BasketItem [basket.BasketItems.Count];
             basket.BasketItems.CopyTo(newBasketItem, 0);
-            OrderDataService orderDataService = new(context, new BasketDataService(context, _logger), _logger);
+            OrderDataService orderDataService = new(context, new BasketDataService(context));
 
             // Act
             int orderId = await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
@@ -101,7 +100,7 @@ namespace WA.Pizza.Infrastructure.Tests
             context.CatalogItems.Add(catalogItem);
             context.Baskets.Add(basket);
             await context.SaveChangesAsync();
-            OrderDataService orderDataService = new (context, new BasketDataService(context, _logger), _logger);
+            OrderDataService orderDataService = new (context, new BasketDataService(context));
 
             // Act
             Func<Task> func = async () => await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
@@ -118,7 +117,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Orders.AddRange(filledOrders);
             await context.SaveChangesAsync();
-            OrderDataService orderService = new (context, new BasketDataService(context, _logger), _logger);
+            OrderDataService orderService = new (context, new BasketDataService(context));
             int orderId = filledOrders.Id;
             OrderStatus expectedStatus = OrderStatus.Dispatch;
 

@@ -19,7 +19,6 @@ namespace WA.Pizza.Infrastructure.Tests
 {
     public class BasketDataServiceTest
     {
-        private readonly ILogger _logger = new Mock<ILogger>().Object;
         public BasketDataServiceTest()
         {
             MapperGlobal.Configure();
@@ -35,7 +34,7 @@ namespace WA.Pizza.Infrastructure.Tests
             context.Baskets.AddRange(expectedBaskets);
             await context.SaveChangesAsync();
 
-            BasketDataService basketService = new (context, _logger);
+            BasketDataService basketService = new (context);
 
             // Act
             BasketDto[] actualBaskets = await basketService.GetAllBasketsAsync();
@@ -64,7 +63,7 @@ namespace WA.Pizza.Infrastructure.Tests
                 BasketItems = new List<BasketItemDto>(new []{ basketItemDto })
             };
 
-            BasketDataService basketService = new(context, _logger);
+            BasketDataService basketService = new(context);
 
             // Act
             int basketId = await basketService.CreateBasketAsync(createBasketRequest);
@@ -107,7 +106,7 @@ namespace WA.Pizza.Infrastructure.Tests
                 Quantity = newQuantity
             };
 
-            BasketDataService basketService = new (context, _logger);
+            BasketDataService basketService = new (context);
 
             // Act
             int basketItemId = await basketService.UpdateBasketItemAsync(updateBasketRequest);
@@ -140,7 +139,7 @@ namespace WA.Pizza.Infrastructure.Tests
 
             context.Add(basket);
             await context.SaveChangesAsync();
-            BasketDataService basketService = new (context, _logger);
+            BasketDataService basketService = new (context);
 
             UpdateBasketItemRequest basketRequest = new ()
             {
@@ -165,7 +164,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Baskets.Add(basket);
             await context.SaveChangesAsync();
-            BasketDataService basketService = new(context, _logger);
+            BasketDataService basketService = new(context);
 
             // Act
             await basketService.CleanBasketAsync(basket.Id);
