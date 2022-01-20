@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
@@ -13,13 +14,18 @@ namespace WA.Pizza.Infrastructure.Data.Services
     public class BasketDataService: IBasketDataService
     {
         private readonly WAPizzaContext _context;
-        public BasketDataService(WAPizzaContext context)
+        private readonly ILogger<BasketDataService> _logger;
+
+        public BasketDataService(WAPizzaContext context, ILogger<BasketDataService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public Task<BasketDto[]> GetAllBasketsAsync()
         {
+            _logger.LogInformation("very good");
+            
             return _context.Baskets
                 .Include(x => x.BasketItems)
                 .ProjectToType<BasketDto>()
@@ -43,7 +49,10 @@ namespace WA.Pizza.Infrastructure.Data.Services
                 .FirstOrDefaultAsync(x => x.Id == updateBasketItemRequest.Id);
 
             if (item == null)
-                throw new ArgumentNullException($"BasketItem {updateBasketItemRequest.Id}");
+            {
+                _logger.LogError($"BasketItem cannot be {updateBasketItemRequest.Id}");
+                throw new ArgumentNullException($"BasketItem cannot be  {updateBasketItemRequest.Id}");
+            }
 
             if (updateBasketItemRequest.Quantity <= 0)
                 _context.BasketItems.Remove(item);
@@ -63,6 +72,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
             
             if (!basketItems.Any())
             {
+                _logger.LogError($"There is no BasketItem item with this {basketId}");
                 throw new ArgumentNullException($"There is no BasketItem with this {basketId}");
             }
 
