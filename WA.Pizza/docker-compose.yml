@@ -27,9 +27,6 @@ services:
     environment:
        - ACCEPT_EULA=Y
     restart: unless-stopped
-    volumes:
-      - ./seq-data:/data
-
 
 volumes: 
     mssqldata:
