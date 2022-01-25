@@ -33,13 +33,13 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Orders.AddRange(orders);
             await context.SaveChangesAsync();
-            OrderDataService orderService = new (context, 
-                new BasketDataService(context, 
-                    new Mock<ILogger<BasketDataService>>().Object), 
-                new Mock<ILogger<OrderDataService>>().Object);
+            var mockBasketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var mockOrderDataService = new Mock<ILogger<OrderDataService>>().Object;
+            OrderDataService orderDataService = new (context, 
+                new BasketDataService(context, mockBasketDataService), mockOrderDataService);
 
             //Act
-            OrderDto[] allOrders = await orderService.GetAllOrdersAsync();
+            OrderDto[] allOrders = await orderDataService.GetAllOrdersAsync();
 
             //Assert
             Order[] contextOrders = await context.Orders.ToArrayAsync();
@@ -61,10 +61,10 @@ namespace WA.Pizza.Infrastructure.Tests
             
             BasketItem[] newBasketItem = new BasketItem [basket.BasketItems.Count];
             basket.BasketItems.CopyTo(newBasketItem, 0);
+            var mockBasketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var mockOrderDataService = new Mock<ILogger<OrderDataService>>().Object;
             OrderDataService orderDataService = new (context, 
-                new BasketDataService(context, 
-                    new Mock<ILogger<BasketDataService>>().Object), 
-                new Mock<ILogger<OrderDataService>>().Object);
+                new BasketDataService(context, mockBasketDataService), mockOrderDataService);
 
             // Act
             int orderId = await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
@@ -106,10 +106,10 @@ namespace WA.Pizza.Infrastructure.Tests
             context.CatalogItems.Add(catalogItem);
             context.Baskets.Add(basket);
             await context.SaveChangesAsync();
+            var mockBasketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var mockOrderDataService = new Mock<ILogger<OrderDataService>>().Object;
             OrderDataService orderDataService = new (context, 
-                new BasketDataService(context, 
-                    new Mock<ILogger<BasketDataService>>().Object), 
-                new Mock<ILogger<OrderDataService>>().Object);
+                new BasketDataService(context, mockBasketDataService), mockOrderDataService);
 
             // Act
             Func<Task> func = async () => await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
@@ -126,15 +126,15 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Orders.AddRange(filledOrders);
             await context.SaveChangesAsync();
-            OrderDataService orderService = new (context, 
-                new BasketDataService(context, 
-                    new Mock<ILogger<BasketDataService>>().Object), 
-                new Mock<ILogger<OrderDataService>>().Object);
+            var mockBasketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var mockOrderDataService = new Mock<ILogger<OrderDataService>>().Object;
+            OrderDataService orderDataService = new (context, 
+                new BasketDataService(context, mockBasketDataService), mockOrderDataService);
             int orderId = filledOrders.Id;
             OrderStatus expectedStatus = OrderStatus.Dispatch;
 
             // Act
-            int statusId = await orderService.UpdateOrderStatus(orderId, expectedStatus);
+            int statusId = await orderDataService.UpdateOrderStatus(orderId, expectedStatus);
 
             // Assert
             Order order = await context.Orders.FirstOrDefaultAsync(x => x.Id == statusId);

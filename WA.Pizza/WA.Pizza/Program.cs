@@ -45,7 +45,6 @@ namespace WA.Pizza.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
-                        .UseConfiguration(Configuration)
                         .UseSerilog();
                 });
     }
