@@ -44,12 +44,9 @@ namespace WA.Pizza.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             using var serviceScope = app.ApplicationServices.CreateScope();
             var appDbContext = serviceScope.ServiceProvider.GetRequiredService<WAPizzaContext>();

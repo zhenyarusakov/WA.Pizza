@@ -2,32 +2,12 @@ services:
 
   wa.pizza.api:
     image: ${DOCKER_REGISTRY-}wapizzaapi
-    build:
-      context: .
-      dockerfile: WA.Pizza/Dockerfile
-    depends_on:
-      - db
 
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: 'pizza-mssql'
-    ports:
-      - "5433:1433"
-    environment:
-      - SA_PASSWORD=Your_password123
-      - ACCEPT_EULA=Y
-    volumes:
-      - mssqldata:/var/opt/mssql
 
   seq:
     image: datalust/seq:latest
-    container_name: 'pizza-seq'
-    ports:
-      - "5300:80"
-    environment:
-       - ACCEPT_EULA=Y
-    restart: unless-stopped
-
-
+    
 volumes: 
     mssqldata:

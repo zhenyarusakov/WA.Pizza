@@ -46,14 +46,7 @@ namespace WA.Pizza.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
-                        .UseSerilog()
-                        .ConfigureAppConfiguration((hostingContext, config) =>
-                        {
-                            if (hostingContext.HostingEnvironment.IsProduction() || Debugger.IsAttached)
-                            {
-                                config.AddJsonFile("appsettings.Docker.json", false, true);
-                            }
-                        });
+                        .UseSerilog();
                 });
 
     }
