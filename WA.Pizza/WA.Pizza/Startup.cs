@@ -1,5 +1,5 @@
+using Hangfire;
 using WA.Pizza.Api.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,23 +27,23 @@ namespace WA.Pizza.Api
             services
                 .AddSwagger()
                 .AddDbContext(Configuration)
-                .AddControllersOptions();
+                .AddControllersOptions()
+                .AddHangfireServer()
+                .AddHangfireRecurringJob();
 
-            var connection = Configuration.GetConnectionString("DefaultConnection");
-
-            services.AddDbContext<WAPizzaContext>(
-                options => options.UseSqlServer(connection));
-
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnectionDb")));
 
             MapperGlobal.Configure();
 
             services.AddScoped<IOrderDataService, OrderDataService>();
             services.AddScoped<IBasketDataService, BasketDataService>();
             services.AddScoped<ICatalogDataService, CatalogDataService>();
+            services.AddScoped<IJobService, ForgottenBasketsJob>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.ConfigureExceptionHandler();
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -52,12 +52,11 @@ namespace WA.Pizza.Api
             var appDbContext = serviceScope.ServiceProvider.GetRequiredService<WAPizzaContext>();
             appDbContext.Database.Migrate();
 
-            app.ConfigureExceptionHandler();
-
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints();
+            app.UseHangfireDashboard("/hangfire");
         }
     }
 }
