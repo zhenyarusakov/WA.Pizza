@@ -1,0 +1,13 @@
+services:
+
+  wa.pizza.api:
+    image: ${DOCKER_REGISTRY-}wapizzaapi
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
+  seq:
+    image: datalust/seq:latest
+    
+volumes: 
+    mssqldata:

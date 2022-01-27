@@ -9,27 +9,28 @@ namespace WA.Pizza.Api.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void ConfigureServices(this IServiceCollection services)
+        public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
+            return services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WA.Pizza", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "WA.Pizza", Version = "v1"});
             });
         }
 
-        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<WAPizzaContext>(options =>
+            return services.AddDbContext<WAPizzaContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));
         }
 
-        public static void AddControllersOptions(this IServiceCollection services)
+        public static IServiceCollection AddControllersOptions(this IServiceCollection services)
         {
-            services.AddControllers()
-                .AddJsonOptions(o => o.JsonSerializerOptions
-                    .ReferenceHandler = ReferenceHandler.Preserve);
-        }
+            services
+                .AddControllers()
+                .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
+            return services;
+        }
     }
 }

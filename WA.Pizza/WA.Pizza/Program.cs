@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -9,16 +10,16 @@ namespace WA.Pizza.Api
     public class Program
     {
         private static IConfiguration Configuration { get; set; }
+
         public static void Main(string[] args)
         {
             Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.Development.json", false, true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true,
-                    true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true, true)
                 .AddCommandLine(args)
                 .AddEnvironmentVariables()
                 .Build();
-            
+
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .Enrich.FromLogContext()
@@ -28,7 +29,7 @@ namespace WA.Pizza.Api
                 Log.Information("Starting up web host");
                 CreateHostBuilder(args).Build().Run();
                 Log.Information("Shutting down web host");
-                
+
             }
             catch (Exception e)
             {
@@ -45,8 +46,8 @@ namespace WA.Pizza.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
-                        .UseConfiguration(Configuration)
                         .UseSerilog();
                 });
+
     }
 }
