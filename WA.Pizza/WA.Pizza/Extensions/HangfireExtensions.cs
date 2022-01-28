@@ -6,10 +6,10 @@ namespace WA.Pizza.Api.Extensions;
 
 public static class HangfireExtensions
 {
-    public static IServiceCollection AddHangfireRecurringJob(this IServiceCollection services)
+    public static IRecurringJobManager AddHangfireRecurringJob(this IRecurringJobManager manager)
     {
-        RecurringJob.AddOrUpdate<ForgottenBasketsJob>(x=>x.Run(), Cron.Minutely);
+        manager.AddOrUpdate<ForgottenBasketsJob>("Jobs", x => x.Run(), Cron.HourInterval(5));
 
-        return services;
+        return manager;
     }
 }

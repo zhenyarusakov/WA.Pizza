@@ -28,8 +28,7 @@ namespace WA.Pizza.Api
                 .AddSwagger()
                 .AddDbContext(Configuration)
                 .AddControllersOptions()
-                .AddHangfireServer()
-                .AddHangfireRecurringJob();
+                .AddHangfireServer();
 
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnectionDb")));
 
@@ -38,10 +37,9 @@ namespace WA.Pizza.Api
             services.AddScoped<IOrderDataService, OrderDataService>();
             services.AddScoped<IBasketDataService, BasketDataService>();
             services.AddScoped<ICatalogDataService, CatalogDataService>();
-            services.AddScoped<IJobService, ForgottenBasketsJob>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager manager)
         {
             app.ConfigureExceptionHandler();
             app.UseDeveloperExceptionPage();
@@ -57,6 +55,7 @@ namespace WA.Pizza.Api
             app.UseAuthorization();
             app.UseEndpoints();
             app.UseHangfireDashboard("/hangfire");
+            manager.AddHangfireRecurringJob();
         }
     }
 }
