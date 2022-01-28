@@ -26,7 +26,7 @@ namespace WA.Pizza.Api.Extensions
 
         public static IServiceCollection AddControllersOptions(this IServiceCollection services)
         {
-            services
+             services
                 .AddControllers()
                 .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 

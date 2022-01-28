@@ -1,29 +1,31 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WA.Pizza.Infrastructure.Data;
 
 namespace WA.Pizza.Api.Extensions
 {
     public static class ConfigureCollection
     {
-        public static void UseSwaggerUI( this IApplicationBuilder app)
+        public static IApplicationBuilder UseSwaggerUI( this IApplicationBuilder app)
         {
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WA.Pizza v1"));
+            return app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WA.Pizza v1"));
         }
 
-        public static void UseEndpoints(this IApplicationBuilder app)
+        public static IApplicationBuilder UseEndpoints(this IApplicationBuilder app)
         {
-            app.UseEndpoints(endpoints =>
+            return app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
         }
 
-        public static void ConfigureExceptionHandler(this IApplicationBuilder app)
+        public static IApplicationBuilder ConfigureExceptionHandler(this IApplicationBuilder app)
         {
-            app.UseExceptionHandler(appError =>
+            return app.UseExceptionHandler(appError =>
             {
                 appError.Run(async context =>
                 {
@@ -41,6 +43,15 @@ namespace WA.Pizza.Api.Extensions
                     }
                 });
             });
+        }
+
+        public static IApplicationBuilder ServiceScope(this IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.CreateScope();
+            var appDbContext = serviceScope.ServiceProvider.GetRequiredService<WAPizzaContext>();
+            appDbContext.Database.Migrate();
+
+            return app;
         }
     }
 }

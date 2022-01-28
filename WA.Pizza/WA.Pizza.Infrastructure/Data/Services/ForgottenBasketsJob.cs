@@ -20,11 +20,14 @@ public class ForgottenBasketsJob: IJobService
     public async Task Run()
     {
         var now = DateTime.UtcNow;
-        var baskets = await _context.Baskets.Where(x=>x.LastModified < now.AddHours(1)).Select(x=>x.User).ToArrayAsync(); 
+
+        var baskets = await _context.Baskets
+            .Where(x=> x.LastModified <= now.AddHours(-1) && x.User != null)
+            .ToArrayAsync(); 
 
         foreach (var basket in baskets)
         {
-            _logger.LogInformation($"Hey friend! You have a range of products in your shopping cart. Don't want to continue shopping?");
+            _logger.LogInformation($"{basket.LastModified} Hey friend! You have a range of products in your shopping cart. Don't want to continue shopping?");
         }
     }
 }
