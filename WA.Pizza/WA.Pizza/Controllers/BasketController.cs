@@ -8,7 +8,6 @@ using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
 
 namespace WA.Pizza.Api.Controllers
 {
-    [Authorize]
     public class BasketController: BaseApiController
     {
         private readonly IBasketDataService _service;

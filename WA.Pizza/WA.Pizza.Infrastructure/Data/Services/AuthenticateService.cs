@@ -158,7 +158,7 @@ public class AuthenticateService: IAuthenticateService
 
         return new TokenModel
         {
-            Message = $"wrong login - {model.UserName} or password - {model.Password} "
+            Message = $"Wrong login - {model.UserName} or password - {model.Password} "
         };
     }
 }
