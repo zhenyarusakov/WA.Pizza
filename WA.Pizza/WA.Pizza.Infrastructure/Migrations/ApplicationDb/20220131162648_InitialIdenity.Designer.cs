@@ -12,7 +12,7 @@ using WA.Pizza.Infrastructure.Data;
 namespace WA.Pizza.Infrastructure.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220130201250_InitialIdenity")]
+    [Migration("20220131162648_InitialIdenity")]
     partial class InitialIdenity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
