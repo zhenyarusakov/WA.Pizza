@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WA.Pizza.Core.Entities.IdentityModels;
 using WA.Pizza.Infrastructure.Abstractions;
 
 namespace WA.Pizza.Api.Controllers;
 
+[AllowAnonymous]
 public class AuthenticateController: BaseApiController
 {
     private readonly IAuthenticateService _authenticateService;
@@ -13,8 +15,7 @@ public class AuthenticateController: BaseApiController
         _authenticateService = authenticateService;
     }
 
-    [HttpPost]
-    [Route("register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         var result = await _authenticateService.Register(model);
@@ -22,8 +23,7 @@ public class AuthenticateController: BaseApiController
         return Ok(result);
     }
 
-    [HttpPost]
-    [Route("register-admin")]
+    [HttpPost("register-admin")]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
     {
         var result = await _authenticateService.RegisterAdmin(model);
@@ -31,8 +31,7 @@ public class AuthenticateController: BaseApiController
         return Ok(result);
     }
 
-    [HttpPost]
-    [Route("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         var result = await _authenticateService.Login(model);
