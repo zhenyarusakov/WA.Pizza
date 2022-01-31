@@ -30,7 +30,7 @@ namespace WA.Pizza.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] CreateBasketRequest modifyDto)
+        public async Task<IActionResult> CreateBasket([FromBody] CreateBasketRequest modifyDto)
         {
             int result = await _service.CreateBasketAsync(modifyDto);
 

@@ -36,6 +36,8 @@ namespace WA.Pizza.Infrastructure.Data.Services
         {
             Basket basket = basketRequest.Adapt<Basket>();
 
+            basket.LastModified = DateTime.UtcNow;
+
             _context.Baskets.Add(basket);
 
             await _context.SaveChangesAsync();

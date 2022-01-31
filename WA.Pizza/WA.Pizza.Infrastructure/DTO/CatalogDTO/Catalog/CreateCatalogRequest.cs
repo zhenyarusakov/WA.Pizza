@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using WA.Pizza.Core.Entities.BasketDomain;
-
-namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
+﻿namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
 {
     public record CreateCatalogRequest
     {
@@ -10,6 +7,5 @@ namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
         public string Description { get; init; }
         public decimal Price { get; init; }
         public int CatalogBrandId { get; init; }
-        public ICollection<BasketItem> BasketItems { get; init; }
     }
 }

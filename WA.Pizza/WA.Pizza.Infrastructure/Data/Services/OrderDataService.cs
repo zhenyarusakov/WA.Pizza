@@ -51,7 +51,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             foreach (BasketItem basketItem in basket.BasketItems)
             {
-                bool isInStock = catalogItemsCountById.TryGetValue(basketItem.Id, out CatalogItem catalogItem);
+                bool isInStock = catalogItemsCountById.TryGetValue(basketItem.CatalogItemId, out CatalogItem catalogItem);
 
                 if (!isInStock)
                 {
