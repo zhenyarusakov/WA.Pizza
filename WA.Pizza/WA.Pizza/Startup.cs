@@ -25,13 +25,19 @@ namespace WA.Pizza.Api
             services
                 .AddSwagger()
                 .AddDbContext(Configuration)
+                .AddDbContextIdentity(Configuration)
                 .AddControllersOptions()
                 .AddHangfireServer()
                 .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnectionDb")))
                 .AddScoped<IOrderDataService, OrderDataService>()
                 .AddScoped<IBasketDataService, BasketDataService>()
-                .AddScoped<ICatalogDataService, CatalogDataService>();
+                .AddScoped<ICatalogDataService, CatalogDataService>()
+                .AddScoped<IAuthenticateService, AuthenticateService>()
+                .AddIdentity()
+                .AddAuthenticationOptions(Configuration);
             
+            
+
             MapperGlobal.Configure();
         }
 
@@ -44,6 +50,7 @@ namespace WA.Pizza.Api
                 .ServiceScope()
                 .UseHttpsRedirection()
                 .UseRouting()
+                .UseAuthentication()
                 .UseAuthorization()
                 .UseEndpoints()
                 .UseHangfireDashboard("/hangfire");

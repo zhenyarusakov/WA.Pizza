@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using WA.Pizza.Core.Entities.OrderDomain;
 using WA.Pizza.Infrastructure.Abstractions;
 
 namespace WA.Pizza.Api.Controllers
 {
+    [Authorize]
     public class OrderController : BaseApiController
     {
         private readonly IOrderDataService _service;
