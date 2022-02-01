@@ -10,6 +10,5 @@ namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
         public string Description { get; init; }
         public decimal Price { get; init; }
         public int CatalogBrandId { get; init; }
-        public ICollection<BasketItem> BasketItems { get; init; }
     }
 }
