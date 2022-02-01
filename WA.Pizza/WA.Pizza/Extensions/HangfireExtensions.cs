@@ -7,7 +7,7 @@ public static class HangfireExtensions
 {
     public static IRecurringJobManager AddHangfireRecurringJob(this IRecurringJobManager manager)
     {
-        manager.AddOrUpdate<ForgottenBasketsJob>("Jobs", x => x.Run(), "0 */5 * * *");
+        manager.AddOrUpdate<ForgottenBasketsJob>("Forgotten Baskets", x => x.Run(), "0 */5 * * *");
 
         return manager;
     }

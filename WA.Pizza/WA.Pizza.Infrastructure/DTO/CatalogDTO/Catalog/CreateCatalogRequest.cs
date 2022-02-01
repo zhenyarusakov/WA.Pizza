@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using WA.Pizza.Core.Entities.BasketDomain;
-
-namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
+﻿namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
 {
     public record CreateCatalogRequest
     {
