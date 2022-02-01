@@ -1,3 +1,4 @@
+using System;
 using Hangfire;
 using WA.Pizza.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -41,7 +42,11 @@ namespace WA.Pizza.Api
             MapperGlobal.Configure();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager manager)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            IRecurringJobManager manager, 
+            IServiceProvider serviceProvider)
         {
             app.ConfigureExceptionHandler()
                 .UseDeveloperExceptionPage()
@@ -54,7 +59,8 @@ namespace WA.Pizza.Api
                 .UseAuthorization()
                 .UseEndpoints()
                 .UseHangfireDashboard("/hangfire");
-            
+
+            serviceProvider.CreateAdminAccountAsync();
             manager.AddHangfireRecurringJob();
         }
     }

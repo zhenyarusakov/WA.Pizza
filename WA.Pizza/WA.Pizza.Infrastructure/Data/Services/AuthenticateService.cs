@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,19 +32,8 @@ public class AuthenticateService: IAuthenticateService
         _configuration = configuration;
     }
     
-    public async Task<Response> Register(RegisterModel model)
+    public async Task<Response> RegisterAsync(RegisterModel model)
     {
-        var userExists = await _userManager.FindByNameAsync(model.UserName);
-        
-        if (userExists != null)
-        {
-            return new Response
-            {
-                Status = "Error",
-                Message = "User already exists!"
-            };
-        }
-        
         ApplicationUser user = new ApplicationUser()
         {
             Email = model.Email,
@@ -49,25 +41,34 @@ public class AuthenticateService: IAuthenticateService
             UserName = model.UserName
         };
         
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var userExists = await _userManager.FindByNameAsync(model.UserName);
 
-        if (!result.Succeeded)
+        if (userExists == null)
+        {
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, UserRoles.User.ToString());
+            }
+            
+            return new Response
+            {
+                Status = "Success", 
+                Message = "User created successfully!"
+            };
+        }
+        else
         {
             return  new Response
             {
                 Status = "Error", 
                 Message = "User creation failed! Please check user details and try again."
-            };
+            };   
         }
-        
-        return new Response
-        {
-            Status = "Success", 
-            Message = "User created successfully!"
-        };
     }
     
-    public async Task<Response> RegisterAdmin(RegisterModel model)
+    public async Task<Response> RegisterAdminAsync(RegisterModel model)
     {
         var userExists = await _userManager.FindByNameAsync(model.UserName);
 
@@ -98,19 +99,24 @@ public class AuthenticateService: IAuthenticateService
             };
         }
 
-        if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        if (!await _roleManager.RoleExistsAsync(UserRoles.Administrator.ToString()))
         {
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator.ToString()));
         }
 
-        if (!await _roleManager.RoleExistsAsync(UserRoles.User))
+        if (!await _roleManager.RoleExistsAsync(UserRoles.User.ToString()))
         {
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.User.ToString()));
         }
         
-        if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        if (!await _roleManager.RoleExistsAsync(UserRoles.Moderator.ToString()))
         {
-            await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Moderator.ToString()));
+        }
+        
+        if (await _roleManager.RoleExistsAsync(UserRoles.Administrator.ToString()))
+        {
+            await _userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
         }
         
         return new Response
@@ -120,7 +126,7 @@ public class AuthenticateService: IAuthenticateService
         };
     }
     
-    public async Task<TokenModel> Login(LoginModel model)
+    public async Task<TokenModel> LoginAsync(LoginModel model)
     {
         var user = await _userManager.FindByNameAsync(model.UserName);
         
@@ -160,5 +166,36 @@ public class AuthenticateService: IAuthenticateService
         {
             Message = $"Wrong login - {model.UserName} or password - {model.Password} "
         };
+    }
+
+    public async Task<string> AddRoleAsync(RoleModel roleModel)
+    {
+        var email = await _userManager.FindByEmailAsync(roleModel.Email);
+
+        if (email == null)
+        {
+            return $"This email - {roleModel.Email} does not exist";
+        }
+
+        if (_userManager.SupportsUserEmail)
+        {
+            var role = Enum.GetNames(typeof(UserRoles)).Any(x => x.ToLower() == roleModel.Role.ToLower());
+
+            if (role)
+            {
+                var validRole = Enum.GetValues(typeof(UserRoles))
+                    .Cast<UserRoles>()
+                    .Where(x => x.ToString().ToLower() == roleModel.Role.ToLower())
+                    .FirstOrDefault();
+
+                await _userManager.AddToRoleAsync(email, validRole.ToString());
+
+                return $"Added new role {roleModel.Role} to user {roleModel.UserName}";
+            }
+        
+            return $"Role {roleModel.Role} not found.";
+        }
+        
+        return $"Incorrect Credentials for user {roleModel.Email}.";
     }
 }

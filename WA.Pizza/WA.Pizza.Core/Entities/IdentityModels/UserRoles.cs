@@ -1,7 +1,8 @@
 ﻿namespace WA.Pizza.Core.Entities.IdentityModels;
 
-public static class UserRoles
+public enum UserRoles
 {
-    public const string Admin = "Admin";
-    public const string User = "User";
+    Administrator,
+    Moderator,
+    User
 }

@@ -1,9 +1,14 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WA.Pizza.Core.Entities;
+using WA.Pizza.Core.Entities.IdentityModels;
 using WA.Pizza.Infrastructure.Data;
 
 namespace WA.Pizza.Api.Extensions
@@ -50,6 +55,18 @@ namespace WA.Pizza.Api.Extensions
             using var serviceScope = app.ApplicationServices.CreateScope();
             var appDbContext = serviceScope.ServiceProvider.GetRequiredService<WAPizzaContext>();
             appDbContext.Database.Migrate();
+
+            return app;
+        }
+
+        public static IServiceProvider CreateAdminAccountAsync(this IServiceProvider app)
+        {
+            var services = app.CreateScope().ServiceProvider;
+
+            var adminManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            CreateAdminAccount.CreateAdminAccountAsync(adminManager, roleManager);
 
             return app;
         }
