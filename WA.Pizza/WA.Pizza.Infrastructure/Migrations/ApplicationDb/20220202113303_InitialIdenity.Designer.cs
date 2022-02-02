@@ -12,7 +12,7 @@ using WA.Pizza.Infrastructure.Data;
 namespace WA.Pizza.Infrastructure.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220202073609_InitialIdenity")]
+    [Migration("20220202113303_InitialIdenity")]
     partial class InitialIdenity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,29 +49,6 @@ namespace WA.Pizza.Infrastructure.Migrations.ApplicationDb
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "31c2eb0c-04aa-43dc-98cb-32a73be60388",
-                            ConcurrencyStamp = "aa056715-acda-4b62-a279-4de94a8260ec",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        },
-                        new
-                        {
-                            Id = "5c44ce80-ba19-4395-aa58-7944a6ac3e3b",
-                            ConcurrencyStamp = "1317a972-648f-4372-a598-44bd178902fb",
-                            Name = "Moderator",
-                            NormalizedName = "MODERATOR"
-                        },
-                        new
-                        {
-                            Id = "ed3dab65-87a4-4028-9854-711e75736671",
-                            ConcurrencyStamp = "2907988e-711a-4bb9-9c2e-512605d83baf",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -243,24 +220,6 @@ namespace WA.Pizza.Infrastructure.Migrations.ApplicationDb
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "532d9f3e-25f6-473e-8157-0b2f6799a461",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "3931b4c1-38e0-40b4-a0db-a1d6229614d1",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBBMQ4A4u57QSK7ODbtIdwpir6Q25y0OTFOaA4l7Ao/F2KNd3BDnB+T4yDFpuCVHlA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "b2fc784b-077e-4890-8cc5-4c0c6d7b9aff",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
