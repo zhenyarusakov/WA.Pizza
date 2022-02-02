@@ -37,8 +37,6 @@ namespace WA.Pizza.Api
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
             
-            
-
             MapperGlobal.Configure();
         }
 
@@ -60,7 +58,6 @@ namespace WA.Pizza.Api
                 .UseEndpoints()
                 .UseHangfireDashboard("/hangfire");
 
-            serviceProvider.CreateAdminAccountAsync();
             manager.AddHangfireRecurringJob();
         }
     }

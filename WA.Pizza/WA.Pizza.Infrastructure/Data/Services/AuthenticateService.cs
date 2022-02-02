@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Formats.Asn1;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +47,7 @@ public class AuthenticateService: IAuthenticateService
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, UserRoles.User.ToString());
+                await _userManager.AddToRoleAsync(user, UserRoles.User);
             }
             
             return new Response
@@ -99,24 +97,24 @@ public class AuthenticateService: IAuthenticateService
             };
         }
 
-        if (!await _roleManager.RoleExistsAsync(UserRoles.Administrator.ToString()))
+        if (!await _roleManager.RoleExistsAsync(UserRoles.Administrator))
         {
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator.ToString()));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator));
         }
 
-        if (!await _roleManager.RoleExistsAsync(UserRoles.User.ToString()))
+        if (!await _roleManager.RoleExistsAsync(UserRoles.User))
         {
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.User.ToString()));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
         }
         
-        if (!await _roleManager.RoleExistsAsync(UserRoles.Moderator.ToString()))
+        if (!await _roleManager.RoleExistsAsync(UserRoles.Moderator))
         {
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Moderator.ToString()));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Moderator));
         }
         
-        if (await _roleManager.RoleExistsAsync(UserRoles.Administrator.ToString()))
+        if (await _roleManager.RoleExistsAsync(UserRoles.Administrator))
         {
-            await _userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+            await _userManager.AddToRoleAsync(user, UserRoles.Administrator);
         }
         
         return new Response
@@ -168,34 +166,20 @@ public class AuthenticateService: IAuthenticateService
         };
     }
 
-    public async Task<string> AddRoleAsync(RoleModel roleModel)
+    public async Task AddToRoleAsync(AddToRoleModel addToRoleModel)
     {
-        var email = await _userManager.FindByEmailAsync(roleModel.Email);
+        var user = await _userManager.FindByEmailAsync(addToRoleModel.Email);
 
-        if (email == null)
+        if (user == null)
         {
-            return $"This email - {roleModel.Email} does not exist";
+            throw new InvalidOperationException($"User with email {addToRoleModel.Email} is not found.");
         }
 
-        if (_userManager.SupportsUserEmail)
+        if (!UserRoles.ListofRoles.Contains(addToRoleModel.Role))
         {
-            var role = Enum.GetNames(typeof(UserRoles)).Any(x => x.ToLower() == roleModel.Role.ToLower());
-
-            if (role)
-            {
-                var validRole = Enum.GetValues(typeof(UserRoles))
-                    .Cast<UserRoles>()
-                    .Where(x => x.ToString().ToLower() == roleModel.Role.ToLower())
-                    .FirstOrDefault();
-
-                await _userManager.AddToRoleAsync(email, validRole.ToString());
-
-                return $"Added new role {roleModel.Role} to user {roleModel.UserName}";
-            }
-        
-            return $"Role {roleModel.Role} not found.";
+            throw new InvalidOperationException($"Unsupported user role {addToRoleModel.Role}");
         }
-        
-        return $"Incorrect Credentials for user {roleModel.Email}.";
+
+        await _userManager.AddToRoleAsync(user, addToRoleModel.Role);
     }
 }

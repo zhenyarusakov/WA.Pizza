@@ -40,9 +40,10 @@ public class AuthenticateController: BaseApiController
     }
     
     [HttpPost("addNewRole")]
-    public async Task<IActionResult> AddRoleAsync(RoleModel roleModel)
+    public async Task<IActionResult> AddRoleAsync(AddToRoleModel addToRoleModel)
     {
-        var result = await _authenticateService.AddRoleAsync(roleModel);
-        return Ok(result);
+        await _authenticateService.AddToRoleAsync(addToRoleModel);
+        
+        return Ok();
     }
 }

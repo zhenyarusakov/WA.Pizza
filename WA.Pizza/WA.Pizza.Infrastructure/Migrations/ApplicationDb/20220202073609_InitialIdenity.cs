@@ -154,6 +154,21 @@ namespace WA.Pizza.Infrastructure.Migrations.ApplicationDb
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "31c2eb0c-04aa-43dc-98cb-32a73be60388", "aa056715-acda-4b62-a279-4de94a8260ec", "Administrator", "ADMINISTRATOR" },
+                    { "5c44ce80-ba19-4395-aa58-7944a6ac3e3b", "1317a972-648f-4372-a598-44bd178902fb", "Moderator", "MODERATOR" },
+                    { "ed3dab65-87a4-4028-9854-711e75736671", "2907988e-711a-4bb9-9c2e-512605d83baf", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "532d9f3e-25f6-473e-8157-0b2f6799a461", 0, "3931b4c1-38e0-40b4-a0db-a1d6229614d1", "admin@gmail.com", true, false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAEBBMQ4A4u57QSK7ODbtIdwpir6Q25y0OTFOaA4l7Ao/F2KNd3BDnB+T4yDFpuCVHlA==", null, false, "b2fc784b-077e-4890-8cc5-4c0c6d7b9aff", false, "admin" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
