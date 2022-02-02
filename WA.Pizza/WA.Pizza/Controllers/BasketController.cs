@@ -17,6 +17,7 @@ namespace WA.Pizza.Api.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<IActionResult> GetBaskets()
         {

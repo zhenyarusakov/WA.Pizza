@@ -56,7 +56,7 @@ namespace WA.Pizza.Api.Extensions
         {
             return services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("IdentityConnectionDb")));
+                    configuration.GetConnectionString("DefaultConnection")));
         }
 
         public static IServiceCollection AddControllersOptions(this IServiceCollection services)

@@ -6,7 +6,6 @@ using WA.Pizza.Infrastructure.Abstractions;
 
 namespace WA.Pizza.Api.Controllers;
 
-[AllowAnonymous]
 public class AuthenticateController: BaseApiController
 {
     private readonly IAuthenticateService _authenticateService;
@@ -14,19 +13,20 @@ public class AuthenticateController: BaseApiController
     {
         _authenticateService = authenticateService;
     }
-
+    
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        var result = await _authenticateService.Register(model);
+        var result = await _authenticateService.RegisterAsync(model);
         
         return Ok(result);
     }
-
+    
+    [Authorize(Roles = "Administrator")]
     [HttpPost("register-admin")]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
     {
-        var result = await _authenticateService.RegisterAdmin(model);
+        var result = await _authenticateService.RegisterAdminAsync(model);
     
         return Ok(result);
     }
@@ -34,8 +34,16 @@ public class AuthenticateController: BaseApiController
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        var result = await _authenticateService.Login(model);
+        var result = await _authenticateService.LoginAsync(model);
     
         return Ok(result);
+    }
+    
+    [HttpPost("addNewRole")]
+    public async Task<IActionResult> AddRoleAsync(AddToRoleModel addToRoleModel)
+    {
+        await _authenticateService.AddToRoleAsync(addToRoleModel);
+        
+        return Ok();
     }
 }
