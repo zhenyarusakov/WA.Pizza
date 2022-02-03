@@ -3,7 +3,7 @@ using WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
 
 namespace WA.Pizza.Infrastructure.Abstractions;
 
-public interface IAdvertisingService
+public interface IAdvertisingDataService
 {
     Task<int> CreateAdvertisingAsync(CreateAdvertisingRequest createAdvertisingRequest);
     Task<AdvertisingDto[]> GetAllAdvertisingAsync();

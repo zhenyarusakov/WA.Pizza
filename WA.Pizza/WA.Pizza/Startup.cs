@@ -34,8 +34,8 @@ namespace WA.Pizza.Api
                 .AddScoped<IBasketDataService, BasketDataService>()
                 .AddScoped<ICatalogDataService, CatalogDataService>()
                 .AddScoped<IAuthenticateService, AuthenticateService>()
-                .AddScoped<IOperatorService, OperatorDataService>()
-                .AddScoped<IAdvertisingService, AdvertisingService>()
+                .AddScoped<IOperatorDataService, OperatorDataDataService>()
+                .AddScoped<IAdvertisingDataService, AdvertisingDataService>()
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
             

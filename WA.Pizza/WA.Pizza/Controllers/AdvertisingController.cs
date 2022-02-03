@@ -7,17 +7,17 @@ namespace WA.Pizza.Api.Controllers;
 
 public class AdvertisingController: BaseApiController
 {
-    private readonly IAdvertisingService _advertisingService;
+    private readonly IAdvertisingDataService _advertisingDataService;
 
-    public AdvertisingController(IAdvertisingService advertisingService)
+    public AdvertisingController(IAdvertisingDataService advertisingDataService)
     {
-        _advertisingService = advertisingService;
+        _advertisingDataService = advertisingDataService;
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAdvertising([FromBody] CreateAdvertisingRequest advertisingRequest)
     {
-        int result = await _advertisingService.CreateAdvertisingAsync(advertisingRequest);
+        int result = await _advertisingDataService.CreateAdvertisingAsync(advertisingRequest);
 
         return Ok(result);
     }
@@ -25,7 +25,7 @@ public class AdvertisingController: BaseApiController
     [HttpGet]
     public async Task<IActionResult> GetAllAdvertising()
     {
-        AdvertisingDto[] result = await _advertisingService.GetAllAdvertisingAsync();
+        AdvertisingDto[] result = await _advertisingDataService.GetAllAdvertisingAsync();
 
         return Ok(result);
     }
@@ -33,7 +33,7 @@ public class AdvertisingController: BaseApiController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAdvertising(int id)
     {
-        AdvertisingDto result = await _advertisingService.GetOneAdvertisingAsync(id);
+        AdvertisingDto result = await _advertisingDataService.GetOneAdvertisingAsync(id);
 
         return Ok(result);
     }
@@ -41,7 +41,7 @@ public class AdvertisingController: BaseApiController
     [HttpPatch]
     public async Task<IActionResult> UpdateAdvertising([FromBody] UpdateAdvertisingRequest updateAdvertisingRequest)
     {
-        int result = await _advertisingService.UpdateAdvertisingAsync(updateAdvertisingRequest);
+        int result = await _advertisingDataService.UpdateAdvertisingAsync(updateAdvertisingRequest);
 
         return Ok(result);
     }
@@ -49,7 +49,7 @@ public class AdvertisingController: BaseApiController
     [HttpDelete("id")]
     public async Task<IActionResult> RemoveAdvertising(int id)
     {
-        await _advertisingService.RemoveAdvertisingAsync(id);
+        await _advertisingDataService.RemoveAdvertisingAsync(id);
 
         return Ok();
     }

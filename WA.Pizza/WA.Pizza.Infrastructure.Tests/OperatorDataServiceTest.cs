@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Infrastructure.Data;
 using WA.Pizza.Infrastructure.Data.Services;
-using WA.Pizza.Infrastructure.DTO.ClientDto;
+using WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 using Xunit;
 
@@ -18,46 +18,43 @@ public class OperatorDataServiceTest
     {
         // Arrange
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
-        OperatorDataService operatorService = new OperatorDataService(context);
-        CreateClientRequest createClientRequest = new()
+        OperatorDataDataService operatorDataService = new OperatorDataDataService(context);
+        CreateAdsClientRequest createAdsClientRequest = new()
         {
             Name = "pepsi",
-            ApiToken = Guid.NewGuid(),
             WebSite = "pepsi.com"
         };
 
         // Act
-        Guid newClient = await operatorService.CreateNewClientAsync(createClientRequest);
+        Guid newClient = await operatorDataService.CreateNewAdsClientAsync(createAdsClientRequest);
 
         // Assert
-        Client client = await context.Clients.FirstOrDefaultAsync(x => x.ApiToken == newClient);
-        client.Should().NotBeNull();
-        // client!.ApiToken.Should().Be(createClientRequest.ApiToken);
-        client!.Name.Should().Be(createClientRequest.Name);
-        client!.WebSite.Should().Be(createClientRequest.WebSite);
+        AdsClient adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiToken == newClient);
+        adsClient.Should().NotBeNull();
+        adsClient!.Name.Should().Be(createAdsClientRequest.Name);
+        adsClient!.WebSite.Should().Be(createAdsClientRequest.WebSite);
     }
 
     [Fact]
     public async Task Remove_client_success()
     {
         // Arrange
-        Client client = new Client()
+        AdsClient adsClient = new AdsClient()
         {
             Name = "pepsi",
-            ApiToken = Guid.NewGuid(),
             WebSite = "pepsi.com"
         };
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
-        context.Clients.Add(client);
+        context.AdsClients.Add(adsClient);
         await context.SaveChangesAsync();
-        OperatorDataService operatorService = new OperatorDataService(context);
-        int clientId = client.Id;
+        OperatorDataDataService operatorDataService = new OperatorDataDataService(context);
+        int clientId = adsClient.Id;
         
         // Act
-        await operatorService.RemoveClientAsync(clientId);
+        await operatorDataService.RemoveAdsClientAsync(clientId);
 
         // Assert
-        Client item = await context.Clients.FirstOrDefaultAsync(x => x.Id == client.Id);
+        AdsClient item = await context.AdsClients.FirstOrDefaultAsync(x => x.Id == adsClient.Id);
         item.Should().BeNull();
     }
 }

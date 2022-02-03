@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace WA.Pizza.Infrastructure.DTO.ClientDto;
+namespace WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
-public class UpdateClientRequest
+public class UpdateAdsClientRequest
 {
     public int Id { get; set; }
     public Guid ApiToken { get; set; }

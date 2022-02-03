@@ -26,10 +26,10 @@ public class AdvertisingDataServiceTest
             WebSite = "pepsi.com"
         };
 
-        AdvertisingService advertisingService = new AdvertisingService(context);
+        AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        int newAdvertising = await advertisingService.CreateAdvertisingAsync(createClientRequest);
+        int newAdvertising = await advertisingDataService.CreateAdvertisingAsync(createClientRequest);
 
         // Assert
         Advertising advertising = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == newAdvertising);
@@ -48,10 +48,10 @@ public class AdvertisingDataServiceTest
         ICollection<Advertising> advertisings = AdvertisingHelper.CreateListOfFilledAdvertising();
         context.Advertisings.AddRange(advertisings);
         await context.SaveChangesAsync();
-        AdvertisingService advertisingService = new AdvertisingService(context);
+        AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        AdvertisingDto[] getAllAdvertising = await advertisingService.GetAllAdvertisingAsync();
+        AdvertisingDto[] getAllAdvertising = await advertisingDataService.GetAllAdvertisingAsync();
 
         // Assert
         Advertising[] contextAdvertisings = await context.Advertisings.ToArrayAsync();
@@ -79,10 +79,10 @@ public class AdvertisingDataServiceTest
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
         context.Advertisings.AddRange(advertising);
         await context.SaveChangesAsync();
-        AdvertisingService advertisingService = new AdvertisingService(context);
+        AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        AdvertisingDto advertisingItem = await advertisingService.GetOneAdvertisingAsync(advertising.Id);
+        AdvertisingDto advertisingItem = await advertisingDataService.GetOneAdvertisingAsync(advertising.Id);
         
         // Assert
         Advertising firstItem = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == advertisingItem.Id);
@@ -107,7 +107,7 @@ public class AdvertisingDataServiceTest
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
         context.Advertisings.AddRange(advertising);
         await context.SaveChangesAsync();
-        AdvertisingService advertisingService = new AdvertisingService(context);
+        AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         UpdateAdvertisingRequest updateAdvertisingRequest = new()
         {
@@ -119,7 +119,7 @@ public class AdvertisingDataServiceTest
         };
         
         // Act
-        int advertisingId = await advertisingService.UpdateAdvertisingAsync(updateAdvertisingRequest);
+        int advertisingId = await advertisingDataService.UpdateAdvertisingAsync(updateAdvertisingRequest);
         
         // Assert
         Advertising firstItem = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == advertisingId);
@@ -141,10 +141,10 @@ public class AdvertisingDataServiceTest
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
         context.Advertisings.Add(advertising);
         await context.SaveChangesAsync();
-        AdvertisingService advertisingService = new AdvertisingService(context);
+        AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        await advertisingService.RemoveAdvertisingAsync(advertising.Id);
+        await advertisingDataService.RemoveAdvertisingAsync(advertising.Id);
         
         // Assert
         Advertising advertisingItem = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == advertising.Id);

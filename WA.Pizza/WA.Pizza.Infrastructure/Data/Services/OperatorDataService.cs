@@ -4,42 +4,42 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Infrastructure.Abstractions;
-using WA.Pizza.Infrastructure.DTO.ClientDto;
+using WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
 namespace WA.Pizza.Infrastructure.Data.Services;
 
-public class OperatorDataService: IOperatorService
+public class OperatorDataDataService: IOperatorDataService
 {
     private readonly WAPizzaContext _context;
 
-    public OperatorDataService(WAPizzaContext context)
+    public OperatorDataDataService(WAPizzaContext context)
     {
         _context = context;
     }
 
-    public async Task<Guid> CreateNewClientAsync(CreateClientRequest clientRequest)
+    public async Task<Guid> CreateNewAdsClientAsync(CreateAdsClientRequest adsClientRequest)
     {
-        Client client = clientRequest.Adapt<Client>();
+        AdsClient adsClient = adsClientRequest.Adapt<AdsClient>();
         
-        client.ApiToken = Guid.NewGuid();
+        adsClient.ApiToken = Guid.NewGuid();
 
-        _context.Clients.Add(client);
+        _context.AdsClients.Add(adsClient);
 
         await _context.SaveChangesAsync();
 
-        return client.ApiToken;
+        return adsClient.ApiToken;
     }
 
-    public async Task RemoveClientAsync(int id)
+    public async Task RemoveAdsClientAsync(int id)
     {
-        var clientId = await _context.Clients.FirstOrDefaultAsync(x => x.Id == id);
+        AdsClient clientId = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
 
         if (clientId == null)
         {
             throw new ArgumentNullException($"Current {id} does not exist");
         }
 
-        _context.Clients.Remove(clientId);
+        _context.AdsClients.Remove(clientId);
 
         await _context.SaveChangesAsync();
     }

@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace WA.Pizza.Core.Entities;
+namespace WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
-public class Client
+public class CreateAdsClientRequest
 {
-    public int Id { get; set; }
     public Guid ApiToken { get; set; }
     public string Name { get; set; }
     public string WebSite { get; set; }

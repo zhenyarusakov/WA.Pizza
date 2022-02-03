@@ -8,11 +8,11 @@ using WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
 
 namespace WA.Pizza.Infrastructure.Data.Services;
 
-public class AdvertisingService: IAdvertisingService
+public class AdvertisingDataService: IAdvertisingDataService
 {
     private readonly WAPizzaContext _context;
 
-    public AdvertisingService(WAPizzaContext context)
+    public AdvertisingDataService(WAPizzaContext context)
     {
         _context = context;
     }
@@ -82,5 +82,4 @@ public class AdvertisingService: IAdvertisingService
 
         await _context.SaveChangesAsync();
     }
-
 }
