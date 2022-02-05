@@ -29,7 +29,7 @@ public class OperatorDataServiceTest
         Guid newClient = await operatorDataService.CreateNewAdsClientAsync(createAdsClientRequest);
 
         // Assert
-        AdsClient adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiToken == newClient);
+        AdsClient adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
         adsClient.Should().NotBeNull();
         adsClient!.Name.Should().Be(createAdsClientRequest.Name);
         adsClient!.WebSite.Should().Be(createAdsClientRequest.WebSite);

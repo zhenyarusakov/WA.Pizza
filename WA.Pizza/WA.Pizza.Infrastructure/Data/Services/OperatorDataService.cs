@@ -21,13 +21,13 @@ public class OperatorDataDataService: IOperatorDataService
     {
         AdsClient adsClient = adsClientRequest.Adapt<AdsClient>();
         
-        adsClient.ApiToken = Guid.NewGuid();
+        adsClient.ApiKey = Guid.NewGuid();
 
         _context.AdsClients.Add(adsClient);
 
         await _context.SaveChangesAsync();
 
-        return adsClient.ApiToken;
+        return adsClient.ApiKey;
     }
 
     public async Task RemoveAdsClientAsync(int id)

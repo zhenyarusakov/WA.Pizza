@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,22 @@ public class AdvertisingDataService: IAdvertisingDataService
         _context = context;
     }
 
-    public async Task<int> CreateAdvertisingAsync(CreateAdvertisingRequest createAdvertisingRequest)
+    public async Task<int> CreateAdvertisingAsync(CreateAdvertisingRequest createAdvertisingRequest, Guid apiKey)
     {
         Advertising newAdvertising = createAdvertisingRequest.Adapt<Advertising>();
 
+        var client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == createAdvertisingRequest.AdsClientId);
+
+        if (client == null)
+        {
+            throw new InvalidOperationException("kek");
+        }
+        
+        if (client.ApiKey != apiKey)
+        {
+            throw new InvalidOperationException($"invalid ApiKey - {apiKey}");
+        }
+        
         _context.Advertisings.Add(newAdvertising);
 
         await _context.SaveChangesAsync();
@@ -28,19 +41,35 @@ public class AdvertisingDataService: IAdvertisingDataService
         return newAdvertising.Id;
     }
 
-    public Task<AdvertisingDto[]> GetAllAdvertisingAsync()
+    public async Task<AdvertisingDto[]> GetAllAdvertisingAsync(Guid apiKey)
     {
-        return _context.Advertisings
+        AdvertisingDto[] advertising = await _context.Advertisings
+            .Include(x=>x.AdsClient)
             .ProjectToType<AdvertisingDto>()
             .ToArrayAsync();
+
+        var key = advertising.Where(x => x.ClientDto.ApiToken == apiKey);
+        
+        if (key == null)
+        {
+            throw new InvalidOperationException($"invalid ApiKey - {apiKey}");
+        }
+
+        return advertising;
     }
 
-    public async Task<AdvertisingDto> GetOneAdvertisingAsync(int id)
+    public async Task<AdvertisingDto> GetOneAdvertisingAsync(int id, Guid apiKey)
     {
         Advertising advertising = await _context.Advertisings
             .AsNoTracking()
+            .Include(x => x.AdsClient)
             .FirstOrDefaultAsync(x => x.Id == id);
 
+        if (advertising!.AdsClient.ApiKey != apiKey)
+        {
+            throw new InvalidOperationException($"invalid ApiKey - {apiKey}");
+        }
+        
         if (advertising == null)
         {
             throw new ArgumentNullException($"This ad does not exist {id}");
@@ -49,11 +78,18 @@ public class AdvertisingDataService: IAdvertisingDataService
         return advertising.Adapt<AdvertisingDto>();
     }
 
-    public async Task<int> UpdateAdvertisingAsync(UpdateAdvertisingRequest updateAdvertisingRequest)
+    public async Task<int> UpdateAdvertisingAsync(UpdateAdvertisingRequest updateAdvertisingRequest, Guid apiKey)
     {
         Advertising advertising =
-            await _context.Advertisings.FirstOrDefaultAsync(x => x.Id == updateAdvertisingRequest.Id);
+            await _context.Advertisings
+                .Include(x=>x.AdsClient)
+                .FirstOrDefaultAsync(x => x.Id == updateAdvertisingRequest.Id);
 
+        if (advertising!.AdsClient.ApiKey != apiKey)
+        {
+            throw new InvalidOperationException($"invalid ApiKey - {apiKey}");
+        }
+        
         if (advertising == null)
         {
             throw new ArgumentNullException($"There is no Advertising with this {updateAdvertisingRequest.Id}");
@@ -68,11 +104,18 @@ public class AdvertisingDataService: IAdvertisingDataService
         return advertising.Id;
     }
 
-    public async Task RemoveAdvertisingAsync(int id)
+    public async Task<int> RemoveAdvertisingAsync(int id, Guid apiKey)
     {
         Advertising advertising =
-            await _context.Advertisings.FirstOrDefaultAsync(x => x.Id == id);
+            await _context.Advertisings
+                .Include(x=>x.AdsClient)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
+        if (advertising!.AdsClient.ApiKey != apiKey)
+        {
+            throw new InvalidOperationException($"invalid ApiKey - {apiKey}");
+        }
+        
         if (advertising == null)
         {
             throw new ArgumentNullException($"There is no Advertising with this {id}");
@@ -81,5 +124,7 @@ public class AdvertisingDataService: IAdvertisingDataService
         _context.Advertisings.Remove(advertising);
 
         await _context.SaveChangesAsync();
+
+        return advertising.Id;
     }
 }

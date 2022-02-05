@@ -4,7 +4,7 @@ using WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
 
 namespace WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
-public class UpdateAdsClientRequest
+public class AdsClientDto
 {
     public int Id { get; set; }
     public Guid ApiToken { get; set; }

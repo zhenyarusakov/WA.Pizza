@@ -30,7 +30,7 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<Guid>("ApiToken")
+                    b.Property<Guid>("ApiKey")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -52,6 +52,9 @@ namespace WA.Pizza.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("AdsClientId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -65,6 +68,8 @@ namespace WA.Pizza.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdsClientId");
 
                     b.ToTable("Advertisings");
                 });
@@ -318,6 +323,17 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WA.Pizza.Core.Entities.Advertising", b =>
+                {
+                    b.HasOne("WA.Pizza.Core.Entities.AdsClient", "AdsClient")
+                        .WithMany("Advertisings")
+                        .HasForeignKey("AdsClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdsClient");
+                });
+
             modelBuilder.Entity("WA.Pizza.Core.Entities.BasketDomain.Basket", b =>
                 {
                     b.HasOne("WA.Pizza.Core.Entities.User", "User")
@@ -394,6 +410,11 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Navigation("CatalogItem");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("WA.Pizza.Core.Entities.AdsClient", b =>
+                {
+                    b.Navigation("Advertisings");
                 });
 
             modelBuilder.Entity("WA.Pizza.Core.Entities.BasketDomain.Basket", b =>

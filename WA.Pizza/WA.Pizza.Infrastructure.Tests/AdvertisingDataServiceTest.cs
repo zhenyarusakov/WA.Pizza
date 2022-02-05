@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Infrastructure.Data;
 using WA.Pizza.Infrastructure.Data.Services;
@@ -29,7 +31,7 @@ public class AdvertisingDataServiceTest
         AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        int newAdvertising = await advertisingDataService.CreateAdvertisingAsync(createClientRequest);
+        int newAdvertising = await advertisingDataService.CreateAdvertisingAsync(createClientRequest, Guid.NewGuid());
 
         // Assert
         Advertising advertising = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == newAdvertising);
@@ -51,7 +53,7 @@ public class AdvertisingDataServiceTest
         AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        AdvertisingDto[] getAllAdvertising = await advertisingDataService.GetAllAdvertisingAsync();
+        AdvertisingDto[] getAllAdvertising = await advertisingDataService.GetAllAdvertisingAsync(new Guid());
 
         // Assert
         Advertising[] contextAdvertisings = await context.Advertisings.ToArrayAsync();
@@ -82,7 +84,7 @@ public class AdvertisingDataServiceTest
         AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        AdvertisingDto advertisingItem = await advertisingDataService.GetOneAdvertisingAsync(advertising.Id);
+        AdvertisingDto advertisingItem = await advertisingDataService.GetOneAdvertisingAsync(advertising.Id, new Guid());
         
         // Assert
         Advertising firstItem = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == advertisingItem.Id);
@@ -119,7 +121,7 @@ public class AdvertisingDataServiceTest
         };
         
         // Act
-        int advertisingId = await advertisingDataService.UpdateAdvertisingAsync(updateAdvertisingRequest);
+        int advertisingId = await advertisingDataService.UpdateAdvertisingAsync(updateAdvertisingRequest, new Guid());
         
         // Assert
         Advertising firstItem = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == advertisingId);
@@ -144,7 +146,7 @@ public class AdvertisingDataServiceTest
         AdvertisingDataService advertisingDataService = new AdvertisingDataService(context);
 
         // Act
-        await advertisingDataService.RemoveAdvertisingAsync(advertising.Id);
+        await advertisingDataService.RemoveAdvertisingAsync(advertising.Id, new Guid());
         
         // Assert
         Advertising advertisingItem = await context.Advertisings.FirstOrDefaultAsync(x => x.Id == advertising.Id);

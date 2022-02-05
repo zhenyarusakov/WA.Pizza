@@ -1,4 +1,6 @@
-﻿namespace WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
+﻿using WA.Pizza.Infrastructure.DTO.AdsClientDTO;
+
+namespace WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
 
 public class AdvertisingDto
 {
@@ -7,4 +9,6 @@ public class AdvertisingDto
     public string Description { get; set; }
     public string Img { get; set; }
     public string WebSite { get; set; }
+    public int AdsClientId { get; }
+    public AdsClientDto ClientDto{get; set; }
 }

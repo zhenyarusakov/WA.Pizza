@@ -38,7 +38,7 @@ namespace WA.Pizza.Api
                 .AddScoped<IAdvertisingDataService, AdvertisingDataService>()
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
-            
+
             MapperGlobal.Configure();
         }
 
