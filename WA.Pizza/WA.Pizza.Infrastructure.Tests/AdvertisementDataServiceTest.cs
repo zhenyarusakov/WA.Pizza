@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Infrastructure.Data;
 using WA.Pizza.Infrastructure.Data.Services.AdvertisementServices;
-using WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
+using WA.Pizza.Infrastructure.DTO.AdvertisementDTO;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 using Xunit;
 
@@ -30,7 +30,7 @@ public class AdvertisingDataServiceTest
         context.AdsClients.Add(client);
         await context.SaveChangesAsync();
         
-        CreateAdvertisingRequest createClientRequest = new()
+        CreateAdvertisementRequest createClientRequest = new()
         {
             Name = "pepsi",
             Description = "pepsi",
@@ -72,7 +72,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        AdvertisingDto[] getAllAdvertising = await advertisementDataService.GetAllAdvertisementAsync(client.ApiKey);
+        AdvertisementDto[] getAllAdvertising = await advertisementDataService.GetAllAdvertisementAsync(client.ApiKey);
 
         // Assert
         Advertisement[] contextAdvertisings = await context.Advertisements.ToArrayAsync();
@@ -113,15 +113,15 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        AdvertisingDto advertisingItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id, client.ApiKey);
+        AdvertisementDto advertisementItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id, client.ApiKey);
         
         // Assert
-        Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisingItem.Id);
-        firstItem!.Id.Should().Be(advertisingItem.Id);
-        firstItem!.Name.Should().Be(advertisingItem.Name);
-        firstItem!.Description.Should().Be(advertisingItem.Description);
-        firstItem!.Img.Should().Be(advertisingItem.Img);
-        firstItem!.WebSite.Should().Be(advertisingItem.WebSite);
+        Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisementItem.Id);
+        firstItem!.Id.Should().Be(advertisementItem.Id);
+        firstItem!.Name.Should().Be(advertisementItem.Name);
+        firstItem!.Description.Should().Be(advertisementItem.Description);
+        firstItem!.Img.Should().Be(advertisementItem.Img);
+        firstItem!.WebSite.Should().Be(advertisementItem.WebSite);
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public class AdvertisingDataServiceTest
         await context.SaveChangesAsync();
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
-        UpdateAdvertisingRequest updateAdvertisingRequest = new()
+        UpdateAdvertisementRequest updateAdvertisementRequest = new()
         {
             Id = advertisement.Id,
             Description = "pepsipepsi",
@@ -160,12 +160,12 @@ public class AdvertisingDataServiceTest
         };
         
         // Act
-        int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisingRequest, client.ApiKey);
+        int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest, client.ApiKey);
         
         // Assert
         Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisingId);
         firstItem.Should().NotBeNull();
-        firstItem!.Description.Should().Be(updateAdvertisingRequest.Description);
+        firstItem!.Description.Should().Be(updateAdvertisementRequest.Description);
     }
 
     [Fact]
@@ -231,7 +231,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        AdvertisingDto[] newAdvertising = await advertisementDataService.GetAllAdvertisementAsync(clientRequest.ApiKey);
+        AdvertisementDto[] newAdvertising = await advertisementDataService.GetAllAdvertisementAsync(clientRequest.ApiKey);
 
         // Assert
         newAdvertising.Should().BeEmpty();

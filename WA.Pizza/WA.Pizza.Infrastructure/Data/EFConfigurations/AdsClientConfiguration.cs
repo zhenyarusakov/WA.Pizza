@@ -15,5 +15,15 @@ public class AdsClientConfiguration : IEntityTypeConfiguration<AdsClient>
             .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasIndex(x => x.ApiKey);
+        
+        builder
+            .Property(x => x.Name)
+            .HasMaxLength(100)
+            .IsRequired();
+        
+        builder
+            .Property(x => x.WebSite)
+            .HasMaxLength(200)
+            .IsRequired();
     }
 }

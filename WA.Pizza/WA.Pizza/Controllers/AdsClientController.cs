@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 using WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
@@ -15,7 +16,11 @@ public class AdsClientController: BaseApiController
         _adsClientDataService = adsClientDataService;
     }
 
-    [HttpPost]
+    [HttpPost("CreateNewClient")]
+    [SwaggerOperation(Summary = "Creates new advertisement")]
+    [SwaggerResponse(400, "Malformed adsClientRequest")]
+    [SwaggerResponse(201, "New AdsClient created")]
+    [ProducesResponseType(typeof(long), 201)]
     public async Task<IActionResult> CreateNewClient(CreateAdsClientRequest adsClientRequest)
     {
         Guid result = await _adsClientDataService.CreateNewAdsClientAsync(adsClientRequest);
@@ -23,7 +28,11 @@ public class AdsClientController: BaseApiController
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("RemovedClient")]
+    [SwaggerOperation(Summary = "Remove AdsClient")]
+    [SwaggerResponse(204, "AdsClient Remove")]
+    [SwaggerResponse(404, "AdsClient not found")]
+    [ProducesResponseType(typeof(long), 204)]
     public async Task<IActionResult> RemoveClient(int id)
     {
         await _adsClientDataService.RemoveAdsClientAsync(id);
@@ -31,7 +40,12 @@ public class AdsClientController: BaseApiController
         return Ok();
     }
 
-    [HttpPatch]
+    [HttpPut("UpdateAdsClient")]
+    [SwaggerOperation(Summary = "Updates existing advertisement")]
+    [SwaggerResponse(400, "Malformed adsClientRequest")]
+    [SwaggerResponse(404, "AdsClient not found")]
+    [SwaggerResponse(200, "AdsClient updated")]
+    [ProducesResponseType(typeof(long), 200)]
     public async Task<IActionResult> UpdateAdsClient(UpdateAdsClientRequest adsClientRequest)
     {
         var result = await _adsClientDataService.UpdateAdsClientAsync(adsClientRequest);
@@ -39,7 +53,11 @@ public class AdsClientController: BaseApiController
         return Ok(result);
     }
 
-    [HttpPost("Block")]
+    [HttpPost("BlockClient")]
+    [SwaggerOperation(Summary = "Creates new advertisement")]
+    [SwaggerResponse(400, "Malformed id")]
+    [SwaggerResponse(201, "Client blocking")]
+    [ProducesResponseType(typeof(long), 201)]
     public async Task<IActionResult> BlockClient(int id)
     {
         var result = await _adsClientDataService.BlockClientAsync(id);
@@ -47,7 +65,11 @@ public class AdsClientController: BaseApiController
         return Ok(result);
     }
 
-    [HttpPost("Unlock")]
+    [HttpPost("UnlockClient")]
+    [SwaggerOperation(Summary = "Creates new advertisement")]
+    [SwaggerResponse(400, "Malformed id")]
+    [SwaggerResponse(201, "Client unlock")]
+    [ProducesResponseType(typeof(long), 201)]
     public async Task<IActionResult> UnlockClient(int id)
     {
         var result = await _adsClientDataService.UnlockClientAsync(id);

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
+using WA.Pizza.Infrastructure.DTO.AdvertisementDTO;
 
 namespace WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
@@ -10,5 +10,5 @@ public class AdsClientDto
     public Guid ApiToken { get; set; }
     public string Name { get; set; }
     public string WebSite { get; set; }
-    public ICollection<AdvertisingDto> Advertisings { get; set; }
+    public ICollection<AdvertisementDto> Advertisements { get; set; }
 }

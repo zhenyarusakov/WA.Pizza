@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +19,22 @@ namespace WA.Pizza.Api.Extensions
         {
             return services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "WA.Pizza", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "WA.Pizza", 
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Evgeny Rusakov",
+                        Email = "EvgenyRusakov@gmail.com",
+                        Url = new Uri("https://github.com/zhenyarusakov")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "WAPizza API",
+                        Url = new Uri("https://github.com/zhenyarusakov/WA.Pizza")
+                    }
+                });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",

@@ -1,8 +1,8 @@
 ﻿using WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 
-namespace WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
+namespace WA.Pizza.Infrastructure.DTO.AdvertisementDTO;
 
-public class AdvertisingDto
+public class AdvertisementDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

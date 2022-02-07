@@ -1,6 +1,6 @@
-﻿namespace WA.Pizza.Infrastructure.DTO.AdvertisingDTO;
+﻿namespace WA.Pizza.Infrastructure.DTO.AdvertisementDTO;
 
-public class UpdateAdvertisingRequest
+public class UpdateAdvertisementRequest
 {
     public int Id { get; set; }
     public string Name { get; set; }
