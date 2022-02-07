@@ -9,5 +9,7 @@ public class AdsClient
     public Guid ApiKey { get; set; }
     public string Name { get; set; }
     public string WebSite { get; set; }
-    public ICollection<Advertising> Advertisings { get; set; } = new List<Advertising>();
+    public string ClientInfo { get; set; }
+    public bool IsBlocked { get; set; }
+    public ICollection<Advertisement> Advertisements { get; set; } = new List<Advertisement>();
 }

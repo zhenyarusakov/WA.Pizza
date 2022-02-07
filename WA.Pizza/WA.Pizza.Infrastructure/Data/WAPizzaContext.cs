@@ -27,7 +27,7 @@ namespace WA.Pizza.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         
         public DbSet<AdsClient> AdsClients { get; set; }
-        public DbSet<Advertising> Advertisings { get; set; }
+        public DbSet<Advertisement> Advertisements { get; set; }
 
     }
 }

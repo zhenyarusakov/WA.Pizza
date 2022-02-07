@@ -1,6 +1,6 @@
 ﻿namespace WA.Pizza.Core.Entities;
 
-public class Advertising
+public class Advertisement
 {
     public int Id { get; set; }
     public string Name { get; set; }
