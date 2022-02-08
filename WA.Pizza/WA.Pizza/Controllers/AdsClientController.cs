@@ -17,7 +17,7 @@ public class AdsClientController: BaseApiController
     }
 
     [HttpPost("CreateNewClient")]
-    [SwaggerOperation(Summary = "Creates new advertisement")]
+    [SwaggerOperation(Summary = "Creates new AdsClient")]
     [SwaggerResponse(400, "Malformed adsClientRequest")]
     [SwaggerResponse(201, "New AdsClient created")]
     [ProducesResponseType(typeof(long), 201)]
@@ -41,7 +41,7 @@ public class AdsClientController: BaseApiController
     }
 
     [HttpPut("UpdateAdsClient")]
-    [SwaggerOperation(Summary = "Updates existing advertisement")]
+    [SwaggerOperation(Summary = "Updates AdsClient")]
     [SwaggerResponse(400, "Malformed adsClientRequest")]
     [SwaggerResponse(404, "AdsClient not found")]
     [SwaggerResponse(200, "AdsClient updated")]
@@ -54,7 +54,7 @@ public class AdsClientController: BaseApiController
     }
 
     [HttpPost("BlockClient")]
-    [SwaggerOperation(Summary = "Creates new advertisement")]
+    [SwaggerOperation(Summary = "Client blocking")]
     [SwaggerResponse(400, "Malformed id")]
     [SwaggerResponse(201, "Client blocking")]
     [ProducesResponseType(typeof(long), 201)]
@@ -66,7 +66,7 @@ public class AdsClientController: BaseApiController
     }
 
     [HttpPost("UnlockClient")]
-    [SwaggerOperation(Summary = "Creates new advertisement")]
+    [SwaggerOperation(Summary = "Unlock Client")]
     [SwaggerResponse(400, "Malformed id")]
     [SwaggerResponse(201, "Client unlock")]
     [ProducesResponseType(typeof(long), 201)]
