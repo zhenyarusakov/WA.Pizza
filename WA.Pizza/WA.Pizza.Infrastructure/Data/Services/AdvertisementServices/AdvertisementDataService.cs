@@ -19,7 +19,7 @@ public class AdvertisementDataService: IAdvertisementDataService
         _context = context;
     }
 
-    public async Task<int> CreateAdvertisementAsync(CreateAdvertisementRequest createAdvertisementRequest, Guid apiKey)
+    public async Task<int> CreateAdvertisementAsync(CreateAdvertisementRequest createAdvertisementRequest)
     {
         Advertisement newAdvertisement = createAdvertisementRequest.Adapt<Advertisement>();
 
@@ -54,7 +54,7 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertising;
     }
 
-    public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey)
+    public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id)
     {
         Advertisement advertisement = await _context.Advertisements
             .AsNoTracking()
@@ -70,7 +70,7 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertisement.Adapt<AdvertisementDto>();
     }
 
-    public async Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest, Guid apiKey)
+    public async Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest)
     {
         Advertisement advertisement =
             await _context.Advertisements
@@ -92,7 +92,7 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertisement.Id;
     }
 
-    public async Task<int> RemoveAdvertisementAsync(int id, Guid apiKey)
+    public async Task<int> RemoveAdvertisementAsync(int id)
     {
         Advertisement advertisement =
             await _context.Advertisements

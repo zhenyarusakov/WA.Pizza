@@ -6,10 +6,10 @@ namespace WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 
 public interface IAdvertisementDataService
 {
-    Task<int> CreateAdvertisementAsync(CreateAdvertisementRequest createAdvertisementRequest, Guid apiKey);
+    Task<int> CreateAdvertisementAsync(CreateAdvertisementRequest createAdvertisementRequest);
     Task<AdvertisementDto[]> GetAllAdvertisementAsync(Guid apiKey);
-    Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey);
-    Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest, Guid apiKey);
-    Task<int> RemoveAdvertisementAsync(int id, Guid apiKey);
+    Task<AdvertisementDto> GetOneAdvertisementAsync(int id);
+    Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest);
+    Task<int> RemoveAdvertisementAsync(int id);
     Task<bool> ApiKeyIsValid(Guid apiKey);
 }

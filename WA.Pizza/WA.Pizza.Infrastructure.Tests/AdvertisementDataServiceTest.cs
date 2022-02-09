@@ -41,7 +41,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        int newAdvertising = await advertisementDataService.CreateAdvertisementAsync(createClientRequest, client.ApiKey);
+        int newAdvertising = await advertisementDataService.CreateAdvertisementAsync(createClientRequest);
 
         // Assert
         Advertisement advertisement = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == newAdvertising);
@@ -113,7 +113,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        AdvertisementDto advertisementItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id, client.ApiKey);
+        AdvertisementDto advertisementItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id);
         
         // Assert
         Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisementItem.Id);
@@ -160,7 +160,7 @@ public class AdvertisingDataServiceTest
         };
         
         // Act
-        int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest, client.ApiKey);
+        int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest);
         
         // Assert
         Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisingId);
@@ -195,7 +195,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        await advertisementDataService.RemoveAdvertisementAsync(advertisement.Id, client.ApiKey);
+        await advertisementDataService.RemoveAdvertisementAsync(advertisement.Id);
         
         // Assert
         Advertisement advertisementItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisement.Id);
