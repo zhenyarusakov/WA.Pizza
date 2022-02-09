@@ -25,7 +25,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = true,
+            IsBlocked = false,
         };
         context.AdsClients.Add(client);
         await context.SaveChangesAsync();
@@ -62,7 +62,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = true,
+            IsBlocked = false,
         };
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
         ICollection<Advertisement> advertisings = AdvertisementHelper.CreateListOfFilledAdvertising();
@@ -96,7 +96,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = true,
+            IsBlocked = false,
         };
         Advertisement advertisement = new Advertisement()
         {
@@ -134,7 +134,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = true,
+            IsBlocked = false,
         };
         Advertisement advertisement = new Advertisement()
         {
@@ -178,7 +178,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = true,
+            IsBlocked = false,
         };
         Advertisement advertisement = new Advertisement()
         {
@@ -213,7 +213,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = false
+            IsBlocked = true
         };
         Advertisement advertisementPepsi = new()
         {
@@ -248,7 +248,7 @@ public class AdvertisingDataServiceTest
             Name = "pepsi",
             ApiKey = Guid.NewGuid(),
             WebSite = "pepsi",
-            IsBlocked = true
+            IsBlocked = false
         };
         Advertisement advertisementPepsi = new()
         {
