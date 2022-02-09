@@ -31,18 +31,20 @@ public class AdsClientDataService: IAdsClientDataService
         return adsClient.ApiKey;
     }
 
-    public async Task RemoveAdsClientAsync(int id)
+    public async Task<int> RemoveAdsClientAsync(int id)
     {
-        Client clientId = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
+        Client client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
 
-        if (clientId == null)
+        if (client == null)
         {
             throw new InvalidException($"Current {id} does not exist");
         }
 
-        _context.AdsClients.Remove(clientId);
+        _context.AdsClients.Remove(client);
 
         await _context.SaveChangesAsync();
+
+        return client.Id;
     }
 
     public async Task<int> UpdateAdsClientAsync(UpdateAdsClientRequest adsClientRequest)

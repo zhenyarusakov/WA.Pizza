@@ -74,7 +74,7 @@ namespace WA.Pizza.Infrastructure.Tests
             order.Should().NotBeNull();
             order!.OrderItems.Select(x => x.Quantity).Should()
                 .BeEquivalentTo(newBasketItem.Select(x=>x.Quantity));
-            order!.Status.Should().Be(OrderStatus.InProcessing);
+            order!.Status.Should().Be(OrderStatus.New);
         }
 
         [Fact]

@@ -11,4 +11,5 @@ public interface IAdvertisementDataService
     Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey);
     Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest, Guid apiKey);
     Task<int> RemoveAdvertisementAsync(int id, Guid apiKey);
+    Task<bool> ApiKeyIsValid(Guid apiKey);
 }

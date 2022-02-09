@@ -18,12 +18,12 @@ public class AdsClientConfiguration : IEntityTypeConfiguration<AdsClient>
         
         builder
             .Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder
             .Property(x => x.WebSite)
-            .HasMaxLength(200)
+            .HasMaxLength(256)
             .IsRequired();
     }
 }

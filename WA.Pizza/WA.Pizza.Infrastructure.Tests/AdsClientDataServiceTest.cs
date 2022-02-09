@@ -66,6 +66,8 @@ public class AdsClientDataServiceTest
         AdsClientDataService adsClientDataService = new AdsClientDataService(context);
         CreateAdsClientRequest createAdsClientRequest = new()
         {
+            Name = "pepsi",
+            WebSite = "pepsi.com",
             IsBlocked = false
         };
 
@@ -85,6 +87,8 @@ public class AdsClientDataServiceTest
         AdsClientDataService adsClientDataService = new AdsClientDataService(context);
         CreateAdsClientRequest createAdsClientRequest = new()
         {
+            Name = "pepsi",
+            WebSite = "pepsi.com",
             IsBlocked = true
         };
 

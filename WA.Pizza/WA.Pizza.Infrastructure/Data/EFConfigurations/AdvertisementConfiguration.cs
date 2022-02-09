@@ -10,17 +10,17 @@ public class AdvertisementConfiguration : IEntityTypeConfiguration<Advertisement
     {
         builder
             .Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder
             .Property(x => x.WebSite)
-            .HasMaxLength(200)
+            .HasMaxLength(256)
             .IsRequired();
         
         builder
             .Property(x => x.Img)
-            .HasMaxLength(200)
+            .HasMaxLength(256)
             .IsRequired();
     }
 }

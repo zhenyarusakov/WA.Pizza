@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 using WA.Pizza.Infrastructure.DTO.AdvertisementDTO;
+using WA.Pizza.Infrastructure.ErrorHandling;
 
 namespace WA.Pizza.Api.Controllers;
 
@@ -22,12 +23,17 @@ public class AdvertisementController: BaseApiController
     [SwaggerResponse(201, "New advertisement created")]
     [SwaggerResponse(400, "Malformed createAdvertisementRequest")]
     [SwaggerResponse(401, "Provided API key is not a valid key")]
-    [ProducesResponseType(typeof(long), 201)]
+    [ProducesResponseType(typeof(int), 201)]
     public async Task<IActionResult> CreateAdvertisement(
-        [FromBody] CreateAdvertisementRequest advertisementRequest, 
+        [FromBody] CreateAdvertisementRequest createRequest, 
         [Required][FromHeader] Guid apiKey)
     {
-        int result = await _advertisementDataService.CreateAdvertisementAsync(advertisementRequest, apiKey);
+        if (!await _advertisementDataService.ApiKeyIsValid(apiKey))
+        {
+            throw new InvalidException($"invalid ApiKey - {apiKey}");
+        }
+        
+        int result = await _advertisementDataService.CreateAdvertisementAsync(createRequest, apiKey);
 
         return Ok(result);
     }
@@ -40,6 +46,11 @@ public class AdvertisementController: BaseApiController
     [ProducesResponseType(typeof(AdvertisementDto[]), 200)]
     public async Task<IActionResult> GetAllAdvertisement([Required][FromHeader] Guid apiKey)
     {
+        if (!await _advertisementDataService.ApiKeyIsValid(apiKey))
+        {
+            throw new InvalidException($"invalid ApiKey - {apiKey}");
+        }
+        
         AdvertisementDto[] result = await _advertisementDataService.GetAllAdvertisementAsync(apiKey);
 
         return Ok(result);
@@ -50,9 +61,14 @@ public class AdvertisementController: BaseApiController
     [SwaggerResponse(200)]
     [SwaggerResponse(400, "Malformed API key")]
     [SwaggerResponse(401, "Provided API key is not a valid key")]
-    [ProducesResponseType(typeof(long), 200)]
+    [ProducesResponseType(typeof(AdvertisementDto), 200)]
     public async Task<IActionResult> GetAdvertisement(int id, [Required][FromHeader] Guid apiKey)
     {
+        if (!await _advertisementDataService.ApiKeyIsValid(apiKey))
+        {
+            throw new InvalidException($"invalid ApiKey - {apiKey}");
+        }
+        
         AdvertisementDto result = await _advertisementDataService.GetOneAdvertisementAsync(id, apiKey);
 
         return Ok(result);
@@ -64,12 +80,17 @@ public class AdvertisementController: BaseApiController
     [SwaggerResponse(400, "Malformed updateAdvertisementRequest")]
     [SwaggerResponse(401, "Provided API key is not a valid key")]
     [SwaggerResponse(404, "Advertisement not found")]
-    [ProducesResponseType(typeof(long), 200)]
+    [ProducesResponseType(typeof(int), 200)]
     public async Task<IActionResult> UpdateAdvertisement(
-        [FromBody] UpdateAdvertisementRequest updateAdvertisementRequest, 
+        [FromBody] UpdateAdvertisementRequest updateRequest, 
         [Required][FromHeader] Guid apiKey)
     {
-        int result = await _advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest, apiKey);
+        if (!await _advertisementDataService.ApiKeyIsValid(apiKey))
+        {
+            throw new InvalidException($"invalid ApiKey - {apiKey}");
+        }
+        
+        int result = await _advertisementDataService.UpdateAdvertisementAsync(updateRequest, apiKey);
 
         return Ok(result);
     }
@@ -79,9 +100,14 @@ public class AdvertisementController: BaseApiController
     [SwaggerResponse(204, "Advertisement Remove")]
     [SwaggerResponse(401, "Provided API key is not a valid key")]
     [SwaggerResponse(404, "Advertisement not found")]
-    [ProducesResponseType(typeof(long), 204)]
+    [ProducesResponseType(typeof(int), 204)]
     public async Task<IActionResult> RemoveAdvertisement(int id, [Required][FromHeader] Guid apiKey)
     {
+        if (!await _advertisementDataService.ApiKeyIsValid(apiKey))
+        {
+            throw new InvalidException($"invalid ApiKey - {apiKey}");
+        }
+        
         await _advertisementDataService.RemoveAdvertisementAsync(id, apiKey);
 
         return Ok();

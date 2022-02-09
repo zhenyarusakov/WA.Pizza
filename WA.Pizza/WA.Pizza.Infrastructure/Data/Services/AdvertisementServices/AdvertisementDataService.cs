@@ -31,11 +31,6 @@ public class AdvertisementDataService: IAdvertisementDataService
             throw new InvalidException($"This client does not exist.");
         }
         
-        if (client.ApiKey != apiKey)
-        {
-            throw new InvalidException($"invalid ApiKey - {apiKey}");
-        }
-        
         _context.Advertisements.Add(newAdvertisement);
 
         await _context.SaveChangesAsync();
@@ -53,7 +48,7 @@ public class AdvertisementDataService: IAdvertisementDataService
 
         if (advertising == null)
         {
-            throw new InvalidException($"invalid ApiKey - {apiKey}");
+            throw new InvalidException($"This client does not exist. - {advertising}");
         }
 
         return advertising;
@@ -71,11 +66,6 @@ public class AdvertisementDataService: IAdvertisementDataService
         {
             throw new InvalidException($"This ad does not exist {id}");
         }
-        
-        if (advertisement.AdsClient.ApiKey != apiKey)
-        {
-            throw new InvalidException($"invalid ApiKey - {apiKey}");
-        }
 
         return advertisement.Adapt<AdvertisementDto>();
     }
@@ -91,11 +81,6 @@ public class AdvertisementDataService: IAdvertisementDataService
         if (advertisement == null)
         {
             throw new InvalidException($"There is no Advertising with this {updateAdvertisementRequest.Id}");
-        }
-        
-        if (advertisement.AdsClient.ApiKey != apiKey)
-        {
-            throw new InvalidException($"invalid ApiKey - {apiKey}");
         }
         
         updateAdvertisementRequest.Adapt(advertisement);
@@ -119,16 +104,16 @@ public class AdvertisementDataService: IAdvertisementDataService
         {
             throw new InvalidException($"There is no Advertising with this {id}");
         }
-        
-        if (advertisement.AdsClient.ApiKey != apiKey)
-        {
-            throw new InvalidException($"invalid ApiKey - {apiKey}");
-        }
 
         _context.Advertisements.Remove(advertisement);
 
         await _context.SaveChangesAsync();
 
         return advertisement.Id;
+    }
+    
+    public Task<bool> ApiKeyIsValid(Guid apiKey)
+    {
+        return Task.FromResult(_context.Advertisements.Any(x => x.AdsClient.ApiKey == apiKey));
     }
 }

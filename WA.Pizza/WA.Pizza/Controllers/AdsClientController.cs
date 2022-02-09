@@ -20,10 +20,10 @@ public class AdsClientController: BaseApiController
     [SwaggerOperation(Summary = "Creates new AdsClient")]
     [SwaggerResponse(400, "Malformed adsClientRequest")]
     [SwaggerResponse(201, "New AdsClient created")]
-    [ProducesResponseType(typeof(long), 201)]
-    public async Task<IActionResult> CreateNewClient(CreateAdsClientRequest adsClientRequest)
+    [ProducesResponseType(typeof(Guid), 201)]
+    public async Task<IActionResult> CreateNewClient(CreateAdsClientRequest createRequest)
     {
-        Guid result = await _adsClientDataService.CreateNewAdsClientAsync(adsClientRequest);
+        Guid result = await _adsClientDataService.CreateNewAdsClientAsync(createRequest);
 
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public class AdsClientController: BaseApiController
     [SwaggerOperation(Summary = "Remove AdsClient")]
     [SwaggerResponse(204, "AdsClient Remove")]
     [SwaggerResponse(404, "AdsClient not found")]
-    [ProducesResponseType(typeof(long), 204)]
+    [ProducesResponseType(typeof(int), 204)]
     public async Task<IActionResult> RemoveClient(int id)
     {
         await _adsClientDataService.RemoveAdsClientAsync(id);
@@ -45,10 +45,10 @@ public class AdsClientController: BaseApiController
     [SwaggerResponse(400, "Malformed adsClientRequest")]
     [SwaggerResponse(404, "AdsClient not found")]
     [SwaggerResponse(200, "AdsClient updated")]
-    [ProducesResponseType(typeof(long), 200)]
-    public async Task<IActionResult> UpdateAdsClient(UpdateAdsClientRequest adsClientRequest)
+    [ProducesResponseType(typeof(int), 200)]
+    public async Task<IActionResult> UpdateAdsClient(UpdateAdsClientRequest updateRequest)
     {
-        var result = await _adsClientDataService.UpdateAdsClientAsync(adsClientRequest);
+        var result = await _adsClientDataService.UpdateAdsClientAsync(updateRequest);
 
         return Ok(result);
     }
@@ -57,7 +57,7 @@ public class AdsClientController: BaseApiController
     [SwaggerOperation(Summary = "Client blocking")]
     [SwaggerResponse(400, "Malformed id")]
     [SwaggerResponse(201, "Client blocking")]
-    [ProducesResponseType(typeof(long), 201)]
+    [ProducesResponseType(typeof(int), 201)]
     public async Task<IActionResult> BlockClient(int id)
     {
         var result = await _adsClientDataService.BlockClientAsync(id);
@@ -69,7 +69,7 @@ public class AdsClientController: BaseApiController
     [SwaggerOperation(Summary = "Unlock Client")]
     [SwaggerResponse(400, "Malformed id")]
     [SwaggerResponse(201, "Client unlock")]
-    [ProducesResponseType(typeof(long), 201)]
+    [ProducesResponseType(typeof(int), 201)]
     public async Task<IActionResult> UnlockClient(int id)
     {
         var result = await _adsClientDataService.UnlockClientAsync(id);
