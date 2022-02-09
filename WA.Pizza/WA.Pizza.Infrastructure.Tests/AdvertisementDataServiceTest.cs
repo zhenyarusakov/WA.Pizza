@@ -41,7 +41,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        int newAdvertising = await advertisementDataService.CreateAdvertisementAsync(createClientRequest);
+        int newAdvertising = await advertisementDataService.CreateAdvertisementAsync(createClientRequest, client.ApiKey);
 
         // Assert
         Advertisement advertisement = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == newAdvertising);
@@ -113,7 +113,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        AdvertisementDto advertisementItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id);
+        AdvertisementDto advertisementItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id, client.ApiKey);
         
         // Assert
         Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisementItem.Id);
@@ -160,7 +160,7 @@ public class AdvertisingDataServiceTest
         };
         
         // Act
-        int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest);
+        int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest, client.ApiKey);
         
         // Assert
         Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisingId);
@@ -195,7 +195,7 @@ public class AdvertisingDataServiceTest
         AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
 
         // Act
-        await advertisementDataService.RemoveAdvertisementAsync(advertisement.Id);
+        await advertisementDataService.RemoveAdvertisementAsync(advertisement.Id, client.ApiKey);
         
         // Assert
         Advertisement advertisementItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisement.Id);
@@ -235,5 +235,39 @@ public class AdvertisingDataServiceTest
 
         // Assert
         newAdvertising.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Should_return_true_if_ApiKeys_exist()
+    {
+        // Arrange
+        await using WAPizzaContext context = await DbContextFactory.CreateContext();
+        AdsClient clientRequest = new()
+        {
+            Id = 1,
+            Name = "pepsi",
+            ApiKey = Guid.NewGuid(),
+            WebSite = "pepsi",
+            IsBlocked = true
+        };
+        Advertisement advertisementPepsi = new()
+        {
+            Id = 1,
+            Name = "pepsi",
+            Description = "pepsi",
+            Img = "pepsi",
+            WebSite = "pepsi",
+            AdsClientId = 1
+        };
+        context.Advertisements.Add(advertisementPepsi);
+        context.AdsClients.Add(clientRequest);
+        await context.SaveChangesAsync();
+        AdvertisementDataService advertisementDataService = new AdvertisementDataService(context);
+        
+        // Act
+        bool advertisement = await advertisementDataService.ApiKeyIsValid(clientRequest.ApiKey);
+        
+        // Assert
+        advertisement.Should().BeTrue();
     }
 }

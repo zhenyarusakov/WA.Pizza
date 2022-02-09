@@ -33,7 +33,7 @@ public class AdvertisementController: BaseApiController
             throw new InvalidException($"invalid ApiKey - {apiKey}");
         }
         
-        int result = await _advertisementDataService.CreateAdvertisementAsync(createRequest);
+        int result = await _advertisementDataService.CreateAdvertisementAsync(createRequest, apiKey);
 
         return Ok(result);
     }
@@ -69,7 +69,7 @@ public class AdvertisementController: BaseApiController
             throw new InvalidException($"invalid ApiKey - {apiKey}");
         }
         
-        AdvertisementDto result = await _advertisementDataService.GetOneAdvertisementAsync(id);
+        AdvertisementDto result = await _advertisementDataService.GetOneAdvertisementAsync(id, apiKey);
 
         return Ok(result);
     }
@@ -90,7 +90,7 @@ public class AdvertisementController: BaseApiController
             throw new InvalidException($"invalid ApiKey - {apiKey}");
         }
         
-        int result = await _advertisementDataService.UpdateAdvertisementAsync(updateRequest);
+        int result = await _advertisementDataService.UpdateAdvertisementAsync(updateRequest, apiKey);
 
         return Ok(result);
     }
@@ -108,7 +108,7 @@ public class AdvertisementController: BaseApiController
             throw new InvalidException($"invalid ApiKey - {apiKey}");
         }
         
-        await _advertisementDataService.RemoveAdvertisementAsync(id);
+        await _advertisementDataService.RemoveAdvertisementAsync(id, apiKey);
 
         return Ok();
     }

@@ -5,6 +5,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
+using WA.Pizza.Infrastructure.DTO.AdsClientDTO;
 using WA.Pizza.Infrastructure.DTO.AdvertisementDTO;
 using WA.Pizza.Infrastructure.ErrorHandling;
 
@@ -19,11 +20,12 @@ public class AdvertisementDataService: IAdvertisementDataService
         _context = context;
     }
 
-    public async Task<int> CreateAdvertisementAsync(CreateAdvertisementRequest createAdvertisementRequest)
+    public async Task<int> CreateAdvertisementAsync(CreateAdvertisementRequest createAdvertisementRequest, Guid apiKey)
     {
         Advertisement newAdvertisement = createAdvertisementRequest.Adapt<Advertisement>();
 
-        var client = await _context.AdsClients.Where(x=>x.IsBlocked)
+        var client = await _context.AdsClients
+            .Where(x=>x.IsBlocked && x.ApiKey == apiKey)
             .FirstOrDefaultAsync(x => x.Id == createAdvertisementRequest.AdsClientId);
 
         if (client == null)
@@ -54,11 +56,11 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertising;
     }
 
-    public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id)
+    public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey)
     {
         Advertisement advertisement = await _context.Advertisements
             .AsNoTracking()
-            .Where(x=>x.AdsClient.IsBlocked)
+            .Where(x=>x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
             .Include(x => x.AdsClient)
             .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -70,11 +72,11 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertisement.Adapt<AdvertisementDto>();
     }
 
-    public async Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest)
+    public async Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest, Guid apiKey)
     {
         Advertisement advertisement =
             await _context.Advertisements
-                .Where(x=>x.AdsClient.IsBlocked)
+                .Where(x=>x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
                 .Include(x=>x.AdsClient)
                 .FirstOrDefaultAsync(x => x.Id == updateAdvertisementRequest.Id);
 
@@ -92,11 +94,11 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertisement.Id;
     }
 
-    public async Task<int> RemoveAdvertisementAsync(int id)
+    public async Task<int> RemoveAdvertisementAsync(int id, Guid apiKey)
     {
         Advertisement advertisement =
             await _context.Advertisements
-                .Where(x=>x.AdsClient.IsBlocked)
+                .Where(x=>x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
                 .Include(x=>x.AdsClient)
                 .FirstOrDefaultAsync(x => x.Id == id);
         
@@ -112,8 +114,8 @@ public class AdvertisementDataService: IAdvertisementDataService
         return advertisement.Id;
     }
     
-    public Task<bool> ApiKeyIsValid(Guid apiKey)
+    public async Task<bool> ApiKeyIsValid(Guid apiKey)
     {
-        return Task.FromResult(_context.Advertisements.Any(x => x.AdsClient.ApiKey == apiKey));
+        return await _context.Advertisements.AnyAsync(x => x.AdsClient.ApiKey == apiKey);
     }
 }
