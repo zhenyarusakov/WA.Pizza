@@ -7,7 +7,9 @@ using Microsoft.Extensions.Configuration;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
+using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
+using WA.Pizza.Infrastructure.Data.Services.AdvertisementServices;
 
 
 namespace WA.Pizza.Api
@@ -34,9 +36,11 @@ namespace WA.Pizza.Api
                 .AddScoped<IBasketDataService, BasketDataService>()
                 .AddScoped<ICatalogDataService, CatalogDataService>()
                 .AddScoped<IAuthenticateService, AuthenticateService>()
+                .AddScoped<IAdsClientDataService, AdsClientDataService>()
+                .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
-            
+
             MapperGlobal.Configure();
         }
 

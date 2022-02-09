@@ -10,6 +10,21 @@ namespace WA.Pizza.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AdsClients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApiKey = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WebSite = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdsClients", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CatalogBrands",
                 columns: table => new
                 {
@@ -36,6 +51,29 @@ namespace WA.Pizza.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Advertisings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Img = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WebSite = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdsClientId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Advertisings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Advertisings_AdsClients_AdsClientId",
+                        column: x => x.AdsClientId,
+                        principalTable: "AdsClients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,6 +230,11 @@ namespace WA.Pizza.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Advertisings_AdsClientId",
+                table: "Advertisings",
+                column: "AdsClientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BasketItems_BasketId",
                 table: "BasketItems",
                 column: "BasketId");
@@ -233,10 +276,16 @@ namespace WA.Pizza.Infrastructure.Migrations
                 name: "Addresses");
 
             migrationBuilder.DropTable(
+                name: "Advertisings");
+
+            migrationBuilder.DropTable(
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
+
+            migrationBuilder.DropTable(
+                name: "AdsClients");
 
             migrationBuilder.DropTable(
                 name: "Baskets");
