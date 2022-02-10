@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using Hangfire;
 using MediatR;
 using WA.Pizza.Api.Extensions;
@@ -10,9 +9,7 @@ using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
-using WA.Pizza.Infrastructure.Data;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Commands;
 using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Queries;
 using WA.Pizza.Infrastructure.Data.Services.AdvertisementServices;
 
@@ -39,17 +36,14 @@ namespace WA.Pizza.Api
                 .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnectionDb")))
                 .AddScoped<IOrderDataService, OrderDataService>()
                 .AddScoped<IBasketDataService, BasketDataService>()
-                .AddScoped<ICatalogDataService, CatalogDataService>()
                 .AddScoped<IAuthenticateService, AuthenticateService>()
                 .AddScoped<IAdsClientDataService, AdsClientDataService>()
                 .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
+                .AddMediatR(typeof(GetAllCatalogItemQuery).Assembly)
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
-            services.AddMediatR(typeof(GetAllCatalogItemQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetCatalogItemByIdQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateCatalogItemCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateCatalogItemCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteCatalogItemCommand).GetTypeInfo().Assembly);
+            
+            services.AddMediatR(typeof(GetAllCatalogItemQuery).Assembly);
             MapperGlobal.Configure();
         }
 

@@ -1,24 +1,23 @@
 ﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WA.Pizza.Infrastructure.Abstractions;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Queries;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
 namespace WA.Pizza.Api.Controllers
 {
     public class CatalogItemController: BaseApiController
     {
-        private readonly ICatalogDataService _service;
+        private readonly IMediator _mediator;
 
-        public CatalogItemController(ICatalogDataService service)
+        public CatalogItemController(IMediator mediator)
         {
-            _service = service;
+            _mediator = mediator;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCatalogItem(int id)
         {
-            var result = await _service.GetCatalogAsync(id);
+            var result = await _mediator.Send(new GetByIdCatalogItem{Id = id});
 
             return Ok(result);
         }
@@ -26,23 +25,23 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatalogItems()
         {
-            var result = await _service.GetAllCatalogsAsync();
+            var result = await _mediator.Send(new CatalogItemDto());
             
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCatalogItem([FromBody] CreateCatalogRequest modifyDto)
+        public async Task<IActionResult> CreateCatalogItem([FromBody] CreateCatalogRequest catalogRequest)
         {
-            int result = await _service.CreateCatalogItemAsync(modifyDto);
+            int result = await _mediator.Send(catalogRequest);
             
             return Ok(result);
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateCatalogItem([FromBody] UpdateCatalogRequest modifyDto)
+        public async Task<IActionResult> UpdateCatalogItem([FromBody] UpdateCatalogRequest catalogRequest)
         {
-            int result = await _service.UpdateCatalogItemAsync(modifyDto);
+            int result = await _mediator.Send(catalogRequest);
 
             return Ok(result);
         }
@@ -50,7 +49,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCatalogItem(int id)
         {
-            int result = await _service.DeleteCatalogItemAsync(id);
+            int result = await _mediator.Send(new DeleteCatalogItemId{Id = id});
         
             return Ok(result);
         }
