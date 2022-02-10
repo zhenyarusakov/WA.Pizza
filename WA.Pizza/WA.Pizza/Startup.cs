@@ -43,7 +43,6 @@ namespace WA.Pizza.Api
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
             
-            services.AddMediatR(typeof(GetAllCatalogItemQuery).Assembly);
             MapperGlobal.Configure();
         }
 
