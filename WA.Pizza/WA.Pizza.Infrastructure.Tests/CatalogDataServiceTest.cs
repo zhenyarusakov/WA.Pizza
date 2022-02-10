@@ -4,7 +4,6 @@ using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using AutoFixture;
 using MediatR;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,6 @@ using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.Tests.Customizations;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Commands;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 
@@ -20,10 +18,8 @@ namespace WA.Pizza.Infrastructure.Tests
 {
     public class CatalogDataServiceTest
     {
-        private readonly IMediator _mediator;
-        public CatalogDataServiceTest(IMediator mediator)
+        public CatalogDataServiceTest()
         {
-            _mediator = mediator;
             MapperGlobal.Configure();
         }
 
