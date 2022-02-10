@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Abstractions;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
+using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Queries;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
 namespace WA.Pizza.Api.Controllers
 {
@@ -19,7 +18,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCatalogItem(int id)
         {
-            CatalogItemDto result = await _service.GetCatalogAsync(id);
+            var result = await _service.GetCatalogAsync(id);
 
             return Ok(result);
         }
@@ -27,13 +26,8 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatalogItems()
         {
-            CatalogItemDto[] result = await _service.GetAllCatalogsAsync();
-
-            if (!result.Any())
-            {
-                return NoContent();
-            }
-
+            var result = await _service.GetAllCatalogsAsync();
+            
             return Ok(result);
         }
 
@@ -41,7 +35,7 @@ namespace WA.Pizza.Api.Controllers
         public async Task<IActionResult> CreateCatalogItem([FromBody] CreateCatalogRequest modifyDto)
         {
             int result = await _service.CreateCatalogItemAsync(modifyDto);
-
+            
             return Ok(result);
         }
 
@@ -56,9 +50,9 @@ namespace WA.Pizza.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCatalogItem(int id)
         {
-            await _service.DeleteCatalogItemAsync(id);
-
-            return Ok();
+            int result = await _service.DeleteCatalogItemAsync(id);
+        
+            return Ok(result);
         }
     }
 }

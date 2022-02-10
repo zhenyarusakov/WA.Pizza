@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
 namespace WA.Pizza.Infrastructure.Abstractions
 {
@@ -9,7 +9,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
         Task<CatalogItemDto[]> GetAllCatalogsAsync();
         Task<int> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest);
         Task<int> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest);
-        Task DeleteCatalogItemAsync(int id);
+        Task<int> DeleteCatalogItemAsync(int id);
     }
 }
 

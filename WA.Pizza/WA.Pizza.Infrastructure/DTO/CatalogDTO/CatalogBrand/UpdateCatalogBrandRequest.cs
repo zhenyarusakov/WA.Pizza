@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand
 {

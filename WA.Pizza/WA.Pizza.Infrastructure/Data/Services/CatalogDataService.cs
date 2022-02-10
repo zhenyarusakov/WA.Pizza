@@ -1,91 +1,42 @@
-﻿using System;
-using System.Threading.Tasks;
-using Mapster;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using WA.Pizza.Core.Entities.CatalogDomain;
+﻿using System.Threading.Tasks;
+using MediatR;
 using WA.Pizza.Infrastructure.Abstractions;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
-using WA.Pizza.Infrastructure.ErrorHandling;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
 namespace WA.Pizza.Infrastructure.Data.Services
 {
     public class CatalogDataService: ICatalogDataService
     {
-        private readonly WAPizzaContext _context;
-        private readonly ILogger<CatalogDataService> _logger;
+        private readonly IMediator _mediator;
 
-        public CatalogDataService(WAPizzaContext context, ILogger<CatalogDataService> logger)
+        public CatalogDataService(IMediator mediator)
         {
-            _context = context;
-            _logger = logger;
+            _mediator = mediator;
         }
 
-        public async Task<CatalogItemDto> GetCatalogAsync(int id)
+        public Task<CatalogItemDto> GetCatalogAsync(int id)
         {
-            CatalogItem catalogItem = await _context.CatalogItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
-            if (catalogItem == null)
-            {
-                _logger.LogError($"There is no Catalog item with this {id}");
-                throw new InvalidException($"There is no Catalog item with this {id}");
-            }
-
-            return catalogItem.Adapt<CatalogItemDto>();
+            return _mediator.Send(new GetByIdCatalogItem{Id = id});
         }
 
         public Task<CatalogItemDto[]> GetAllCatalogsAsync()
         {
-            return _context.CatalogItems
-                .Include(x => x.CatalogBrand)
-                .ProjectToType<CatalogItemDto>()
-                .ToArrayAsync();
+            return _mediator.Send(new CatalogItemDto());
         }
 
         public async Task<int> CreateCatalogItemAsync(CreateCatalogRequest catalogRequest)
         {
-            CatalogItem catalogItem = catalogRequest.Adapt<CatalogItem>();
-
-            _context.CatalogItems.Add(catalogItem);
-
-            await _context.SaveChangesAsync();
-
-            return catalogItem.Id;
+            return await _mediator.Send(catalogRequest);
         }
         
         public async Task<int> UpdateCatalogItemAsync(UpdateCatalogRequest catalogRequest)
         {
-            CatalogItem catalogItem = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogRequest.Id);
-
-            if (catalogItem == null)
-            {
-                _logger.LogError($"There is no CatalogItem with this {catalogRequest.Id}");
-                throw new ArgumentNullException($"There is no CatalogItem with this {catalogRequest.Id}");
-            }
-            
-            catalogRequest.Adapt(catalogItem);
-
-            _context.Update(catalogItem);
-
-            await _context.SaveChangesAsync();
-
-            return catalogItem.Id;
+            return await _mediator.Send(catalogRequest);
         }
 
-        public async Task DeleteCatalogItemAsync(int id)
+        public async Task<int> DeleteCatalogItemAsync(int id)
         {
-            CatalogItem catalogItemDelete = await _context.CatalogItems
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (catalogItemDelete == null)
-            {
-                _logger.LogError($"There is no CatalogItem with this {id}");
-                throw new ArgumentNullException($"There is no CatalogItem with this {id}");
-            }
-
-            _context.CatalogItems.RemoveRange(catalogItemDelete);
-
-            await _context.SaveChangesAsync();
+            return await _mediator.Send(new DeleteCatalogItemId{Id = id});
         }
 
     }
