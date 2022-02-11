@@ -2,6 +2,7 @@
 
 namespace WA.Pizza.Core.Entities.IdentityModels;
 
+#nullable disable
 public class RegisterModel
 {
     [Required(ErrorMessage = "User Name is required")]

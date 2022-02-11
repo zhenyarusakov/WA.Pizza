@@ -2,6 +2,7 @@
 
 namespace WA.Pizza.Core.Entities.IdentityModels;
 
+#nullable disable
 public class AddToRoleModel
 {
     [Required(ErrorMessage = "Email is required")]
