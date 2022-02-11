@@ -1,6 +1,8 @@
-﻿namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem
+﻿using MediatR;
+
+namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog
 {
-    public record UpdateCatalogRequest
+    public record CatalogItemsListItem : IRequest<CatalogItemsListItem[]>
     {
         public int Id { get; init; }
         public string Name { get; init; }

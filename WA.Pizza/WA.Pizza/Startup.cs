@@ -1,5 +1,6 @@
 using System;
 using Hangfire;
+using MediatR;
 using WA.Pizza.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
+using WA.Pizza.Infrastructure.Data.Queries;
 using WA.Pizza.Infrastructure.Data.Services.AdvertisementServices;
 
 
@@ -34,13 +36,13 @@ namespace WA.Pizza.Api
                 .AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnectionDb")))
                 .AddScoped<IOrderDataService, OrderDataService>()
                 .AddScoped<IBasketDataService, BasketDataService>()
-                .AddScoped<ICatalogDataService, CatalogDataService>()
                 .AddScoped<IAuthenticateService, AuthenticateService>()
                 .AddScoped<IAdsClientDataService, AdsClientDataService>()
                 .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
+                .AddMediatR(typeof(GetAllCatalogItemQueryHandler).Assembly)
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
-
+            
             MapperGlobal.Configure();
         }
 

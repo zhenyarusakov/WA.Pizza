@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogItem;
+using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand
 {
@@ -7,6 +7,6 @@ namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<CatalogItemDto> Catalogs { get; set; }
+        public ICollection<CatalogItemsListItem> Catalogs { get; set; }
     }
 }
