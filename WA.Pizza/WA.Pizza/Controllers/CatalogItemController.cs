@@ -17,7 +17,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCatalogItem(int id)
         {
-            var result = await _mediator.Send(new GetByIdCatalogItem{Id = id});
+            var result = await _mediator.Send(new GetByIdCatalogItemQuery{Id = id});
 
             return Ok(result);
         }
@@ -25,23 +25,23 @@ namespace WA.Pizza.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatalogItems()
         {
-            var result = await _mediator.Send(new CatalogItemDto());
+            var result = await _mediator.Send(new CatalogItemsListItemQuery());
             
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCatalogItem([FromBody] CreateCatalogRequest catalogRequest)
+        public async Task<IActionResult> CreateCatalogItem([FromBody] CreateCatalogItemCommand catalogItemCommand)
         {
-            int result = await _mediator.Send(catalogRequest);
+            int result = await _mediator.Send(catalogItemCommand);
             
             return Ok(result);
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateCatalogItem([FromBody] UpdateCatalogRequest catalogRequest)
+        public async Task<IActionResult> UpdateCatalogItem([FromBody] UpdateCatalogItemCommand catalogItemCommand)
         {
-            int result = await _mediator.Send(catalogRequest);
+            int result = await _mediator.Send(catalogItemCommand);
 
             return Ok(result);
         }
@@ -49,7 +49,7 @@ namespace WA.Pizza.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCatalogItem(int id)
         {
-            int result = await _mediator.Send(new DeleteCatalogItemId{Id = id});
+            int result = await _mediator.Send(new DeleteCatalogItemCommand{Id = id});
         
             return Ok(result);
         }

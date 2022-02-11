@@ -3,7 +3,7 @@ using WA.Pizza.Core.Entities.CatalogDomain;
 
 namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 
-public class DeleteCatalogItemId: IRequest<int>
+public class GetByIdCatalogItemQuery :IRequest<CatalogItemsListItem>
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 }

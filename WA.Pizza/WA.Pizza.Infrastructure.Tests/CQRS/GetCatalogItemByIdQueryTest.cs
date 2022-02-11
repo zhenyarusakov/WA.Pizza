@@ -5,7 +5,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Queries;
+using WA.Pizza.Infrastructure.Data.Queries;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 using Xunit;
@@ -40,11 +40,11 @@ public class GetCatalogItemByIdQueryTest
         });
         context.CatalogItems.AddRange(catalogs);
         await context.SaveChangesAsync();
-        GetCatalogItemByIdQuery query = new(context);
-        GetByIdCatalogItem request = new GetByIdCatalogItem{Id = 1};
+        GetCatalogItemByIdQueryHandler queryHandler = new(context);
+        GetByIdCatalogItemQuery request = new GetByIdCatalogItemQuery{Id = 1};
 
         // Act
-        CatalogItemDto catalogItem = await query.Handle(request, new CancellationToken());
+        CatalogItemsListItem catalogItem = await queryHandler.Handle(request, new CancellationToken());
 
         // Assert
         CatalogItem firstItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);

@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Commands;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 using Xunit;
@@ -29,8 +28,8 @@ public class UpdateCatalogItemCommandTest
         };
         context.CatalogItems.Add(catalogItem);
         await context.SaveChangesAsync();
-        UpdateCatalogItemCommand command = new(context);
-        UpdateCatalogRequest updateCatalog = new()
+        UpdateCatalogItemCommandHandler commandHandler = new(context);
+        UpdateCatalogItemCommand updateCatalogItem = new()
         {
             Id = 1,
             Name = "UpdateUpdate",
@@ -41,14 +40,14 @@ public class UpdateCatalogItemCommandTest
         };
 
         // Act
-        int catalogItemId = await command.Handle(updateCatalog, new CancellationToken());
+        int catalogItemId = await commandHandler.Handle(updateCatalogItem, new CancellationToken());
 
         // Assert
         CatalogItem item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
         item.Should().NotBeNull();
-        item!.Name.Should().Be(updateCatalog.Name);
-        item!.Quantity.Should().Be(updateCatalog.Quantity);
-        item!.Description.Should().Be(updateCatalog.Description);
-        item!.Price.Should().Be(updateCatalog.Price);
+        item!.Name.Should().Be(updateCatalogItem.Name);
+        item!.Quantity.Should().Be(updateCatalogItem.Quantity);
+        item!.Description.Should().Be(updateCatalogItem.Description);
+        item!.Price.Should().Be(updateCatalogItem.Price);
     }
 }

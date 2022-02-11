@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Commands;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 using Xunit;
@@ -29,11 +28,11 @@ public class DeleteCatalogItemCommandTest
         };
         context.CatalogItems.Add(catalogItem);
         await context.SaveChangesAsync();
-        DeleteCatalogItemCommand command = new(context);
-        DeleteCatalogItemId request = new DeleteCatalogItemId{Id = 1};
+        DeleteCatalogItemCommandHandler commandHandler = new(context);
+        DeleteCatalogItemCommand request = new DeleteCatalogItemCommand{Id = 1};
 
         // Act
-        await command.Handle(request, new CancellationToken());
+        await commandHandler.Handle(request, new CancellationToken());
 
         // Assert
         CatalogItem item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);

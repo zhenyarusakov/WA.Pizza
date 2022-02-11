@@ -10,7 +10,7 @@ using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Queries;
+using WA.Pizza.Infrastructure.Data.Queries;
 using WA.Pizza.Infrastructure.Data.Services.AdvertisementServices;
 
 
@@ -39,7 +39,7 @@ namespace WA.Pizza.Api
                 .AddScoped<IAuthenticateService, AuthenticateService>()
                 .AddScoped<IAdsClientDataService, AdsClientDataService>()
                 .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
-                .AddMediatR(typeof(GetAllCatalogItemQuery).Assembly)
+                .AddMediatR(typeof(GetAllCatalogItemQueryHandler).Assembly)
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
             

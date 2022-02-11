@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities.CatalogDomain;
 using WA.Pizza.Infrastructure.Data;
-using WA.Pizza.Infrastructure.Data.ResponsibilitySegregation.CatalogItem.Commands;
 using WA.Pizza.Infrastructure.DTO.CatalogDTO.Catalog;
 using WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers;
 using Xunit;
@@ -18,7 +17,7 @@ public class CreateCatalogItemCommandTest
     {
         // Arrange 
         await using WAPizzaContext context = await DbContextFactory.CreateContext();
-        CreateCatalogRequest catalogRequest = new()
+        CreateCatalogItemCommand catalogItemCommand = new()
         {
             Name = "Create",
             Description = "Create",
@@ -26,18 +25,18 @@ public class CreateCatalogItemCommandTest
             Quantity = 11,
             CatalogBrandId = 1
         };
-        CreateCatalogItemCommand command = new(context);
+        CreateCatalogItemCommandHandler commandHandler = new(context);
         
         // Act
-        int catalogItemId = await command.Handle(catalogRequest, new CancellationToken());
+        int catalogItemId = await commandHandler.Handle(catalogItemCommand, new CancellationToken());
 
         // Assert
         CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
         catalogItem.Should().NotBeNull();
-        catalogItem!.Name.Should().Be(catalogRequest.Name);
-        catalogItem!.Description.Should().Be(catalogRequest.Description);
-        catalogItem!.Price.Should().Be(catalogRequest.Price);
-        catalogItem!.Quantity.Should().Be(catalogRequest.Quantity);
-        catalogItem!.CatalogBrandId.Should().Be(catalogRequest.CatalogBrandId);
+        catalogItem!.Name.Should().Be(catalogItemCommand.Name);
+        catalogItem!.Description.Should().Be(catalogItemCommand.Description);
+        catalogItem!.Price.Should().Be(catalogItemCommand.Price);
+        catalogItem!.Quantity.Should().Be(catalogItemCommand.Quantity);
+        catalogItem!.CatalogBrandId.Should().Be(catalogItemCommand.CatalogBrandId);
     }
 }
