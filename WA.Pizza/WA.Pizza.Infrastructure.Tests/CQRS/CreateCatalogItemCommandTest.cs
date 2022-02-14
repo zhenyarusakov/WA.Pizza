@@ -31,12 +31,12 @@ public class CreateCatalogItemCommandTest
         int catalogItemId = await commandHandler.Handle(catalogItemCommand, new CancellationToken());
 
         // Assert
-        CatalogItem catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
+        CatalogItem? catalogItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
         catalogItem.Should().NotBeNull();
         catalogItem!.Name.Should().Be(catalogItemCommand.Name);
-        catalogItem!.Description.Should().Be(catalogItemCommand.Description);
-        catalogItem!.Price.Should().Be(catalogItemCommand.Price);
-        catalogItem!.Quantity.Should().Be(catalogItemCommand.Quantity);
-        catalogItem!.CatalogBrandId.Should().Be(catalogItemCommand.CatalogBrandId);
+        catalogItem.Description.Should().Be(catalogItemCommand.Description);
+        catalogItem.Price.Should().Be(catalogItemCommand.Price);
+        catalogItem.Quantity.Should().Be(catalogItemCommand.Quantity);
+        catalogItem.CatalogBrandId.Should().Be(catalogItemCommand.CatalogBrandId);
     }
 }

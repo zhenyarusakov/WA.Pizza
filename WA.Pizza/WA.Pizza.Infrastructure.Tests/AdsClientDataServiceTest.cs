@@ -29,10 +29,10 @@ public class AdsClientDataServiceTest
         Guid newClient = await adsClientDataService.CreateNewAdsClientAsync(createAdsClientRequest);
 
         // Assert
-        AdsClient adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
+        AdsClient? adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
         adsClient.Should().NotBeNull();
         adsClient!.Name.Should().Be(createAdsClientRequest.Name);
-        adsClient!.WebSite.Should().Be(createAdsClientRequest.WebSite);
+        adsClient.WebSite.Should().Be(createAdsClientRequest.WebSite);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class AdsClientDataServiceTest
         await adsClientDataService.RemoveAdsClientAsync(clientId);
 
         // Assert
-        AdsClient item = await context.AdsClients.FirstOrDefaultAsync(x => x.Id == adsClient.Id);
+        AdsClient? item = await context.AdsClients.FirstOrDefaultAsync(x => x.Id == adsClient.Id);
         item.Should().BeNull();
     }
 
@@ -75,7 +75,7 @@ public class AdsClientDataServiceTest
         Guid newClient = await adsClientDataService.CreateNewAdsClientAsync(createAdsClientRequest);
         
         // Assert
-        AdsClient adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
+        AdsClient? adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
         adsClient!.IsBlocked.Should().Be(createAdsClientRequest.IsBlocked);
     }
 
@@ -96,7 +96,7 @@ public class AdsClientDataServiceTest
         Guid newClient = await adsClientDataService.CreateNewAdsClientAsync(createAdsClientRequest);
         
         // Assert
-        AdsClient adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
+        AdsClient? adsClient = await context.AdsClients.FirstOrDefaultAsync(x => x.ApiKey == newClient);
         adsClient!.IsBlocked.Should().Be(createAdsClientRequest.IsBlocked);
     }
 
@@ -130,7 +130,7 @@ public class AdsClientDataServiceTest
         int clientId = await adsClientDataService.UpdateAdsClientAsync(updateAdsClientRequest);
 
         // Assert
-        AdsClient client = await context.AdsClients.FirstOrDefaultAsync(x => x.Id == clientId);
+        AdsClient? client = await context.AdsClients.FirstOrDefaultAsync(x => x.Id == clientId);
         client.Should().NotBeNull();
         client!.ClientInfo.Should().Be(updateAdsClientRequest.ClientInfo);
     }

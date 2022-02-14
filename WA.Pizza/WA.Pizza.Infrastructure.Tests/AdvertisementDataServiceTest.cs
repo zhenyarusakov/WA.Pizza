@@ -44,12 +44,12 @@ public class AdvertisingDataServiceTest
         int newAdvertising = await advertisementDataService.CreateAdvertisementAsync(createClientRequest, client.ApiKey);
 
         // Assert
-        Advertisement advertisement = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == newAdvertising);
+        Advertisement? advertisement = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == newAdvertising);
         advertisement.Should().NotBeNull();
         advertisement!.Name.Should().Be(createClientRequest.Name);
-        advertisement!.Description.Should().Be(createClientRequest.Description);
-        advertisement!.Img.Should().Be(createClientRequest.Img);
-        advertisement!.WebSite.Should().Be(createClientRequest.WebSite);
+        advertisement.Description.Should().Be(createClientRequest.Description);
+        advertisement.Img.Should().Be(createClientRequest.Img);
+        advertisement.WebSite.Should().Be(createClientRequest.WebSite);
     }
 
     [Fact]
@@ -116,12 +116,12 @@ public class AdvertisingDataServiceTest
         AdvertisementDto advertisementItem = await advertisementDataService.GetOneAdvertisementAsync(advertisement.Id, client.ApiKey);
         
         // Assert
-        Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisementItem.Id);
+        Advertisement? firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisementItem.Id);
         firstItem!.Id.Should().Be(advertisementItem.Id);
-        firstItem!.Name.Should().Be(advertisementItem.Name);
-        firstItem!.Description.Should().Be(advertisementItem.Description);
-        firstItem!.Img.Should().Be(advertisementItem.Img);
-        firstItem!.WebSite.Should().Be(advertisementItem.WebSite);
+        firstItem.Name.Should().Be(advertisementItem.Name);
+        firstItem.Description.Should().Be(advertisementItem.Description);
+        firstItem.Img.Should().Be(advertisementItem.Img);
+        firstItem.WebSite.Should().Be(advertisementItem.WebSite);
     }
 
     [Fact]
@@ -163,7 +163,7 @@ public class AdvertisingDataServiceTest
         int advertisingId = await advertisementDataService.UpdateAdvertisementAsync(updateAdvertisementRequest, client.ApiKey);
         
         // Assert
-        Advertisement firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisingId);
+        Advertisement? firstItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisingId);
         firstItem.Should().NotBeNull();
         firstItem!.Description.Should().Be(updateAdvertisementRequest.Description);
     }
@@ -198,7 +198,7 @@ public class AdvertisingDataServiceTest
         await advertisementDataService.RemoveAdvertisementAsync(advertisement.Id, client.ApiKey);
         
         // Assert
-        Advertisement advertisementItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisement.Id);
+        Advertisement? advertisementItem = await context.Advertisements.FirstOrDefaultAsync(x => x.Id == advertisement.Id);
         advertisementItem.Should().BeNull();
     }
     

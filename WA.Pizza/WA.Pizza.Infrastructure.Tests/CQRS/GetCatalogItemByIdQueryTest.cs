@@ -47,10 +47,10 @@ public class GetCatalogItemByIdQueryTest
         CatalogItemsListItem catalogItem = await queryHandler.Handle(request, new CancellationToken());
 
         // Assert
-        CatalogItem firstItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
+        CatalogItem? firstItem = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
         firstItem!.Id.Should().Be(catalogItem.Id);
-        firstItem!.Quantity.Should().Be(catalogItem.Quantity);
-        firstItem!.Name.Should().Be(catalogItem.Name);
-        firstItem!.Description.Should().Be(catalogItem.Description);
+        firstItem.Quantity.Should().Be(catalogItem.Quantity);
+        firstItem.Name.Should().Be(catalogItem.Name);
+        firstItem.Description.Should().Be(catalogItem.Description);
     }
 }

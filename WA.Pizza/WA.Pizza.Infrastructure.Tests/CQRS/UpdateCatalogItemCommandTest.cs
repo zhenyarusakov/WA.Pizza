@@ -43,11 +43,11 @@ public class UpdateCatalogItemCommandTest
         int catalogItemId = await commandHandler.Handle(updateCatalogItem, new CancellationToken());
 
         // Assert
-        CatalogItem item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
+        CatalogItem? item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItemId);
         item.Should().NotBeNull();
         item!.Name.Should().Be(updateCatalogItem.Name);
-        item!.Quantity.Should().Be(updateCatalogItem.Quantity);
-        item!.Description.Should().Be(updateCatalogItem.Description);
-        item!.Price.Should().Be(updateCatalogItem.Price);
+        item.Quantity.Should().Be(updateCatalogItem.Quantity);
+        item.Description.Should().Be(updateCatalogItem.Description);
+        item.Price.Should().Be(updateCatalogItem.Price);
     }
 }
