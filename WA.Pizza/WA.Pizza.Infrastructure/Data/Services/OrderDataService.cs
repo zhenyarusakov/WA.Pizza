@@ -32,7 +32,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<int> CreateOrderAsync(int basketId, int userId)
         {
-            Basket basket = await _context.Baskets
+            Basket? basket = await _context.Baskets
                 .Include(x => x.BasketItems)
                 .ThenInclude(x => x.CatalogItem)
                 .FirstOrDefaultAsync(x => x.Id == basketId);
@@ -83,11 +83,11 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<int> UpdateOrderStatus(int orderId, OrderStatus status)
         {
-            Order order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            Order? order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
 
             if (order == null)
             {
-                _logger.LogError($"Order not found");
+                _logger.LogError("Order not found");
                 throw new ArgumentException("Order not found");
             }
 

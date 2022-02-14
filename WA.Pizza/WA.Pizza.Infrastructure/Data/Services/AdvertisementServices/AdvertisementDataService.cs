@@ -29,7 +29,7 @@ public class AdvertisementDataService: IAdvertisementDataService
 
         if (client == null)
         {
-            throw new InvalidException($"This client does not exist.");
+            throw new InvalidException("This client does not exist.");
         }
         
         _context.Advertisements.Add(newAdvertisement);
@@ -43,7 +43,7 @@ public class AdvertisementDataService: IAdvertisementDataService
     {
         AdvertisementDto[] advertising = await _context.Advertisements
             .Include(x=>x.AdsClient)
-            .Where(x => x.AdsClient.ApiKey == apiKey && !x.AdsClient.IsBlocked)
+            .Where(x => x.AdsClient != null && x.AdsClient.ApiKey == apiKey && !x.AdsClient.IsBlocked)
             .ProjectToType<AdvertisementDto>()
             .ToArrayAsync();
 
@@ -57,9 +57,9 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey)
     {
-        Advertisement advertisement = await _context.Advertisements
+        Advertisement? advertisement = await _context.Advertisements
             .AsNoTracking()
-            .Where(x=> !x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
+            .Where(x=> x.AdsClient != null && !x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
             .Include(x => x.AdsClient)
             .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -73,9 +73,9 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest, Guid apiKey)
     {
-        Advertisement advertisement =
+        Advertisement? advertisement =
             await _context.Advertisements
-                .Where(x=>!x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
+                .Where(x=>x.AdsClient != null && !x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
                 .Include(x=>x.AdsClient)
                 .FirstOrDefaultAsync(x => x.Id == updateAdvertisementRequest.Id);
 
@@ -95,9 +95,9 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<int> RemoveAdvertisementAsync(int id, Guid apiKey)
     {
-        Advertisement advertisement =
+        Advertisement? advertisement =
             await _context.Advertisements
-                .Where(x=>!x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
+                .Where(x=>x.AdsClient != null && !x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
                 .Include(x=>x.AdsClient)
                 .FirstOrDefaultAsync(x => x.Id == id);
         
@@ -115,6 +115,6 @@ public class AdvertisementDataService: IAdvertisementDataService
     
     public Task<bool> ApiKeyIsValid(Guid apiKey)
     {
-        return _context.Advertisements.AnyAsync(x => x.AdsClient.ApiKey == apiKey);
+        return _context.Advertisements.AnyAsync(x => x.AdsClient != null && x.AdsClient.ApiKey == apiKey);
     }
 }

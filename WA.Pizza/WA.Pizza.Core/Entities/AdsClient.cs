@@ -5,11 +5,11 @@ namespace WA.Pizza.Core.Entities;
 
 public class AdsClient
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
     public Guid ApiKey { get; set; }
-    public string Name { get; set; }
-    public string WebSite { get; set; }
-    public string ClientInfo { get; set; }
+    public string? Name { get; init; }
+    public string? WebSite { get; init; }
+    public string? ClientInfo { get; init; }
     public bool IsBlocked { get; set; }
     public ICollection<Advertisement> Advertisements { get; set; } = new List<Advertisement>();
 }

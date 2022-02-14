@@ -68,7 +68,7 @@ namespace WA.Pizza.Infrastructure.Tests
             int basketId = await basketService.CreateBasketAsync(createBasketRequest);
             
             // Assert
-            Basket basket = await context.Baskets.Include(i => i.BasketItems).FirstOrDefaultAsync(i => i.Id == basketId);
+            Basket? basket = await context.Baskets.Include(i => i.BasketItems).FirstOrDefaultAsync(i => i.Id == basketId);
             basket.Should().NotBeNull();
             basket!.BasketItems.Should()
                 .HaveCount(createBasketRequest.BasketItems.Count)
@@ -111,7 +111,7 @@ namespace WA.Pizza.Infrastructure.Tests
             int basketItemId = await basketService.UpdateBasketItemAsync(updateBasketRequest);
 
             // Assert
-            BasketItem basketItem = await context.BasketItems.FirstOrDefaultAsync(i => i.Id == basketItemId);
+            BasketItem? basketItem = await context.BasketItems.FirstOrDefaultAsync(i => i.Id == basketItemId);
             basketItem.Should().NotBeNull();
             basketItem!.Quantity.Should().Be(newQuantity);
         }
@@ -151,7 +151,7 @@ namespace WA.Pizza.Infrastructure.Tests
             int basketId =  await basketService.UpdateBasketItemAsync(basketRequest);
 
             // Assert
-            BasketItem item = await context.BasketItems.FirstOrDefaultAsync(x => x.Id == basketId);
+            BasketItem? item = await context.BasketItems.FirstOrDefaultAsync(x => x.Id == basketId);
             item!.Should().BeNull();
         }
 
@@ -169,7 +169,7 @@ namespace WA.Pizza.Infrastructure.Tests
             await basketService.CleanBasketAsync(basket.Id);
 
             // Assert
-            Basket items = await context.Baskets.Include(i => i.BasketItems)
+            Basket? items = await context.Baskets.Include(i => i.BasketItems)
                 .FirstOrDefaultAsync(i => i.Id == basket.Id);
             items!.BasketItems.Should().BeEmpty();
         }

@@ -70,11 +70,11 @@ namespace WA.Pizza.Infrastructure.Tests
             int orderId = await orderDataService.CreateOrderAsync(basket.Id, basket.UserId.GetValueOrDefault());
 
             // Assert
-            Order order = await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            Order? order = await context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
             order.Should().NotBeNull();
             order!.OrderItems.Select(x => x.Quantity).Should()
                 .BeEquivalentTo(newBasketItem.Select(x=>x.Quantity));
-            order!.Status.Should().Be(OrderStatus.New);
+            order.Status.Should().Be(OrderStatus.New);
         }
 
         [Fact]
@@ -137,7 +137,7 @@ namespace WA.Pizza.Infrastructure.Tests
             int statusId = await orderDataService.UpdateOrderStatus(orderId, expectedStatus);
 
             // Assert
-            Order order = await context.Orders.FirstOrDefaultAsync(x => x.Id == statusId);
+            Order? order = await context.Orders.FirstOrDefaultAsync(x => x.Id == statusId);
             order!.Status.Should().Be(expectedStatus);
         }
     }

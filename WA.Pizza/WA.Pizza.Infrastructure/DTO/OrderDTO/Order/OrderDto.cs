@@ -7,6 +7,6 @@ namespace WA.Pizza.Infrastructure.DTO.OrderDTO.Order
     {
         public int Id { get; init; }
         public int UserId { get; init; }
-        public ICollection<OrderItemDto> OrderItemDtos { get; init; }
+        public ICollection<OrderItemDto> OrderItemDtos { get; set; } = new List<OrderItemDto>();
     }
 }

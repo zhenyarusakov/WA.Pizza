@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Mapster;
 using MediatR;
@@ -19,14 +20,14 @@ public class GetCatalogItemByIdQueryHandler: IRequestHandler<GetByIdCatalogItemQ
 
     public async Task<CatalogItemsListItem> Handle(GetByIdCatalogItemQuery command, CancellationToken cancellationToken)
     {
-        CatalogItem catalogItem = await _context
+        CatalogItem? catalogItem = await _context
             .CatalogItems
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
         if (catalogItem == null)
         {
-            return null;
+            throw new ArgumentNullException($"There is no CatalogItem with this - {command.Id}");
         }
 
         return catalogItem.Adapt<CatalogItemsListItem>();

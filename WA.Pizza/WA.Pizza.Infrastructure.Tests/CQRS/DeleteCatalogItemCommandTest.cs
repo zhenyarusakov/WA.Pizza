@@ -35,7 +35,7 @@ public class DeleteCatalogItemCommandTest
         await commandHandler.Handle(request, new CancellationToken());
 
         // Assert
-        CatalogItem item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
+        CatalogItem? item = await context.CatalogItems.FirstOrDefaultAsync(x => x.Id == catalogItem.Id);
         item!.Should().BeNull();
     }
 }

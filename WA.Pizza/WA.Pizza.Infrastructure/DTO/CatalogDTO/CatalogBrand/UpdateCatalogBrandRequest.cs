@@ -5,8 +5,8 @@ namespace WA.Pizza.Infrastructure.DTO.CatalogDTO.CatalogBrand
 {
     public class UpdateCatalogBrandRequest
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ICollection<CatalogItemsListItem> Catalogs { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public ICollection<CatalogItemsListItem> Catalogs { get; set; } = new List<CatalogItemsListItem>();
     }
 }

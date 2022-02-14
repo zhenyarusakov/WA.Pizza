@@ -33,7 +33,7 @@ public class AdsClientDataService: IAdsClientDataService
 
     public async Task<int> RemoveAdsClientAsync(int id)
     {
-        Client client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
+        Client? client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
 
         if (client == null)
         {
@@ -49,7 +49,7 @@ public class AdsClientDataService: IAdsClientDataService
 
     public async Task<int> UpdateAdsClientAsync(UpdateAdsClientRequest adsClientRequest)
     {
-        Client adsClient = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == adsClientRequest.Id);
+        Client? adsClient = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == adsClientRequest.Id);
 
         if (adsClient == null)
         {
@@ -67,16 +67,16 @@ public class AdsClientDataService: IAdsClientDataService
 
     public async Task<int> BlockClientAsync(int id)
     {
-        Client client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
+        Client? client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
 
         if (client == null)
         {
             throw new InvalidException($"Current client - {id} does not exist");
         }
 
-        if (client.IsBlocked)
+        if (!client.IsBlocked)
         {
-            client.IsBlocked = false;
+            client.IsBlocked = true;
 
             await _context.SaveChangesAsync();
         }
@@ -86,16 +86,16 @@ public class AdsClientDataService: IAdsClientDataService
 
     public async Task<int> UnlockClientAsync(int id)
     {
-        Client client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
+        Client? client = await _context.AdsClients.FirstOrDefaultAsync(x => x.Id == id);
 
         if (client == null)
         {
             throw new InvalidException($"Current client - {id} does not exist");
         }
         
-        if (!client.IsBlocked)
+        if (client.IsBlocked)
         {
-            client.IsBlocked = true;
+            client.IsBlocked = false;
 
             await _context.SaveChangesAsync();
         }

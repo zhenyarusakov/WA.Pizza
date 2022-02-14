@@ -4,13 +4,13 @@ namespace WA.Pizza.Core.Entities.OrderDomain
 {
     public class OrderItem : BaseEntity
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        public string? Name { get; init; }
+        public string? Description { get; init; }
+        public decimal Price { get; init; }
+        public int Quantity { get; init; }
         public int CatalogItemId { get; set; }
-        public CatalogItem CatalogItem { get; set; }
+        public CatalogItem? CatalogItem { get; set; }
         public int OrderId { get; set; }
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
     }
 }

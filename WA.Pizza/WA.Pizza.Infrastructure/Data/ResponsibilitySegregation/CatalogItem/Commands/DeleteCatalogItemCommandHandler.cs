@@ -19,7 +19,7 @@ public class DeleteCatalogItemCommandHandler: IRequestHandler<DeleteCatalogItemC
 
     public async Task<int> Handle(DeleteCatalogItemCommand command, CancellationToken cancellationToken)
     {
-        CatalogItem catalogItemDelete = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
+        CatalogItem? catalogItemDelete = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
         if (catalogItemDelete == null)
         {

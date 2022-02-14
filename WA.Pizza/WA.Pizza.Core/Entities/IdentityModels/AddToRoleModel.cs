@@ -4,6 +4,12 @@ namespace WA.Pizza.Core.Entities.IdentityModels;
 
 public class AddToRoleModel
 {
+    public AddToRoleModel(string email, string role)
+    {
+        Email = email;
+        Role = role;
+    }
+
     [Required(ErrorMessage = "Email is required")]
     public string Email { get; set; }
 
