@@ -8,6 +8,6 @@ namespace WA.Pizza.Core.Entities.BasketDomain
         public int? UserId { get; set; }
         public User? User { get; set; }
         public DateTime? LastModified { get; set; }
-        public ICollection<BasketItem> BasketItems { get; init; } = new List<BasketItem>();
+        public ICollection<BasketItem> BasketItems { get; set; } = new List<BasketItem>();
     }
 }

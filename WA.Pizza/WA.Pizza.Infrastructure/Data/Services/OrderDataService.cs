@@ -51,7 +51,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
             foreach (BasketItem basketItem in basket.BasketItems)
             {
-                bool isInStock = catalogItemsCountById.TryGetValue(basketItem.CatalogItemId, out CatalogItem? catalogItem);
+                bool isInStock = catalogItemsCountById.TryGetValue(basketItem.CatalogItemId, out CatalogItem catalogItem);
 
                 if (!isInStock)
                 {
@@ -59,16 +59,13 @@ namespace WA.Pizza.Infrastructure.Data.Services
                     throw new InvalidOperationException($"An catalog item with id {basketItem.CatalogItemId} is missing.");
                 }
 
-                if (basketItem.Quantity > catalogItem?.Quantity)
+                if (basketItem.Quantity > catalogItem.Quantity)
                 {
                     _logger.LogError($"The number of selected items is greater than the allowed value");
                     throw new InvalidOperationException("The number of selected items is greater than the allowed value");
                 }
 
-                if (catalogItem != null)
-                {
-                    catalogItem.Quantity -= basketItem.Quantity;
-                }
+                catalogItem.Quantity -= basketItem.Quantity;
             }
 
             Order order = basket.Adapt<Order>();

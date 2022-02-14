@@ -29,7 +29,7 @@ public class AdvertisementDataService: IAdvertisementDataService
 
         if (client == null)
         {
-            throw new InvalidException($"This client does not exist.");
+            throw new InvalidException("This client does not exist.");
         }
         
         _context.Advertisements.Add(newAdvertisement);

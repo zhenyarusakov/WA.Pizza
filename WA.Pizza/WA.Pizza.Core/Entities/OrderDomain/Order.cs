@@ -5,8 +5,8 @@ namespace WA.Pizza.Core.Entities.OrderDomain
     public class Order : BaseEntity
     {
         public int UserId { get; init; }
-        public User User { get; set; }
+        public User? User { get; set; }
         public OrderStatus? Status { get; set; }
-        public ICollection<OrderItem> OrderItems { get; init; } = new List<OrderItem>();
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

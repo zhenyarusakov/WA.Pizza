@@ -11,5 +11,5 @@ public class AdsClient
     public string? WebSite { get; init; }
     public string? ClientInfo { get; init; }
     public bool IsBlocked { get; set; }
-    public ICollection<Advertisement> Advertisements { get; } = new List<Advertisement>();
+    public ICollection<Advertisement> Advertisements { get; set; } = new List<Advertisement>();
 }
