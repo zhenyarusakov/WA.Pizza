@@ -20,7 +20,7 @@ public class UpdateCatalogItemCommandHandler : IRequestHandler<UpdateCatalogItem
 
     public async Task<int> Handle(UpdateCatalogItemCommand command, CancellationToken cancellationToken)
     {
-        CatalogItem catalogItem = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
+        CatalogItem? catalogItem = await _context.CatalogItems.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
         if (catalogItem == null)
         {

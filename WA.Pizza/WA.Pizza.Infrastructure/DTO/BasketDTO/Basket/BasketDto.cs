@@ -7,7 +7,7 @@ namespace WA.Pizza.Infrastructure.DTO.BasketDTO.Basket
     public record BasketDto()
     {
         public int Id { get; init; }
-        public ICollection<BasketItemDto> BasketItems { get; init; }
+        public ICollection<BasketItemDto>? BasketItems { get; init; }
         public int? UserId { get; init; }
         public DateTime? LastModified { get; init; }
     }

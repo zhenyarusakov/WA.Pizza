@@ -4,6 +4,7 @@ using WA.Pizza.Infrastructure.DTO.OrderDTO.OrderItem;
 
 namespace WA.Pizza.Infrastructure.DTO.OrderDTO.Order
 {
+    #nullable disable
     public record CreateOrderRequest
     {
         public int UserId { get; init; }

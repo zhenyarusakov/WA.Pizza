@@ -47,7 +47,7 @@ namespace WA.Pizza.Infrastructure.Data.Services
 
         public async Task<int> UpdateBasketItemAsync(UpdateBasketItemRequest updateBasketItemRequest)
         {
-            BasketItem item = await _context.BasketItems.Include(x => x.Basket)
+            BasketItem? item = await _context.BasketItems.Include(x => x.Basket)
                 .FirstOrDefaultAsync(x => x.Id == updateBasketItemRequest.Id);
 
             if (item == null)

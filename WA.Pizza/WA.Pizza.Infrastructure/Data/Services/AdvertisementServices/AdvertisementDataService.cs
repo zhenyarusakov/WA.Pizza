@@ -57,7 +57,7 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey)
     {
-        Advertisement advertisement = await _context.Advertisements
+        Advertisement? advertisement = await _context.Advertisements
             .AsNoTracking()
             .Where(x=> !x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
             .Include(x => x.AdsClient)
@@ -73,7 +73,7 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<int> UpdateAdvertisementAsync(UpdateAdvertisementRequest updateAdvertisementRequest, Guid apiKey)
     {
-        Advertisement advertisement =
+        Advertisement? advertisement =
             await _context.Advertisements
                 .Where(x=>!x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
                 .Include(x=>x.AdsClient)
@@ -95,7 +95,7 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<int> RemoveAdvertisementAsync(int id, Guid apiKey)
     {
-        Advertisement advertisement =
+        Advertisement? advertisement =
             await _context.Advertisements
                 .Where(x=>!x.AdsClient.IsBlocked && x.AdsClient.ApiKey == apiKey)
                 .Include(x=>x.AdsClient)

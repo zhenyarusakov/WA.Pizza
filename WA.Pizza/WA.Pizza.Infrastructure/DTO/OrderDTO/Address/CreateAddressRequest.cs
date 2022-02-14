@@ -1,5 +1,6 @@
 ﻿namespace WA.Pizza.Infrastructure.DTO.OrderDTO.Address
 {
+    #nullable disable
     public class CreateAddressRequest
     {
         public string Country { get; set; }

@@ -8,6 +8,6 @@ namespace WA.Pizza.Infrastructure.DTO.BasketDTO.Basket
     {
         public int Id { get; init; }
         public DateTime? LastModified { get; init; }
-        public ICollection<BasketItemDto> BasketItems { get; init; }
+        public ICollection<BasketItemDto> BasketItems { get; init; } = new List<BasketItemDto>();
     }
 }

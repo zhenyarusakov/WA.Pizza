@@ -8,9 +8,9 @@ namespace WA.Pizza.Infrastructure.DTO.UserDTO
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Age { get; set; }
+        public string? LastName { get; set; }
+        public int? Age { get; set; }
         public ICollection<AddressDto> Addresses { get; set; }
-        public ICollection<OrderDto> Orders { get; set; }
+        public ICollection<OrderDto>? Orders { get; set; }
     }
 }
