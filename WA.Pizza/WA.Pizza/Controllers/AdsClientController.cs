@@ -16,6 +16,30 @@ public class AdsClientController: BaseApiController
         _adsClientDataService = adsClientDataService;
     }
 
+    [HttpGet("{id}", Name = "GetClient")]
+    [SwaggerOperation(Summary = "Get One Client")]
+    [SwaggerResponse(400, "Malformed AdsClientDto")]
+    [SwaggerResponse(200, "GetAllClients")]
+    [ProducesResponseType(typeof(AdsClientDto), 200)]
+    public async Task<IActionResult> GetClient(int id)
+    {
+        var result = await _adsClientDataService.GetClientAsync(id);
+
+        return Ok(result);
+    }
+
+    [HttpGet("GetAllClients")]
+    [SwaggerOperation(Summary = "Get All Clients")]
+    [SwaggerResponse(400, "Malformed AdsClientDto")]
+    [SwaggerResponse(200, "GetAllClients")]
+    [ProducesResponseType(typeof(AdsClientDto[]), 200)]
+    public async Task<IActionResult> GetAllClients()
+    {
+        var result = await _adsClientDataService.GetAllClientsAsync();
+
+        return Ok(result);
+    }
+
     [HttpPost("CreateNewClient")]
     [SwaggerOperation(Summary = "Creates new AdsClient")]
     [SwaggerResponse(400, "Malformed adsClientRequest")]

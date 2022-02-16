@@ -7,7 +7,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
     public interface IOrderDataService
     {
         Task<OrderDto[]> GetAllOrdersAsync();
-        Task<int> CreateOrderAsync(int basketId, int userId);
+        Task<int> CreateOrderAsync(int basketId, string userId);
         Task<int> UpdateOrderStatus(int id, OrderStatus status);
     }
 }

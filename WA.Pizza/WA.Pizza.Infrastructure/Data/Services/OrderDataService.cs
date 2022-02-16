@@ -30,11 +30,12 @@ namespace WA.Pizza.Infrastructure.Data.Services
             return _context.Orders.ProjectToType<OrderDto>().ToArrayAsync();
         }
 
-        public async Task<int> CreateOrderAsync(int basketId, int userId)
+        public async Task<int> CreateOrderAsync(int basketId, string userId)
         {
             Basket? basket = await _context.Baskets
                 .Include(x => x.BasketItems)
                 .ThenInclude(x => x.CatalogItem)
+                .Where(x=>x.UserId == userId)
                 .FirstOrDefaultAsync(x => x.Id == basketId);
 
             if (basket == null)

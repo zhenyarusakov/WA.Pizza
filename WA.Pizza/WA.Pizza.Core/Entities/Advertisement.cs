@@ -7,6 +7,6 @@ public class Advertisement
     public string? Description { get; init; }
     public string? Img { get; init; }
     public string? WebSite { get; init; }
-    public int AdsClientId { get; init; }
+    public int AdsClientId { get; set; }
     public AdsClient? AdsClient { get; set; }
 }

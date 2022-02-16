@@ -8,6 +8,7 @@ using WA.Pizza.Infrastructure.DTO.BasketDTO.BasketItem;
 
 namespace WA.Pizza.Api.Controllers
 {
+    [Authorize]
     public class BasketController: BaseApiController
     {
         private readonly IBasketDataService _service;
@@ -32,9 +33,9 @@ namespace WA.Pizza.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBasket([FromBody] CreateBasketRequest modifyDto)
+        public async Task<IActionResult> CreateBasketItem([FromBody] CreateBasketItemRequest basketItemRequest)
         {
-            int result = await _service.CreateBasketAsync(modifyDto);
+            int result = await _service.CreateBasketItemAsync(basketItemRequest);
 
             return Ok(result);
         }

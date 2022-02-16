@@ -4,10 +4,14 @@ using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
+using Microsoft.AspNetCore.Identity;
 using WA.Pizza.Infrastructure.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Entities.BasketDomain;
+using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using WA.Pizza.Infrastructure.DTO.BasketDTO.Basket;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
@@ -22,6 +26,19 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             MapperGlobal.Configure();
         }
+        
+        private UserManager<ApplicationUser> UserManager()
+        {
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            store.Setup(x => x.FindByIdAsync("123", CancellationToken.None))
+                .ReturnsAsync(new ApplicationUser()
+                {
+                    UserName = "test@gmail.com",
+                    Id = "123"
+                });
+
+            return new UserManager<ApplicationUser>(store.Object, null, null, null, null, null, null, null, null);
+        }
 
         [Fact]
         public async Task Return_all_existed_baskets_success()
@@ -32,8 +49,10 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Baskets.AddRange(expectedBaskets);
             await context.SaveChangesAsync();
+            var basketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var userInfoProvider = new Mock<IUserInfoProvider>().Object;
 
-            BasketDataService basketService = new (context, new Mock<ILogger<BasketDataService>>().Object);
+            BasketDataService basketService = new (context, basketDataService, UserManager(), userInfoProvider);
 
             // Act
             BasketDto[] actualBaskets = await basketService.GetAllBasketsAsync();
@@ -50,30 +69,36 @@ namespace WA.Pizza.Infrastructure.Tests
         {
             // Arrange
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
-
-            BasketItemDto basketItemDto = new ()
+            ICollection<Basket> basket = BasketHelpers.CreateListOfFilledBaskets();
+            context.Baskets.AddRange(basket);
+            await context.SaveChangesAsync();
+            
+            CreateBasketItemRequest basketItemRequest = new()
             {
-                Name = "Name",
-                Price = 12,
-                Quantity = 2
-            };
-            CreateBasketRequest createBasketRequest = new ()
-            {
-                BasketItems = new List<BasketItemDto>(new []{ basketItemDto })
+                Name = "admin",
+                Description = "admin",
+                Price = 11,
+                Quantity = 1,
+                BasketId = 1,
+                CatalogItemId = 1
             };
 
-            BasketDataService basketService = new(context, new Mock<ILogger<BasketDataService>>().Object);
+            var basketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var userInfoProvider = new Mock<IUserInfoProvider>().Object;
+            BasketDataService basketService = new (context, basketDataService, UserManager(), userInfoProvider);
 
             // Act
-            int basketId = await basketService.CreateBasketAsync(createBasketRequest);
+            int basketId = await basketService.CreateBasketItemAsync(basketItemRequest);
             
             // Assert
-            Basket? basket = await context.Baskets.Include(i => i.BasketItems).FirstOrDefaultAsync(i => i.Id == basketId);
-            basket.Should().NotBeNull();
-            basket!.BasketItems.Should()
-                .HaveCount(createBasketRequest.BasketItems.Count)
-                .And
-                .ContainEquivalentOf(basketItemDto, opt => opt.Excluding(i => i.BasketId).Excluding(x => x.Id));
+            BasketItem? basketItem = await context.BasketItems.FirstOrDefaultAsync(x => x.Id == basketId);
+            basketItem.Should().NotBeNull();
+            basketItem!.Name.Should().Be(basketItem.Name);
+            basketItem.Description.Should().Be(basketItem.Description);
+            basketItem.Price.Should().Be(basketItem.Price);
+            basketItem.Quantity.Should().Be(basketItem.Quantity);
+            basketItem.BasketId.Should().Be(basketItem.BasketId);
+            basketItem.CatalogItemId.Should().Be(basketItem.CatalogItemId);
         }
 
         [Fact]
@@ -105,7 +130,10 @@ namespace WA.Pizza.Infrastructure.Tests
                 Quantity = newQuantity
             };
 
-            BasketDataService basketService = new (context, new Mock<ILogger<BasketDataService>>().Object);
+            var basketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var userInfoProvider = new Mock<IUserInfoProvider>().Object;
+
+            BasketDataService basketService = new (context, basketDataService, UserManager(), userInfoProvider);
 
             // Act
             int basketItemId = await basketService.UpdateBasketItemAsync(updateBasketRequest);
@@ -138,7 +166,9 @@ namespace WA.Pizza.Infrastructure.Tests
 
             context.Add(basket);
             await context.SaveChangesAsync();
-            BasketDataService basketService = new (context, new Mock<ILogger<BasketDataService>>().Object);
+            var basketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var userInfoProvider = new Mock<IUserInfoProvider>().Object;
+            BasketDataService basketService = new (context, basketDataService, UserManager(), userInfoProvider);
 
             UpdateBasketItemRequest basketRequest = new ()
             {
@@ -163,7 +193,10 @@ namespace WA.Pizza.Infrastructure.Tests
             await using WAPizzaContext context = await DbContextFactory.CreateContext();
             context.Baskets.Add(basket);
             await context.SaveChangesAsync();
-            BasketDataService basketService = new(context, new Mock<ILogger<BasketDataService>>().Object);
+            var basketDataService = new Mock<ILogger<BasketDataService>>().Object;
+            var userInfoProvider = new Mock<IUserInfoProvider>().Object;
+
+            BasketDataService basketService = new (context, basketDataService, UserManager(), userInfoProvider);
 
             // Act
             await basketService.CleanBasketAsync(basket.Id);

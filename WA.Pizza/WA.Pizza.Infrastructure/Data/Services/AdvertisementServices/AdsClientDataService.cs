@@ -18,6 +18,30 @@ public class AdsClientDataService: IAdsClientDataService
         _context = context;
     }
 
+    public Task<AdsClientDto[]> GetAllClientsAsync()
+    {
+        return _context.AdsClients
+            .AsNoTracking()
+            .ProjectToType<AdsClientDto>()
+            .ToArrayAsync();
+    }
+
+    public Task<AdsClientDto?> GetClientAsync(int id)
+    {
+        var client = _context.AdsClients
+            .Include(x=>x.Advertisements)
+            .AsNoTracking()
+            .ProjectToType<AdsClientDto>()
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (client == null)
+        {
+            throw new ArgumentNullException($"Client cannot be  {client.Id}");
+        }
+        
+        return client;
+    }
+
     public async Task<Guid> CreateNewAdsClientAsync(CreateAdsClientRequest adsClientRequest)
     {
         Client adsClient = adsClientRequest.Adapt<Client>();
