@@ -12,7 +12,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
             orders.Add(new Order
             {
                 Status = OrderStatus.Dispatch,
-                UserId = 1,
+                UserId = "1",
                 OrderItems = new List<OrderItem>
                 {
                     new()
@@ -28,7 +28,7 @@ namespace WA.Pizza.Infrastructure.Tests.Infrastructure.Helpers
             orders.Add(new Order
             {
                 Status = OrderStatus.InProcessing,
-                UserId = 1,
+                UserId = "1",
                 OrderItems = new List<OrderItem>
                 {
                     new ()

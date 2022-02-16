@@ -7,7 +7,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
     public interface IBasketDataService
     {
         Task<BasketDto[]> GetAllBasketsAsync();
-        Task<int> CreateBasketAsync(CreateBasketRequest basketRequest);
+        Task<int> CreateBasketItemAsync(CreateBasketItemRequest basketItemRequest);
         Task<int> UpdateBasketItemAsync(UpdateBasketItemRequest basketRequest);
         Task CleanBasketAsync(int id);
     }

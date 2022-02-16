@@ -41,18 +41,12 @@ public class AdvertisementDataService: IAdvertisementDataService
 
     public async Task<AdvertisementDto[]> GetAllAdvertisementAsync(Guid apiKey)
     {
-        AdvertisementDto[] advertising = await _context.Advertisements
+        return await _context.Advertisements
+            .AsNoTracking()
             .Include(x=>x.AdsClient)
             .Where(x => x.AdsClient != null && x.AdsClient.ApiKey == apiKey && !x.AdsClient.IsBlocked)
             .ProjectToType<AdvertisementDto>()
             .ToArrayAsync();
-
-        if (advertising == null)
-        {
-            throw new InvalidException($"This client does not exist. - {advertising}");
-        }
-
-        return advertising;
     }
 
     public async Task<AdvertisementDto> GetOneAdvertisementAsync(int id, Guid apiKey)

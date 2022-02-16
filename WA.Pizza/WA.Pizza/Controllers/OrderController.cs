@@ -16,7 +16,7 @@ namespace WA.Pizza.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(int basketId, int userId)
+        public async Task<IActionResult> CreateOrder(int basketId, string userId)
         {
             int result = await _service.CreateOrderAsync(basketId, userId);
 

@@ -39,6 +39,7 @@ namespace WA.Pizza.Api
                 .AddScoped<IAuthenticateService, AuthenticateService>()
                 .AddScoped<IAdsClientDataService, AdsClientDataService>()
                 .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
+                .AddScoped<IUserInfoProvider, AspNetUserInfoProvider>()
                 .AddMediatR(typeof(GetAllCatalogItemQueryHandler).Assembly)
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);

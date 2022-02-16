@@ -6,6 +6,8 @@ namespace WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 
 public interface IAdsClientDataService
 {
+    Task<AdsClientDto[]> GetAllClientsAsync();
+    Task<AdsClientDto?> GetClientAsync(int id);
     Task<Guid> CreateNewAdsClientAsync(CreateAdsClientRequest adsClientRequest);
     Task<int> RemoveAdsClientAsync(int id);
     Task<int> UpdateAdsClientAsync(UpdateAdsClientRequest adsClientRequest);

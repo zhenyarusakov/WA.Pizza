@@ -15,7 +15,7 @@ namespace WA.Pizza.Infrastructure.Abstractions
             _context = context;
         }
 
-        public async Task<T> GetById(int id) 
+        public async Task<T?> GetById(int id) 
         {
             return await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
         }

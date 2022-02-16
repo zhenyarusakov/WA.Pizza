@@ -5,7 +5,7 @@ namespace WA.Pizza.Core.Interfaces
 {
     public interface IRepository<T> where T: class
     {
-        Task<T> GetById(int id);
+        Task<T?> GetById(int id);
         IQueryable<T> GetAllAsync();
         Task<T> CreateAsync(T entitie);
         Task<T> UpdateAsync(T entitie);
