@@ -9,9 +9,12 @@ using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
+using WA.Pizza.Infrastructure.Abstractions.SenderInterface;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
 using WA.Pizza.Infrastructure.Data.Queries;
 using WA.Pizza.Infrastructure.Data.Services.AdvertisementServices;
+using WA.Pizza.Infrastructure.Data.Services.SenderServices;
+using WA.Pizza.Infrastructure.DTO.MailSender;
 
 
 namespace WA.Pizza.Api
@@ -40,10 +43,12 @@ namespace WA.Pizza.Api
                 .AddScoped<IAdsClientDataService, AdsClientDataService>()
                 .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
                 .AddScoped<IUserInfoProvider, AspNetUserInfoProvider>()
+                .AddScoped<IMailService, MailService>()
                 .AddMediatR(typeof(GetAllCatalogItemQueryHandler).Assembly)
+                .Configure<MailSettings>(Configuration.GetSection("MailSettings"))
                 .AddIdentity()
                 .AddAuthenticationOptions(Configuration);
-            
+
             MapperGlobal.Configure();
         }
 
