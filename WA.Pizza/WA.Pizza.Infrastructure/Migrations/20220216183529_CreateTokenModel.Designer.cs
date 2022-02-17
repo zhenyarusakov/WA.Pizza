@@ -12,8 +12,8 @@ using WA.Pizza.Infrastructure.Data;
 namespace WA.Pizza.Infrastructure.Migrations
 {
     [DbContext(typeof(WAPizzaContext))]
-    [Migration("20220216071645_UpdatingUser")]
-    partial class UpdatingUser
+    [Migration("20220216183529_CreateTokenModel")]
+    partial class CreateTokenModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -410,6 +410,36 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.ToTable("CatalogItems");
                 });
 
+            modelBuilder.Entity("WA.Pizza.Core.Entities.IdentityModels.TokenModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("TokenModels");
+                });
+
             modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -617,6 +647,13 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Navigation("CatalogBrand");
                 });
 
+            modelBuilder.Entity("WA.Pizza.Core.Entities.IdentityModels.TokenModel", b =>
+                {
+                    b.HasOne("WA.Pizza.Core.Entities.ApplicationUser", null)
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
             modelBuilder.Entity("WA.Pizza.Core.Entities.OrderDomain.Address", b =>
                 {
                     b.HasOne("WA.Pizza.Core.Entities.ApplicationUser", "User")
@@ -664,6 +701,8 @@ namespace WA.Pizza.Infrastructure.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("WA.Pizza.Core.Entities.BasketDomain.Basket", b =>

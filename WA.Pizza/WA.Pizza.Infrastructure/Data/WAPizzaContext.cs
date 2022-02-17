@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WA.Pizza.Core.Entities;
 using WA.Pizza.Core.Entities.BasketDomain;
 using WA.Pizza.Core.Entities.CatalogDomain;
+using WA.Pizza.Core.Entities.IdentityModels;
 using WA.Pizza.Core.Entities.OrderDomain;
 
 namespace WA.Pizza.Infrastructure.Data
@@ -28,6 +29,7 @@ namespace WA.Pizza.Infrastructure.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<AdsClient> AdsClients { get; set; }
         public DbSet<Advertisement> Advertisements { get; set; }
+        public DbSet<TokenModel> TokenModels { get; set; }
 
     }
 }
