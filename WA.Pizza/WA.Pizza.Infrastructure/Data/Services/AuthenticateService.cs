@@ -25,7 +25,6 @@ public class AuthenticateService: IAuthenticateService
     private readonly IConfiguration _configuration;
     private readonly WAPizzaContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
-
     public AuthenticateService(
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager, 
