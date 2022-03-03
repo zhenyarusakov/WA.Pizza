@@ -1,13 +1,12 @@
-using System;
 using Hangfire;
 using MediatR;
 using WA.Pizza.Api.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using WA.Pizza.Infrastructure.Abstractions;
 using WA.Pizza.Infrastructure.Data.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Twilio.Clients;
 using WA.Pizza.Infrastructure.Abstractions.AdvertisementInterface;
 using WA.Pizza.Infrastructure.Abstractions.SenderInterface;
 using WA.Pizza.Infrastructure.Data.MapperConfiguration;
@@ -44,19 +43,19 @@ namespace WA.Pizza.Api
                 .AddScoped<IAdvertisementDataService, AdvertisementDataService>()
                 .AddScoped<IUserInfoProvider, AspNetUserInfoProvider>()
                 .AddScoped<IMailService, MailService>()
+                .AddScoped<ISmsSenderService, SmsSenderService>()
                 .AddMediatR(typeof(GetAllCatalogItemQueryHandler).Assembly)
                 .Configure<MailSettings>(Configuration.GetSection("MailSettings"))
                 .AddIdentity()
-                .AddAuthenticationOptions(Configuration);
+                .AddAuthenticationOptions(Configuration)
+                .AddHttpClient<ITwilioRestClient, TwilioClient>();
 
             MapperGlobal.Configure();
         }
 
         public void Configure(
-            IApplicationBuilder app, 
-            IWebHostEnvironment env, 
-            IRecurringJobManager manager, 
-            IServiceProvider serviceProvider)
+            IApplicationBuilder app,
+            IRecurringJobManager manager)
         {
             app.ConfigureExceptionHandler()
                 .UseDeveloperExceptionPage()
