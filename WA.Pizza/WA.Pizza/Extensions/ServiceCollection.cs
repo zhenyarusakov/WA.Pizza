@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +80,11 @@ namespace WA.Pizza.Api.Extensions
         {
              services
                 .AddControllers()
+                .AddFluentValidation(x =>
+                {
+                    x.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    x.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                })
                 .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             return services;
